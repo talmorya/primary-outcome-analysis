@@ -1,0 +1,24 @@
+version: "0.1.0"
+
+targets:
+  chronic_back_pain:
+    label: "Chronic back pain"
+    patterns:
+      - "chronic\\s+.*back"
+      - "low\\s+back\\s+pain"
+      - "clbp"
+      - "lbp"
+      - "non[- ]specific\\s+low\\s+back"
+      - "chronic\\s+low\\s+back"
+
+  migraine:
+    label: "Migraine"
+    patterns:
+      - "migraine"
+      - "chronic\\s+migraine"
+
+  fibromyalgia:
+    label: "Fibromyalgia"
+    patterns:
+      - "fibromyalgia"
+      - "\\bfm\\b"

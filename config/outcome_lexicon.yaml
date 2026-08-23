@@ -1,0 +1,138 @@
+version: "0.1.0"
+
+# Instruments/questionnaires: names and aliases for detection only (not conceptual categories).
+instruments:
+  - name: "Brief Pain Inventory"
+    aliases: ["brief pain inventory", "bpi"]
+  - name: "Numeric Rating Scale"
+    aliases: ["numeric rating scale", "numeric pain rating scale", "numerical rating scale", "nrs"]
+  - name: "Visual Analog Scale"
+    aliases: ["visual analog scale", "visual analogue scale", "vas"]
+  - name: "SF-36"
+    aliases: ["sf-36", "short form 36", "short form-36", "sf36"]
+  - name: "SF-12"
+    aliases: ["sf-12", "short form 12", "sf12"]
+  - name: "EQ-5D"
+    aliases: ["eq-5d", "eq5d"]
+  - name: "Fibromyalgia Impact Questionnaire"
+    aliases: ["fibromyalgia impact questionnaire", "fiq", "fiqr"]
+  - name: "Oswestry Disability Index"
+    aliases: ["oswestry disability index", "oswestry", "odi"]
+  - name: "Roland-Morris Disability Questionnaire"
+    aliases: ["roland-morris", "roland morris", "rmdq"]
+  - name: "PROMIS"
+    aliases: ["promis"]
+  - name: "Pain Catastrophizing Scale"
+    aliases: ["pain catastrophizing scale", "pcs"]
+  - name: "PHQ-9"
+    aliases: ["phq-9", "phq9", "patient health questionnaire-9"]
+  - name: "GAD-7"
+    aliases: ["gad-7", "gad7"]
+  - name: "Hospital Anxiety and Depression Scale"
+    aliases: ["hospital anxiety and depression scale", "hads"]
+  - name: "Patient Global Impression of Change"
+    aliases: ["patient global impression of change", "pgic", "global impression of change"]
+  - name: "McGill Pain Questionnaire"
+    aliases: ["mcgill pain questionnaire", "mpq", "sf-mpq"]
+  - name: "Graded Chronic Pain Status"
+    aliases: ["graded chronic pain", "gcps"]
+  - name: "Pain Disability Index"
+    aliases: ["pain disability index", "pdi"]
+  - name: "Beck Depression Inventory"
+    aliases: ["beck depression inventory", "bdi"]
+  - name: "Insomnia Severity Index"
+    aliases: ["insomnia severity index", "isi"]
+  - name: "Migraine-Specific Quality of Life Questionnaire"
+    aliases: ["migraine-specific quality of life", "msq"]
+  - name: "Widespread Pain Index"
+    aliases: ["widespread pain index", "wpi"]
+  - name: "Tampa Scale of Kinesiophobia"
+    aliases: ["tampa scale", "tsk"]
+  - name: "Chronic Pain Acceptance Questionnaire"
+    aliases: ["chronic pain acceptance questionnaire", "cpaq"]
+  - name: "Pain Self-Efficacy Questionnaire"
+    aliases: ["pain self-efficacy questionnaire", "pseq"]
+  - name: "PEG-3"
+    aliases: ["peg-3", "peg 3"]
+  - name: "Irritable Bowel Syndrome Severity Scoring System"
+    aliases: ["ibs-sss", "ibs sss", "irritable bowel syndrome severity"]
+  - name: "IBS Quality of Life"
+    aliases: ["ibs-qol", "ibs qol"]
+
+# Flat exploratory keywords (matched terms only; no category assignment).
+keywords:
+  - "pain"
+  - "intensity"
+  - "severity"
+  - "interference"
+  - "disability"
+  - "function"
+  - "functioning"
+  - "quality of life"
+  - "anxiety"
+  - "depression"
+  - "distress"
+  - "stress"
+  - "coping"
+  - "acceptance"
+  - "self-efficacy"
+  - "catastrophizing"
+  - "fatigue"
+  - "sleep"
+  - "insomnia"
+  - "headache"
+  - "migraine"
+  - "relief"
+  - "improvement"
+  - "frequency"
+  - "disability"
+  - "discomfort"
+  - "well-being"
+  - "wellbeing"
+  - "adherence"
+  - "feasibility"
+  - "acceptability"
+  - "caregiver"
+  - "caregivers"
+
+# Multi-word phrases (matched as phrases, not categories).
+phrases:
+  - "pain intensity"
+  - "pain severity"
+  - "pain interference"
+  - "pain relief"
+  - "pain frequency"
+  - "pain disability"
+  - "physical functioning"
+  - "emotional distress"
+  - "psychological stress"
+  - "quality of life"
+  - "global improvement"
+  - "pain catastrophizing"
+  - "pain acceptance"
+  - "pain self-efficacy"
+  - "average pain"
+  - "worst pain"
+  - "days with pain"
+  - "return to work"
+  - "health-related quality of life"
+
+# Action/verb terms.
+action_verbs:
+  - "reduce"
+  - "decrease"
+  - "improve"
+  - "increase"
+  - "cope"
+  - "accept"
+  - "manage"
+  - "interfere"
+  - "alleviate"
+  - "relieve"
+  - "prevent"
+  - "maintain"
+  - "adapt"
+  - "change"
+  - "assess"
+  - "measure"
+  - "evaluate"

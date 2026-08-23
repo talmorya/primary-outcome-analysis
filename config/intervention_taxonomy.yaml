@@ -1,0 +1,182 @@
+version: "0.1.0"
+
+# Psychological/behavioral approaches among BEHAVIORAL intervention types.
+approaches:
+  cbt:
+    patterns:
+      - "cognitive\\s+behav"
+      - "cognitive\\s+behaviour"
+      - "cognitive-behavioral"
+      - "cognitive-behavioural"
+      - "\\bcbt\\b"
+    exclude:
+      - "acceptance\\s+and\\s+commitment"
+
+  act:
+    patterns:
+      - "acceptance\\s+and\\s+commitment"
+      - "acceptance-based\\s+therapy"
+
+  mindfulness_mbsr_mbct:
+    patterns:
+      - "mindful"
+      - "\\bmbsr\\b"
+      - "\\bmbct\\b"
+      - "mindfulness-based"
+
+  meditation:
+    patterns:
+      - "meditation"
+
+  hypnosis:
+    patterns:
+      - "hypnosis"
+      - "hypnotherapy"
+
+  biofeedback:
+    patterns:
+      - "biofeedback"
+      - "neurofeedback"
+
+  relaxation:
+    patterns:
+      - "relaxation"
+      - "progressive\\s+muscle"
+
+  psychotherapy_general:
+    patterns:
+      - "psychotherapy"
+      - "psychodynamic"
+      - "interpersonal\\s+therapy"
+      - "supportive\\s+therapy"
+    review_flag: true
+
+  behavioral_therapy_general:
+    patterns:
+      - "behavioral\\s+therapy"
+      - "behavioural\\s+therapy"
+      - "behavior\\s+therapy"
+      - "behaviour\\s+therapy"
+    exclude:
+      - "cognitive"
+    review_flag: true
+
+  acceptance_based:
+    patterns:
+      - "acceptance-based"
+      - "pain\\s+acceptance"
+
+  pain_education:
+    patterns:
+      - "pain\\s+education"
+      - "pain\\s+neuroscience\\s+education"
+      - "\\bpne\\b"
+
+  psychoeducation:
+    patterns:
+      - "psychoeducation"
+      - "psycho-education"
+
+  self_management:
+    patterns:
+      - "self[- ]management"
+      - "pain\\s+self[- ]management"
+
+  emdr:
+    patterns:
+      - "emdr"
+      - "eye\\s+movement\\s+desensitization"
+
+  prt:
+    patterns:
+      - "pain\\s+reprocessing\\s+therapy"
+      - "pain\\s+reprocessing"
+
+  counseling:
+    patterns:
+      - "counsel"
+      - "counsell"
+    review_flag: true
+
+  coaching:
+    patterns:
+      - "coaching"
+
+  digital_psychological:
+    patterns:
+      - "internet-delivered"
+      - "web-based"
+      - "mobile\\s+app"
+      - "telehealth"
+      - "telemedicine"
+      - "virtual\\s+reality"
+    review_flag: true
+
+  dialectical_behavior:
+    patterns:
+      - "dialectical\\s+behavior"
+      - "\\bdbt\\b"
+
+# Behavioral interventions that are typically not psychological in focus.
+non_psychological_behavioral:
+  physical_activity:
+    patterns:
+      - "exercise"
+      - "physical\\s+activity"
+      - "aerobic"
+      - "walking"
+      - "stretching"
+      - "training"
+      - "workout"
+      - "movement\\s+therapy"
+      - "yoga"
+      - "pilates"
+      - "tai\\s+chi"
+
+  dietary_nutrition:
+    patterns:
+      - "diet"
+      - "nutrition"
+      - "dietary"
+      - "caloric"
+      - "weight\\s+loss"
+      - "fasting"
+
+  lifestyle_general:
+    patterns:
+      - "lifestyle"
+      - "sleep\\s+hygiene"
+      - "smoking\\s+cessation"
+      - "health\\s+education"
+      - "wellness"
+
+  behavioral_other:
+    patterns:
+      - "behavioral\\s+intervention"
+      - "behavioural\\s+intervention"
+    review_flag: true
+
+# Non-behavioral co-intervention modalities (when present in the same trial).
+other_modality_types:
+  pharmacological:
+    intervention_types: ["DRUG", "BIOLOGICAL", "DIETARY SUPPLEMENT"]
+
+  device:
+    intervention_types: ["DEVICE"]
+
+  surgical_procedure:
+    intervention_types: ["PROCEDURE", "RADIATION", "GENETIC"]
+
+  complementary_integrative:
+    patterns:
+      - "acupuncture"
+      - "massage"
+      - "chiropractic"
+      - "osteopath"
+
+  physical_rehabilitation:
+    patterns:
+      - "physiotherapy"
+      - "physical\\s+therapy"
+      - "rehabilitation"
+      - "manual\\s+therapy"
