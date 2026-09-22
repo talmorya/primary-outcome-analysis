@@ -1,0 +1,191 @@
+version: "1.0.0"
+
+# Treatment-oriented behavioral intervention categories for cohort classification.
+# Applied to BEHAVIORAL (and behavioral-text OTHER) arms; control/sham arms are ignored.
+
+# Comparator arms: matched against intervention arm NAME only (not description).
+control_arm:
+  patterns:
+    - "placebo"
+    - "\\bsham\\b"
+    - "wait[- ]?list"
+    - "waiting list"
+    - "usual care"
+    - "standard care"
+    - "standard medical"
+    - "no intervention"
+    - "attention control"
+    - "control group"
+    - "control arm"
+
+mechanism_arm:
+  patterns:
+    - "psychophysical"
+    - "experimental\\s+heat\\s+pain"
+    - "cover\\s+story"
+    - "nocebo"
+    - "PASAT"
+    - "quantitative\\s+sensory"
+    - "\\bqst\\b"
+    - "resting\\s+state\\s+eeg"
+    - "picture\\s+viewing\\s+eeg"
+    - "cognitive\\s+assessment\\s+mapping"
+    - "affective\\s+touch"
+    - "walk\\s+test"
+    - "thermal\\s+stimuli"
+    - "pressure\\s+pain\\s+threshold"
+    - "pain\\s+threshold\\s+test"
+    - "functional\\s+magnetic\\s+resonance"
+    - "\\bfmri\\b"
+    - "neuroimaging\\s+paradigm"
+    - "experimental\\s+pain"
+    - "pain\\s+modulation\\s+efficiency"
+    - "conditioned\\s+pain\\s+modulation"
+  exclude:
+    - "emotional\\s+regulation"
+    - "emotional\\s+(positive|negative)"
+    - "\\bpbre\\b"
+    - "consecutive\\s+days"
+    - "administered\\s+for\\s+one\\s+hour"
+
+categories:
+  psychological_therapy:
+    label: "Psychological therapy"
+    patterns:
+      - "cognitive\\s+behav"
+      - "cognitive-behavioral"
+      - "\\bcbt\\b"
+      - "acceptance\\s+and\\s+commitment"
+      - "\\bact\\b"
+      - "exposure\\s+therapy"
+      - "graded\\s+exposure"
+      - "psychotherapy"
+      - "psychodynamic"
+      - "interpersonal\\s+therapy"
+      - "behavioral\\s+therapy"
+      - "behavioural\\s+therapy"
+      - "emdr"
+      - "dialectical\\s+behavior"
+      - "\\bdbt\\b"
+      - "motivational\\s+interview"
+      - "operant\\s+behavioral"
+      - "emotional\\s+regulation"
+      - "\\bpbre\\b"
+      - "cognitive\\s+functional"
+      - "\\bcft\\b"
+
+  mind_body:
+    label: "Mind-body"
+    patterns:
+      - "mindful"
+      - "\\bmbsr\\b"
+      - "\\bmbct\\b"
+      - "mindfulness"
+      - "meditation"
+      - "hypnosis"
+      - "hypnotherapy"
+      - "relaxation"
+      - "progressive\\s+muscle"
+      - "yoga"
+      - "tai\\s+chi"
+      - "pilates"
+      - "biofeedback"
+      - "neurofeedback"
+      - "guided\\s+imagery"
+
+  pain_education_self_management:
+    label: "Pain education & self-management"
+    patterns:
+      - "pain\\s+education"
+      - "pain\\s+neuroscience\\s+education"
+      - "\\bpne\\b"
+      - "psychoeducation"
+      - "psycho-education"
+      - "patient\\s+education"
+      - "self[- ]management"
+      - "pain\\s+reprocessing"
+      - "\\bprt\\b"
+      - "coping\\s+skills"
+      - "pain\\s+coping"
+      - "coaching"
+      - "counsel"
+
+  physical_activity_exercise:
+    label: "Physical activity & exercise"
+    patterns:
+      - "exercise"
+      - "physical\\s+activity"
+      - "aerobic"
+      - "walking"
+      - "walk with ease"
+      - "stretching"
+      - "workout"
+      - "movement\\s+therapy"
+      - "physiotherapy"
+      - "physical\\s+therapy"
+      - "rehabilitation"
+      - "manual\\s+therapy"
+
+  lifestyle_behavioral:
+    label: "Lifestyle & behavioral health"
+    patterns:
+      - "diet"
+      - "nutrition"
+      - "dietary"
+      - "weight\\s+loss"
+      - "fasting"
+      - "lifestyle"
+      - "sleep\\s+hygiene"
+      - "behavioral\\s+insomnia"
+      - "\\bcbt[- ]i\\b"
+      - "smoking\\s+cessation"
+      - "light\\s+exposure"
+      - "light\\s+deprivation"
+      - "wellness"
+
+  complementary_integrative:
+    label: "Complementary & integrative"
+    patterns:
+      - "acupuncture"
+      - "massage"
+      - "tuina"
+      - "chiropractic"
+      - "osteopath"
+      - "shiatsu"
+      - "music\\s+therapy"
+      - "music\\s+listening"
+      - "art\\s+therapy"
+
+  multidisciplinary_program:
+    label: "Multidisciplinary pain program"
+    patterns:
+      - "multidisciplinary"
+      - "interdisciplinary"
+      - "back\\s+school"
+      - "fibrowalk"
+      - "functional\\s+restoration"
+      - "work[- ]hardening"
+      - "headache\\s+management\\s+program"
+
+  digital_behavioral:
+    label: "Digital behavioral intervention"
+    patterns:
+      - "internet-delivered"
+      - "web-based"
+      - "mobile\\s+app"
+      - "smartphone"
+      - "telehealth"
+      - "telemedicine"
+      - "virtual\\s+reality"
+      - "RELAXaHEAD"
+      - "PainGuide"
+      - "Migraine\\s+Manager"
+
+# Non-behavioral co-intervention types (for is_multimodal flag only).
+multimodal_modalities:
+  pharmacological:
+    intervention_types: ["DRUG", "BIOLOGICAL", "DIETARY SUPPLEMENT"]
+  device:
+    intervention_types: ["DEVICE"]
+  procedural:
+    intervention_types: ["PROCEDURE", "RADIATION", "GENETIC"]

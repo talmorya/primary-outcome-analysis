@@ -1,0 +1,224 @@
+nct_id,conditions_raw,brief_title,behavioral_component,non_psych_flag,eligibility,reason
+NCT05085782,Chronic Low-back Pain | Fibromyalgia,Reconsolidation Therapy With Propranolol as a Treatment for Chronic Pain,pain_education,False,include,Fits primary chronic pain criterion
+NCT01599143,Cancer | Diabetes | Hypertension,Identifying Therapeutic Factors in an 8-Week (30 Hour) Mindfulness-Based Stress Reduction ,meditation | mindfulness_mbsr_mbct,False,exclude_cancer_oncology,Secondary/non-primary pain pattern: exclude_cancer_oncology
+NCT00176163,Fibromyalgia | Back Pain,Supporting Effect of Dronabinol on Behavioral Therapy in Fibromyalgia and Chronic Back Pai,operant_behavioral,False,include,Fits primary chronic pain criterion
+NCT03686748,Ehlers-Danlos Syndrome (EDS) | Complex Regional Pain Syndrome (CRPS) | Amplified Musculoskeletal Pain Syndrome (AMPS) | ,Two Point Discrimination,,True,borderline_rq,non_psych_behavioral_only
+NCT06208514,"Fibromyalgia | Lupus Erythematosus, Systemic | Chronic Pelvic Pain | Chronic Low Back Pain (CLBP)",Brief Pain Exposure Therapy (BPET) For Nociplastic Pain,digital_psychological | exposure_therapy | meditation | mindfulness_mbsr_mbct | pain_education,False,borderline,inflammatory_comorbidity
+NCT03182556,Fibromyalgia,"Efficacy of Electromyographic Biofeedback, Aerobic Exercise and Stretching in Fibromyalgia",biofeedback,True,include,Fits primary chronic pain criterion
+NCT07032519,Fibromyalgia,Mindfulness Intervention for Fibromyalgia Delivered Through a Smartphone App,digital_psychological | mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT04751825,Somatic Symptom Disorder,Internet-based Emotional Awareness and Expression Therapy for Somatic Symptom Disorder - A,exposure_therapy,False,include,Fits primary chronic pain criterion
+NCT05030558,Fibromyalgia,Web-supported Interactive Nurse Program in Fibromyalgia Patients: A Mixed Method Study,psychoeducation,False,include,Fits primary chronic pain criterion
+NCT05962138,Fibromyalgia,A Study of Digital Cognitive Behavioural Therapy for Insomnia in Fibromyalgia,cbt,False,include,Fits primary chronic pain criterion
+NCT06147882,Fibromyalgia Syndrome,The Effect of Positive Psychotherapy Based Psychoeducation on Pain Perception With Fibromy,psychotherapy_general,False,include,Fits primary chronic pain criterion
+NCT04084873,Fibromyalgia | Chronic Pain,An Emotional Regulation Brief Procedure (PbRE) for Fibromyalgia Using ICT's,,True,borderline_rq,non_psych_behavioral_only
+NCT07614945,Fibromyalgia,Effect of Reflexology on Pain and Sleep Disorders in Females With Fibromyalgia,,True,borderline_rq,non_psych_behavioral_only
+NCT02711020,Fibromyalgia | Depressive Symptoms,Psychological Treatment of Depression in Women With Fibromyalgia,cbt | psychoeducation | relaxation,False,include,Fits primary chronic pain criterion
+NCT01981096,Juvenile Fibromyalgia,Fibromyalgia Integrative Training for Teens,cbt | coping_skills_training,False,include,Fits primary chronic pain criterion
+NCT07239427,Fibromyalgia,Use of Transcranial Direct Current Stimulation (TDCS) in an Active Pain Coping Program for,exposure_therapy | mindfulness_mbsr_mbct | relaxation,False,include,Fits primary chronic pain criterion
+NCT07282392,Lupus | Fibromyalgia (FM) | Chronic Widespread Pain,Helping Lupus Patients Manage Fibromyalgia Symptoms Through Emotional Awareness and Expres,cbt | psychotherapy_general,False,borderline,inflammatory_comorbidity
+NCT02515552,Fibromyalgia,Web-Based Program for Symptom Management in Fibromyalgia,digital_psychological | self_management,False,include,Fits primary chronic pain criterion
+NCT03207828,Fibromyalgia | Depression,Testing Interventions for Patients With Fibromyalgia and Depression,other_psychological,False,include,Fits primary chronic pain criterion
+NCT02482714,Fibromyalgia,Life Quality Determinant Assessment of Fibromyalgia Patients,,True,borderline_rq,non_psych_behavioral_only
+NCT05135936,Fibromyalgia,Hyperthermia in Fibromyalgia Syndrome,other_psychological,False,include,Fits primary chronic pain criterion
+NCT07648563,Fybromyalgia | Fibromyalgia (FM),Interventional Study on the Effects of Forest Therapy in Fibromyalgia Patients,,True,borderline_rq,non_psych_behavioral_only
+NCT04862871,Pain | Chronic Widespread Pain | Fibromyalgia,Enhancing Analgesia in Chronic Pain Through Exercise,,True,borderline_rq,non_psych_behavioral_only
+NCT04190771,Fibromyalgia,Efficacy of NAT-FM Treatment for Fibromyalgia,mindfulness_mbsr_mbct | pain_education,False,include,Fits primary chronic pain criterion
+NCT00715195,Fibromyalgia,Improving Quality of Life of Fibromyalgia Patients,cbt,False,include,Fits primary chronic pain criterion
+NCT05066568,Transcranial Direct Current Stimulation | Hypnosis | Fibromyalgia,Effect of Hypnosis Combined With Tdcs on Pain Perception and Cortical Excitability in Fibr,relaxation,False,include,Fits primary chronic pain criterion
+NCT00550966,Fibromyalgia,Efficacy of a Psychoeducative Program for Improving Quality of Life in Fibromyalgic Patien,counseling | relaxation,False,include,Fits primary chronic pain criterion
+NCT00535587,Fibromyalgia,Testing Mestinon and Exercise in Fibromyalgia,,True,borderline_rq,non_psych_behavioral_only
+NCT00512590,Fibromyalgia | Pain | Functional Status | Self-Efficacy | Distress,Pilot Study: Relaxation and Guided Imagery in Hispanic Persons Diagnosed With Fibromyalgia,relaxation,False,include,Fits primary chronic pain criterion
+NCT00526435,Arthritis,Evaluation of Walk With Ease in Arthritis,other_psychological,False,borderline,inflammatory_comorbidity
+NCT02846194,Fibromyalgia | Chronic Pain,Effects of Brief Guided Imagery for Chronic Pain in Patients Diagnosed With Fibromyalgia,other_psychological,False,include,Fits primary chronic pain criterion
+NCT06393790,"Fibromyalgia | Fatigue | Fatigue; Muscle, Heart | Strength Training | Stress",Strength Training Protocol in Fibromyalgia Women,,True,borderline_rq,non_psych_behavioral_only
+NCT06391268,Fibromyalgia,Emotional Freedom Technique (EFT) on Pain and Stress Levels in Fibromyalgia (FMS),other_psychological,False,include,Fits primary chronic pain criterion
+NCT05395832,Fibromyalgia,Effectiveness of Video-based Multicomponent Treatment for Fibromyalgia Plus Face-to-face S,mindfulness_mbsr_mbct | multidisciplinary_pain_program | pain_education,False,include,Fits primary chronic pain criterion
+NCT01118988,Irritable Bowel Syndrome (IBS) | Functional Abdominal Pain | Fibromyalgia | Complex Regional Pain Syndrome (CRPS) | Myof,Peer Mentorship: An Intervention To Promote Effective Pain Self-Management In Adolescents,self_management,False,include,Fits primary chronic pain criterion
+NCT02638636,Fibromyalgia,Internet-based Exposure-based Therapy for Fibromyalgia: A Randomized Controlled Trial.,cbt | exposure_therapy | mindfulness_mbsr_mbct | psychoeducation,False,include,Fits primary chronic pain criterion
+NCT01004458,Fibromyalgia,Cognitive Behavioral Therapy Trial in Fibromyalgia,cbt,False,include,Fits primary chronic pain criterion
+NCT03992612,Fibromyalgia | Chronic Pain,Efficacy of Psychological Therapy in Chronic Pain and Fibromyalgia,mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT07439900,Fibromyalgia,Mindfulness-Based Yoga for Individuals With Fibromyalgia: A RCT,mindfulness_mbsr_mbct,True,include,Fits primary chronic pain criterion
+NCT01345344,Fibromyalgia,Neuroimaging Effects of Cognitive Behavioral Therapy in Fibromyalgia,cbt | relaxation | self_management,False,include,Fits primary chronic pain criterion
+NCT01631500,Depression | Anxiety | Irritable Bowel Syndrome | Fibromyalgia,Effects of an Integrative Treatment Model to Reduce Anxiety and Depression in Minor Mental,,False,include,Fits primary chronic pain criterion
+NCT01611831,Fibromyalgia,Efficacy of Acceptance and Commitment Therapy (ACT) in Group in Fibromyalgia,other_psychological,False,include,Fits primary chronic pain criterion
+NCT06567886,Fibromyalgia,Fibromyalgia Sleep A to ZZZ Study,sleep_intervention,False,include,Fits primary chronic pain criterion
+NCT07517757,Fibromyalgia (FM),Dietary Strategies for the Treatment of Fibromyalgia in Overweight and Obese Patients,,True,borderline_rq,non_psych_behavioral_only
+NCT02833311,Fibromyalgia | Multiple Sclerosis | Osteoarthritis | Sjögren's Syndrome | Parkinson's Disease,e-Mobile Tablet for People With Chronic Conditions,,True,borderline_rq,non_psych_behavioral_only
+NCT00222209,Fibromyalgia | Irritable Bowel Syndrome,"Clinical Study on Implicit Learning, Comorbidity and Stress Vulnerability in Chronic Funct",,True,borderline_rq,non_psych_behavioral_only
+NCT05773482,Fibromyalgia,Effects of Breathing and Attention Training (BAT) on Pain Modulation,mindfulness_mbsr_mbct,True,include,Fits primary chronic pain criterion
+NCT02407665,Fibromyalgia | Chronic Pain,Tai Chi Intervention and Brain Imaging Study Among Fibromyalgia Patients and Healthy Contr,,True,borderline_rq,non_psych_behavioral_only
+NCT06457633,Fibromyalgia,Effectiveness of Experiential Fibrowalk Therapy,mindfulness_mbsr_mbct | multidisciplinary_pain_program,False,include,Fits primary chronic pain criterion
+NCT07101978,Hyperthermia | Chronic Primary Pain | Widespread Pain | Muscular Disease | Rheumatic Diseases | Musculoskeletal Diseases,"Hyperthermia in Patients With Chronic Primary Pain - Effects on Thermoregulation, Somatose",other_psychological,False,include,Fits primary chronic pain criterion
+NCT04451564,Fibromyalgia,Understanding and Restoring Dopaminergic Function in Fibromyalgia Patients,mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT00966732,Fibromyalgia,Yoga for Fibromyalgia,meditation,False,include,Fits primary chronic pain criterion
+NCT06097091,Fibromyalgia,Effects and Mechanisms of Pain Neuroscience Education in Patients With Fibromyalgia,pain_education | self_management,False,include,Fits primary chronic pain criterion
+NCT04981925,Chronic Pain Syndrome,Predictors of Pain Relief From Mindfulness-based Stress Reduction (MBSR) in Multiple Forms,mindfulness_mbsr_mbct,False,borderline,inflammatory_comorbidity
+NCT00268606,Fibromyalgia,Tailored Cognitive-Behavioral Therapy for Fibromyalgia Patients at Risk,cbt,False,include,Fits primary chronic pain criterion
+NCT00321659,Fibromyalgia,Optimizing Fibromyalgia Self-management,,True,borderline_rq,non_psych_behavioral_only
+NCT05993663,Fibromyalgia,Effectiveness of an Intervention Based on Arts In Health in the Quality of Life of People ,mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT07176078,Irritable Bowel Syndrome (IBS) | Fibromyalgia (FM),Evaluating the Added Benefit of Osteopathic Care to a Flexi-FODMAP Diet in Fibromyalgia Pa,,True,borderline_rq,non_psych_behavioral_only
+NCT03947502,Fibromyalgia,Pain Neuroscience Education as Treatment in Fibromyalgia Affected Patients,other_psychological,False,include,Fits primary chronic pain criterion
+NCT06135753,Fibromyalgia,Psychosomatic Intervention in Fibromyalgia.,,True,borderline_rq,non_psych_behavioral_only
+NCT04415866,Fibromyalgia,Generalized Hypersensitivity in Patients With Fibromyalgia Syndrome,,True,borderline_rq,non_psych_behavioral_only
+NCT07090434,Fibromyalgia (FM),Effect of Bei App for Fibromyalgia,digital_psychological | psychoeducation,False,include,Fits primary chronic pain criterion
+NCT06157866,Fibromyalgia,Cognitive Training to Enhance Brain Concordance During Acupuncture,,True,borderline_rq,non_psych_behavioral_only
+NCT05525598,Bodily Distress Disorder Moderate | Bodily Distress Disorder Severe | Fibromyalgia | Chronic Fatigue Syndrome | Irritabl,Internet-based Treatment for Patients Suffering From Severe Functional Somatic Disorders,other_psychological,False,include,Fits primary chronic pain criterion
+NCT02375061,Fibromyalgia | Chronic Pain,A Positive Psychology Intervention for Fibromyalgia Patients Using ICT´s,other_psychological,False,include,Fits primary chronic pain criterion
+NCT03376269,Fibromyalgia | Chronic Pain Syndrome,HBOT Effect on Chronic Pain Syndrome With a History of Psychological Trauma,psychotherapy_general,False,include,Fits primary chronic pain criterion
+NCT00437411,Fibromyalgia,Healing Through Affective Self-Awareness in Fibromyalgia: a Randomized Controlled Trial,meditation,False,include,Fits primary chronic pain criterion
+NCT07356206,Fibromyalgia (FM),Between Paws and Affections - Impact of Dog-Assisted Therapy in Fibromyalgia Patients,counseling | psychoeducation | relaxation,False,include,Fits primary chronic pain criterion
+NCT00086060,Fibromyalgia,Pain Management Techniques for Fibromyalgia,relaxation | self_management,False,include,Fits primary chronic pain criterion
+NCT06913868,Chronic Pain | Fibromyalgia,Consensus-Based vs. Standardized Physiotherapy for Fibromyalgia,exposure_therapy | pain_education | self_management,False,include,Fits primary chronic pain criterion
+NCT02401386,Fibromyalgia,Eight Brocades (Ba Duan Jin) for Treating Patients With Fibromyalgia,,True,borderline_rq,non_psych_behavioral_only
+NCT07636980,Chronic Pain | Musculoskeletal Pain | Fibromyalgia | Neuropathic Pain | Complex Regional Pain Syndromes (CRPS) | Abdomin,Empowered Relief for Caregivers,,True,borderline_rq,non_psych_behavioral_only
+NCT00857740,Fibromyalgia,Influence of Painphysiolgy Education on the Pain Inhibition in Fibromyalgia,other_psychological,False,include,Fits primary chronic pain criterion
+NCT04870476,Bodily Distress Disorder Moderate | Fibromyalgia | Chronic Fatigue Syndrome | Irritable Bowel Syndrome | Somatization Di,"Feasibility and Acceptability of the Internet-delivered Treatment ""One Step at the Time"" f",digital_psychological | psychoeducation,False,include,Fits primary chronic pain criterion
+NCT02969707,Fibromyalgia,Use of Repetitive Transcranial Magnetic Stimulation to Augment Hypnotic Analgesia,hypnosis,False,include,Fits primary chronic pain criterion
+NCT06912971,Fibromyalgia,Fibromyalgia: Impact of Self-Knowledge on Well-Being,,True,borderline_rq,non_psych_behavioral_only
+NCT04263324,Chronic Pain,Beneficial Effects of Self-hypnosis/Self-care for Chronic Pain Patients : a MRI and EEG St,hypnosis,False,include,Fits primary chronic pain criterion
+NCT03922867,Insomnia | Fibromyalgia,Web-based CBT for Insomnia Patients With Fibromyalgia,cbt | digital_psychological,False,include,Fits primary chronic pain criterion
+NCT04970511,Fibromyalgia,Comparison of the Effects of Face-to-Face and Internet-Based BBAT in Fibromyalgia Syndrome,,True,borderline_rq,non_psych_behavioral_only
+NCT00909194,Juvenile Primary Fibromyalgia Syndrome,Juvenile Primary Fibromyalgia Syndrome (JPFS) in an Adolescent Psychiatric Population,psychoeducation | relaxation,False,include,Fits primary chronic pain criterion
+NCT02078791,Fibromyalgia,Discomfort and Psychosocial Difficulties in Fibromyalgia,,False,include,Fits primary chronic pain criterion
+NCT01266733,Fibromyalgia,Improvement of the Health-related Quality of Life of Patients With Fibromyalgia Using Mult,multidisciplinary_pain_program,False,include,Fits primary chronic pain criterion
+NCT03895086,Fibromyalgia,Fibromyalgia and Specific Physical Activity,,True,borderline_rq,non_psych_behavioral_only
+NCT00000397,Fibromyalgia | Insomnia,Behavioral Insomnia Therapy for Fibromyalgia,sleep_intervention,False,include,Fits primary chronic pain criterion
+NCT02053090,Fibromyalgia,Complementary and Alternative Medicine (CAM) for Fibromyalgia,,True,borderline_rq,non_psych_behavioral_only
+NCT05962437,Fibromyalgia,Self-guided Acceptance and Commitment Therapy-based Digital Smartphone Application for Man,act | digital_psychological | mindfulness_mbsr_mbct | psychotherapy_general | relaxation,True,include,Fits primary chronic pain criterion
+NCT02426788,Persistent Physical Symptoms (PPS),CBT Plus SMC Compared to SMC for Persistent Physical Symptoms in Secondary Care (PRINCE),cbt,False,include,Fits primary chronic pain criterion
+NCT04284566,Fibromyalgia,Effectiveness of Multicomponent Treatment for Fibromyalgia (FIBROWALK),counseling | mindfulness_mbsr_mbct | multidisciplinary_pain_program | pain_education,False,include,Fits primary chronic pain criterion
+NCT00167271,Fibromyalgia,Promoting Health in People With Fibromyalgia,cbt,False,include,Fits primary chronic pain criterion
+NCT02683278,Fibromyalgia,Fibromyalgia: Interventions for Pain and Mood Regulation,cbt | mindfulness_mbsr_mbct | pain_education,False,include,Fits primary chronic pain criterion
+NCT07202572,Fibromyalgia,A Study Of Virtual Reality Vs Sham VR On Fibromyalgia,digital_psychological | meditation | mindfulness_mbsr_mbct | relaxation,False,include,Fits primary chronic pain criterion
+NCT06574165,Fibromyalgia,Relationships of Affect and Neuroinflammation With Clinical Pain in Veterans With Fibromya,,True,borderline_rq,non_psych_behavioral_only
+NCT06166563,Fibromyalgia | Irritable Bowel Syndrome,"Exercise, Irritable Bowel Syndrome and Fibromyalgia",,True,borderline_rq,non_psych_behavioral_only
+NCT06880653,"Arthritis | Rheumatoid Arthritis (RA) | Gout | Fibromyalgia (FM) | Osteoarthritis | Lupus Erythematosus, Systemic",Dose Response of Exercise for Arthritis Management,coaching,False,borderline,inflammatory_comorbidity
+NCT00498264,Fibromyalgia,Effectiveness of Physical Exercise in Women With Fibromyalgia,,True,borderline_rq,non_psych_behavioral_only
+NCT01857219,Fibromyalgia,A Brain Imaging Study of Tai Chi on Fibromyalgia,,True,borderline_rq,non_psych_behavioral_only
+NCT05821036,Fibromyalgia,Examining the Effects of Activity Management in Women With Fibromyalgia Syndrome,relaxation,False,include,Fits primary chronic pain criterion
+NCT04942132,Chronic Pain,Chronic Widespread Pain,cbt,False,include,Fits primary chronic pain criterion
+NCT03890133,Fibromyalgia,Exploration the Mechanism of Ba-Duan-Jin Therapy in the Management of Fibromyalgia,meditation | relaxation,False,include,Fits primary chronic pain criterion
+NCT03693274,Chronic Pain | Fibromyalgia | Central Sensitisation,Mindfulness to Improve Functional Outcomes in Patients With Fibromyalgia or Central Sensit,digital_psychological | mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT05695274,Fibromyalgia,"Progressive Muscle Relaxation Exercises on Pain, Kinesiophobia and Functional Status",relaxation,False,include,Fits primary chronic pain criterion
+NCT06265194,Fibromyalgia,Effect of EMDR in the Treatment of Fibromyalgia,emdr,False,include,Fits primary chronic pain criterion
+NCT07722923,Fibromyalgia,Effects of Box Breathing Exercise in Patients With Fibromyalgia,,True,borderline_rq,non_psych_behavioral_only
+NCT05397080,Fibromyalgia,Effectiveness of Video-based Multicomponent Treatment for Fibromyalgia Plus Face-to-face S,mindfulness_mbsr_mbct | multidisciplinary_pain_program | pain_education,False,include,Fits primary chronic pain criterion
+NCT05659862,Fibromyalgia | Physical Inactivity,Digitally Assisted Behavioral Physical Activity Intervention in Fibromyalgia,motivational_interviewing | psychoeducation,False,include,Fits primary chronic pain criterion
+NCT02561416,Fibromyalgia Syndrome,Cost-utility and Biological Underpinnings of MBSR in Fibromyalgia Syndrome,counseling | mindfulness_mbsr_mbct | relaxation,False,include,Fits primary chronic pain criterion
+NCT00925431,Fibromyalgia | Obesity,Nutrition and Coping Education for Symptom and Weight Management for Fibromyalgia,,True,borderline_rq,non_psych_behavioral_only
+NCT07454395,ME/CFS | Long COVID | Post- COVID-19 Syndrome | POTS - Postural Orthostatic Tachycardia Syndrome | Fibromyalgia | Overtr,Is Swimming a More Tolerable Form of Movement for Individuals With Myalgic Encephalomyelit,,True,borderline_rq,non_psych_behavioral_only
+NCT04100538,Fibromyalgia,Quality of Life and the Effects of Tailored Health Coaching in Fibromyalgia Patients,coaching | relaxation,False,include,Fits primary chronic pain criterion
+NCT07404384,Fibromyalgia | Fibromyalgia Syndrome,Slow Breathing and Resistance Exercise in Fibromyalgia,,True,borderline_rq,non_psych_behavioral_only
+NCT01311427,Fibromyalgia,Simplified Tai Chi for Reducing Fibromyalgia Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT01046370,Chronic Fatigue Syndrome | Chronic Fatigue | Fibromyalgia,"A Pilot Study of Amygdala Retraining Program in Patients With Chronic Fatigue Syndrome, Ch",,True,borderline_rq,non_psych_behavioral_only
+NCT04059042,Fibromyalgia,Analgesic Effect of Music Listening During Pain Elicitation in Fibromyalgia,,True,borderline_rq,non_psych_behavioral_only
+NCT07403929,"Fibromyalgia | Fibromyalgia (FM) | Fibromyalgia Syndrome, Primary",The Effect of Fermented Grape Juice Consumption on Fibromyalgia Patients,counseling,False,include,Fits primary chronic pain criterion
+NCT00965601,Fibromyalgia,A Pilot Study on the Use of Nociceptive Flexion Reflex for Fibromyalgia,cbt,False,include,Fits primary chronic pain criterion
+NCT05568030,Mindfulness | Fibromyalgia | Stress,Evaluation of the Efficacy of a Single Brief Intervention of Mindfulness to Reduce Stress ,mindfulness_mbsr_mbct | psychoeducation,False,include,Fits primary chronic pain criterion
+NCT01674335,Fibromyalgia | Chronic Pain,The Effectiveness of Operant Learning Versus Energy Conservation Activity Pacing Treatment,operant_behavioral,False,include,Fits primary chronic pain criterion
+NCT02001077,Insomnia | Fibromyalgia,Sleep and Pain Interventions in Fibromyalgia,cbt | sleep_intervention,False,include,Fits primary chronic pain criterion
+NCT01038323,Fibromyalgia,Drug and Talk Therapy for Fibromyalgia,cbt,False,include,Fits primary chronic pain criterion
+NCT01172327,Arthritis | Osteoarthritis | Rheumatoid Arthritis | Fibromyalgia,Self-Directed Exercise Program for Adults With Arthritis,,True,borderline,inflammatory_comorbidity
+NCT05890326,Fibromyalgia | Pain | Psychology Regression,Pain Neuroscience Education and Motor Imagery-based Exercise Protocol for Patients With Fi,pain_education | relaxation,False,include,Fits primary chronic pain criterion
+NCT01748786,Fibromyalgia,Online Mindfulness Training Versus Health Education for Fibromyalgia,meditation | mindfulness_mbsr_mbct,True,include,Fits primary chronic pain criterion
+NCT06263972,Fibromyalgia | Electric Shock,Comparison of the Efficacy of Transcranial Direct Current Stimulation (tDCS) of the Primar,,True,borderline_rq,non_psych_behavioral_only
+NCT04889300,Fibromyalgia,Resilience Factors and Selective Learning in Patients With Fibromyalgia,other_psychological,False,include,Fits primary chronic pain criterion
+NCT04084795,Fibromyalgia | Psychological Trauma | Depressive Symptoms | Anxiety,Augmentation of EMDR With tDCS in the Treatment of Fibromyalgia,cbt | emdr | psychotherapy_general,False,include,Fits primary chronic pain criterion
+NCT07048366,Fibromyalgia | Chronic Pain | Musculoskeletal Pain,Mindfulness-based Rehabilitation in a University Museum Setting to Reduce Pain and Improve,meditation | mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT04206397,Fibromyalgia,Mechanisms of Affective Touch in Chronic Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT07661745,Fibromyalgia (FM),Interdisciplinary Program to Improve Quality of Life in People With Fibromyalgia,multidisciplinary_pain_program | self_management,False,include,Fits primary chronic pain criterion
+NCT05250531,Fibromyalgia,Multicomponent Therapy With Telerehabilitation,psychoeducation | psychotherapy_general | relaxation,False,include,Fits primary chronic pain criterion
+NCT01490281,Fibromyalgia,Exercise in Women With Fibromyalgia,,True,borderline_rq,non_psych_behavioral_only
+NCT01287481,Fibromyalgia,Pain and Stress Management for Fibromyalgia,relaxation,True,include,Fits primary chronic pain criterion
+NCT07577102,Fibromyalgia Syndrome,Unilateral and Bilateral taVNS in Fibromyalgia,,True,borderline_rq,non_psych_behavioral_only
+NCT00643006,Exercise Therapy | Pain,Physical Exercise and Its Impact on Signs of Inflammation in Fibromyalgia,,True,borderline_rq,non_psych_behavioral_only
+NCT06929598,"Chronic Pain | Chronic Pain Syndrome | Chronic Pain and Comorbid Emotional Problems | Chronic Pain, Psychogenic | Chroni",Shiatsu for Chronic Non-Inflammatory Pain in Children and Adolescents,other_psychological,False,include,Fits primary chronic pain criterion
+NCT03304613,Chronic Spine Pain | Fibromyalgia,Resilience Skills Self-Management for Chronic Pain.,cbt | digital_psychological | self_management,False,include,Fits primary chronic pain criterion
+NCT01333566,Fibromyalgia,Qigong Exercise May Benefit Patients With Fibromyalgia,,True,borderline_rq,non_psych_behavioral_only
+NCT03236467,FM and PTSD,Neurohormonal Benefits of Exercise in Fibromyalgia and PTSD,,True,borderline_rq,non_psych_behavioral_only
+NCT07055971,Fibromyalgia,"Pain Neuroscience Education, Conditioned Pain Modulation and Emotional Processes in Fibrom",pain_education,True,include,Fits primary chronic pain criterion
+NCT04636177,Chronic Pain | Musculoskeletal Pain | Fibromyalgia | Virtual Reality,Pain Rehabilitation Virtual Reality (PRVR): Innovations to Enhance Mobility in the Presenc,digital_psychological,False,include,Fits primary chronic pain criterion
+NCT00573612,Fibromyalgia,Exercise-based Motivational Interviewing for Fibromyalgia,counseling | motivational_interviewing,False,include,Fits primary chronic pain criterion
+NCT01420640,Fibromyalgia,Tai Chi and Aerobic Exercise for Fibromyalgia (FMEx),,True,borderline_rq,non_psych_behavioral_only
+NCT04571853,Fibromyalgia,New Educational Tool for FM,pain_education,False,include,Fits primary chronic pain criterion
+NCT01598753,Fibromyalgia,Combined Behavioral and Analgesic Trial for Fibromyalgia,cbt,True,include,Fits primary chronic pain criterion
+NCT05128162,Fibromyalgia,Open-label Study to Assess the Safety and Efficacy of Psilocybin With Psychotherapy in Adu,psychotherapy_general,False,include,Fits primary chronic pain criterion
+NCT01642810,Fibromyalgia Syndrome,Online Acceptance-based Behavioural Treatment for Fibromyalgia,acceptance_based | behavioral_therapy_general | mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT03686410,Fibromyalgia,Therapeutic Educational Intervention and Fibromyalgia: a Mixed Methods Research,digital_psychological,False,include,Fits primary chronic pain criterion
+NCT00468013,Fibromyalgia | Irritable Bowel Syndrome | Chronic Fatigue Syndrome,A Computer-Based Intervention for Medically Unexplained Physical Symptoms,,True,borderline_rq,non_psych_behavioral_only
+NCT02190474,Fibromyalgia | Chronic Widespread Pain,Mindfulness Interventions and Chronic Widespread Pain in Adolescents,mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT00383084,Fibromyalgia,Lifestyle Physical Activity to Reduce Pain and Fatigue in Adults With Fibromyalgia,,True,borderline_rq,non_psych_behavioral_only
+NCT05275348,Arthritis | Rheumatoid Arthritis | Fibromyalgia | Gout | Osteoarthritis | Lupus or SLE,Delivery of Enhance Fitness Trial,,True,borderline,inflammatory_comorbidity
+NCT07154498,Fibromyalgia,Effectiveness of CPI With and Without Cognitive BT on Pain QOL in Fibromyalgia Patient,cbt,True,include,Fits primary chronic pain criterion
+NCT02800720,Fibromyalgia Syndrome,Meditation Awareness Training for the Treatment of Fibromyalgia Syndrome,cbt | meditation,False,include,Fits primary chronic pain criterion
+NCT03744156,Fibromyalgia | Insomnia | Chronic Widespread Pain,Sleep and Pain Interventions in Women With Fibromyalgia,cbt,True,include,Fits primary chronic pain criterion
+NCT00000423,Fibromyalgia | Quality of Life,"Support, Health, and Fibromyalgia",other_psychological,False,include,Fits primary chronic pain criterion
+NCT00398255,Osteoarthritis | Rheumatoid Arthritis | Fibromyalgia,Healthier Living With Arthritis Online Program,self_management,False,borderline,inflammatory_comorbidity
+NCT05998369,Chronic Pain | Musculoskeletal Pain | Fibromyalgia | Neuropathic Pain | Complex Regional Pain Syndromes | Abdominal Pain,Empowered Relief for Youth,relaxation,False,include,Fits primary chronic pain criterion
+NCT00106275,Fibromyalgia,Mindfulness-Based Stress Reduction Program as an Intervention in Patients With Fibromyalgi,mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT03764397,Fibromyalgia,Prehabilitation for Being Active. A Feasibility Study in Fibromyalgia,,True,borderline_rq,non_psych_behavioral_only
+NCT05932433,Arthritis | Fibromyalgia | Arthritis Rheumatoid | Artrosis of the Knee | Chronic Pain | Central Sensitisation | Gut Micr,Effectiveness of Therapeutic Exercise on the Gut Microbiome in Chronic Widespread Pain Pat,,True,borderline_rq,non_psych_behavioral_only
+NCT07533487,Fibromyalgia,Adding Neuromodulation Technique to Cognitive Behavior Therapy on Fibromyalgia in Postmeno,cbt,False,include,Fits primary chronic pain criterion
+NCT05377567,Fibromyalgia,Cost-utility and Immuno-inflammatory Effects of the FIBROWALK in Patients With Fibromyalgi,other_psychological,False,include,Fits primary chronic pain criterion
+NCT01253395,Fibromyalgia,Exercise for Fibromyalgia,,True,borderline_rq,non_psych_behavioral_only
+NCT07054333,Fibromyalgia,Objective Measurement of Pain Regulation in Individuals Who Have Received Internet-deliver,cbt | digital_psychological,False,include,Fits primary chronic pain criterion
+NCT01035125,Fibromyalgia,Effect of One Week Self-management Program in Patients With Fibromyalgia,self_management,False,include,Fits primary chronic pain criterion
+NCT00000422,Fibromyalgia,Tailored Treatments of Fibromyalgia,cbt | psychotherapy_general,False,include,Fits primary chronic pain criterion
+NCT05435807,Fibromyalgia,Therapeutic Neuroscience Education in Individuals With Fibromyalgia,cbt,False,include,Fits primary chronic pain criterion
+NCT00545649,Fibromyalgia,Development of Treatments Aiming at Improvement of Function in Patients With Chronic Wides,,True,borderline_rq,non_psych_behavioral_only
+NCT00596674,Fibromyalgia,Health Promotion for Women With Fibromyalgia,,True,borderline_rq,non_psych_behavioral_only
+NCT06804460,Fibromyalgia,"Effect of a Vegan Mediterranean Diet on Cardiometabolic Biomarkers, Functional Capacity, a",,True,borderline_rq,non_psych_behavioral_only
+NCT00515008,Fibromyalgia,Tai Chi Mind-Body Therapy for Fibromyalgia,relaxation,True,include,Fits primary chronic pain criterion
+NCT06652724,Fibromyalgia (FM) | Chronic Migraine Headache,Relieving Chronic Pain: Psychosomatic Mechanisms and Psychological Interventions in Fibrom,psychotherapy_general,False,include,Fits primary chronic pain criterion
+NCT07023523,Fibromyalgia,Self-regulation of Real-time fMRI Brain Activity in Chronic Pain,cbt | relaxation | self_management,False,include,Fits primary chronic pain criterion
+NCT02824588,Working Memory Deficits | Neuropathic Pain | Fibromyalgia,Working Memory Training for Chronic Neuropathic and Fibromyalgia Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT00526201,Arthritis,Help Arthritis With Exercise in West Virginia,,True,borderline,inflammatory_comorbidity
+NCT00222274,Fibromyalgia Syndrome,HRV Biofeedback in Fibromyalgia,biofeedback | relaxation,False,include,Fits primary chronic pain criterion
+NCT01468961,Fibromyalgia,Pilot Study of Internet-based Cognitive Behavior Therapy for Fibromyalgia,cbt,False,include,Fits primary chronic pain criterion
+NCT04571528,Fibromyalgia,Effectiveness of VIRTUAL FIBROWALK STUDY,mindfulness_mbsr_mbct | multidisciplinary_pain_program | pain_education,False,include,Fits primary chronic pain criterion
+NCT06988761,Fibromyalgia,The Clinical Impact of Integrated Behavioral Health Techniques in Patients With Fibromyalg,biofeedback | cbt | psychoeducation | relaxation,False,include,Fits primary chronic pain criterion
+NCT06410430,Fibromyalgia,Exploration the Mechanism of Ba-Duan-Jin in the Treatment of Fibromyalgia Based on Brain-g,meditation | relaxation,False,include,Fits primary chronic pain criterion
+NCT07212829,Chronic Widespread Pain | Fibromyalgia (FM),The Added Value of Transcranial Direct Current Stimulation (tDCS) During Exercise for Peop,,True,borderline_rq,non_psych_behavioral_only
+NCT00088777,Fibromyalgia,Nondrug Treatment Programs for Adults With Fibromyalgia,coping_skills_training,False,include,Fits primary chronic pain criterion
+NCT06277375,Massage Intervention,The Effect of Slow Stroke Back Massage on Pain and Fatigue in Women With Fibromyalgia,,False,include,Fits primary chronic pain criterion
+NCT07410572,Fibromyalgia Syndrome,Effectiveness of an Online Mindfulness-Based Stress Reduction Program in Patients With Fib,mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT00086047,Fibromyalgia,Coping Skills Training for Adolescents With Fibromyalgia,coping_skills_training,False,include,Fits primary chronic pain criterion
+NCT05091697,Fibromyoma;Cervix,Cost-utility of VIRTUAL FIBROWALK,multidisciplinary_pain_program,False,include,Fits primary chronic pain criterion
+NCT00961805,Fibromyalgia,Effectiveness of Dance on Patients With Fibromyalgia,,True,borderline_rq,non_psych_behavioral_only
+NCT05057676,Multiple Sclerosis | Clinically Isolated Syndrome | Fibromyalgia | Post Acute Sequelae of COVID-19 | Cancer in Remission,Autoimmune Intervention Mastery Course Study,,True,exclude_cancer_oncology,Secondary/non-primary pain pattern: exclude_cancer_oncology
+NCT07465991,Fibromyalgia,The Effect of Digital Cognitive Behavioural Therapy for Insomnia on Physical Activity in F,cbt | digital_psychological | relaxation,True,include,Fits primary chronic pain criterion
+NCT06906991,Fibromyalgia (FM),Multicomponent FIBROWALK Therapy Plus Unified Protocol for Emotional Regulation in Individ,cbt | mindfulness_mbsr_mbct | multidisciplinary_pain_program | pain_education | psychoeducation,False,include,Fits primary chronic pain criterion
+NCT05581849,Fibromyalgia,Prolonged Nightly Fasting in Fibromyalgia,coaching,False,include,Fits primary chronic pain criterion
+NCT02581332,Fibromyalgia,The Effects of Mindfulness Meditation on Fibromyalgia-Related Pain,meditation | mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT03319355,Fibromyalgia,Multicomponent Therapy for Fibromyalgia,cbt,False,include,Fits primary chronic pain criterion
+NCT05289544,"Arthritis | Gout | Fibromyalgia | Rheumatoid Arthritis | Osteoarthritis | Lupus Erythematosus, Systemic",Phone-Based Based Walk With Ease Program for Adults With Arthritis,other_psychological,False,borderline,inflammatory_comorbidity
+NCT05329571,"Fibromyalgia | Diet, Gluten-Free",The Effects of Dietary Changes on Gut-bacteria and Fibromyalgia Symptoms,,True,borderline_rq,non_psych_behavioral_only
+NCT06616181,Fibromyalgia Syndrome,TDCS and Tele-rehabilitation Exercise in Fibromyalgia,,True,borderline_rq,non_psych_behavioral_only
+NCT02454244,Fibromyalgia,Efficacy of Amygdala Retraining With Mindfulness (ART+MF) vs Compassion Therapy (CT) for t,meditation | mindfulness_mbsr_mbct | relaxation,False,include,Fits primary chronic pain criterion
+NCT03268421,Fibromyalgia | Myofascial Pain Syndrome | Muscular Diseases | Musculoskeletal Disease | Rheumatic Diseases,Fibromyalgia Integrative Training for Adolescents With Juvenile Fibromyalgia,cbt,True,include,Fits primary chronic pain criterion
+NCT05861518,Analgesia | Anxiety | Depression | Hypnosis,The Effect of Hypnosis in Fibromyalgia,hypnosis | relaxation,False,include,Fits primary chronic pain criterion
+NCT07174635,Pain | Tele-nursing | Fibromyalgia Syndrome,The Effect of Tele-Nursing Service in Patients Diagnosed With Fibromyalgia,,True,borderline_rq,non_psych_behavioral_only
+NCT03466008,Fibromyalgia,Whole-Body Cryotherapy (WBC) as an Adjunct Treatment on Pain in Fibromyalgia Persons: Shor,other_psychological,False,include,Fits primary chronic pain criterion
+NCT03042728,Fibromyalgia,Impact of Inclusion of a Therapy Dog Visit as Part of the Fibromyalgia Treatment Program,other_psychological,False,include,Fits primary chronic pain criterion
+NCT05905159,Fibromyalgia,Attentional Bias Modification in Fibromyalgia Patients (ABM),,True,borderline_rq,non_psych_behavioral_only
+NCT04007705,Fibromyalgia,Anti-inflammatory Nutritional Intervention in Patients With Fibromyalgia,counseling,True,include,Fits primary chronic pain criterion
+NCT00321451,Fibromyalgia | Sleep Initiation and Maintenance Disorders,Cognitive Behavioral Insomnia Therapy for Individuals With Fibromyalgia,cbt,False,include,Fits primary chronic pain criterion
+NCT05058911,Fibromyalgia,Exposure-based Cognitive Behavior Therapy vs Traditional Cognitive Behavior Therapy for Fi,cbt | digital_psychological | relaxation,False,include,Fits primary chronic pain criterion
+NCT02668003,Widespread Chronic Pain,The Maintaining Musculoskeletal Health Study,cbt | self_management,False,include,Fits primary chronic pain criterion
+NCT03924960,Fibromyalgia,High-intensity Interval Training in Patients With Fibromyalgia,,True,borderline_rq,non_psych_behavioral_only
+NCT06322485,Fibromyalgia,Online Self-management in Fibromyalgia,cbt | self_management,False,include,Fits primary chronic pain criterion
+NCT00762125,Fibromyalgia,"Subgroups of Fibromyalgia Syndrome (FMS): Symptoms, Beliefs, and Tailored Treatment",,True,borderline_rq,non_psych_behavioral_only
+NCT04915742,Fibromyalgia,The Effect of Group Exercise and Thetahealing on Pain and Quality of Life in Patients With,relaxation,False,include,Fits primary chronic pain criterion
+NCT07050758,Pain | Chronic Widespread Pain | Chronic Pain | Fibromyalgia,Pain Reprocessing Therapy for Chronic Widespread Pain: a SCED Study,acceptance_based | mindfulness_mbsr_mbct | prt | psychoeducation,False,include,Fits primary chronic pain criterion
+NCT04655053,Fibromyalgia,Intervention for Self-regulation to Physical Exercise in People With Fibromyalgia,other_psychological,False,include,Fits primary chronic pain criterion
+NCT01628822,Fibromyalgia,Efficacy Study of Relaxation to 12 Weeks Against Placebo in the Overall Care Chronic Pain ,relaxation,False,include,Fits primary chronic pain criterion
+NCT06923800,Fibromyalgia | Irritable Bowel Syndrome,Exercise Interventions and Dietary Advice in Fibromyalgia and IBS,,True,borderline_rq,non_psych_behavioral_only
+NCT01226784,Fibromyalgia,The Effects of Training and Relaxation on Fibromyalgia.,relaxation,False,include,Fits primary chronic pain criterion
+NCT06957457,Fibromyalgia | Fibromyalgia (FM) | Syndrome Pain | Exercise,The Effect of Music Accompanied Aerobic Exercise,relaxation,False,include,Fits primary chronic pain criterion
+NCT01189994,Fibromyalgia | Diffuse Myofascial Pain Syndrome | Fibromyalgia-Fibromyositis Syndrome | Fibromyositis-Fibromyalgia Syndr,Trial of Acupuncture in the Treatment of Fibromyalgia,,False,include,Fits primary chronic pain criterion
+NCT05840939,Fibromyalgia,Pranayama and Diaphragmatic Breathing Exercise Applied to Female Patients With Fibromyalgi,,True,borderline_rq,non_psych_behavioral_only
+NCT01278641,Fibromyalgia | Pain,Men With Fibromyalgia or Chronic Widespread Pain - Effect of Exercise on Symptoms and Body,,True,borderline_rq,non_psych_behavioral_only
+NCT00312234,Muscular Disease | Fibromyalgia,Qigong vs. Aerobic Exercise in the Treatment of Childhood Chronic Musculoskeletal Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT06368492,Fibromyalgia,The Impact of Psilocybin on Pain in Fibromyalgia Patients,hypnosis,False,include,Fits primary chronic pain criterion
+NCT00423631,Fibromyalgia | Fibrositis,Web-based Education to Enhance Fibromyalgia Management,self_management,False,include,Fits primary chronic pain criterion
+NCT00000398,Fibromyalgia,Behavioral Treatment of Fibromyalgia,coping_skills_training,True,include,Fits primary chronic pain criterion

@@ -1,0 +1,23 @@
+nct_id,conditions,brief_title,behavioral_component,rq_fit,rq_reason,primary_outcomes
+NCT01664585,Headache | Physical Activity | Quality of Life,Exercise Training With Physically Active Lifestyle to Reduce Headache and Quality of Life,,review_rq,non_psych_only_intervention,Change from baseline in headache intensity at 6 mo
+NCT01155557,Tension-Type Headache,The Effect of Specific Strength-Training on Tension-Type Headache in Children 9-17 Years,counseling,fit_rq,fits RQ,Headache | Muscle Capacity | Headache
+NCT01213056,Headache | Pain,Mindfulness-Based Cognitive Therapy for the Treatment of Chronic Headache Pain,cbt | mindfulness_mbsr_mbct,fit_rq,fits RQ,Headache diary
+NCT07240532,Tension-Type Headache | Chronic Tension-type Headache | Frequent Episodic Tension-Type Headache,Efficacy of a Multimodal Physiotherapy Program and Mobile-App Guided Meditation in Adults With Frequent or Chronic Tension-Type Headache,digital_psychological | meditation | mindfulness_mbsr_mbct,fit_rq,fits RQ,Change in headache pain intensity
+NCT01525303,Chronic Headaches,Effects of Aerobic Exercise Within a Behavioral Treatment Program for Chronic Headaches,biofeedback | relaxation,fit_rq,fits RQ,Patient-reported headache-free days per week
+NCT06041997,Headache Disorders,Smartphone Use Restriction as Treatment of Primary Headache,other_psychological,borderline_rq,other_psych_only,The pill burden for abortive treatment
+NCT00181064,Chronic Daily Headache,Atkins Diet for Difficult-to-Control Headaches in Teenagers,,review_rq,non_psych_only_intervention,Headaches
+NCT00457496,Headache Disorders | Headache | Neck Pain | Shoulder Pain,Effectiveness of a Cognitive and Physical Intervention to Reduce Head and Muscle Pain in Working Communities,relaxation,fit_rq,fits RQ,Frequency of headache and neck and shoulder pain a
+NCT06631222,Tension Type Headache | Smartphone Addiction,to Stuidy the Effect of Cognitive Behavior Threapy CBT on Smartphone Addiction Patients With Tension Type Headache,cbt | psychoeducation,fit_rq,fits RQ,pressure algometer
+NCT02264340,Tension-Type Headache,Effects of Exercise and Relaxation Techniques on Tension Headache Pain Parameters of University Students,relaxation,fit_rq,fits RQ,Frequency
+NCT02460003,Cluster Headache,Physiotherapy Program for Cluster Headache,pain_education,fit_rq,fits RQ,Pain Scores on the Visual Analog Scale
+NCT00897780,Chronic Headache,Combined Biofeedback With Virtual Reality in the Treatment of Pediatric Headache,biofeedback | digital_psychological,fit_rq,fits RQ,Improvement in headache frequency and pain degree 
+NCT04867967,Tension-Type Headache,Yoga and MBSR for TTH,mindfulness_mbsr_mbct,fit_rq,fits RQ,Headache Frequency
+NCT06822673,Primary Headache | Psychological Distress | Emotion Regulation | Childhood Trauma | Sedentary Behaviors | Mindfulness | Health-Related Quality-of-Life,Impact of MBI on Biopsychosocial Factors and QOL in Children With Primary Headaches,meditation | mindfulness_mbsr_mbct,fit_rq,fits RQ,Health-Related Quality-of-Life | Pediatric Headaches | Mindfulness
+NCT00956969,Headaches,Stress Management for Chronic Headaches,relaxation,fit_rq,fits RQ,Headache frequency and severity
+NCT01347684,Tension-type Headache,Assessing the Effectiveness of Two Treatment Strategies for Tension-type Headache,cbt | psychoeducation,fit_rq,fits RQ,Change from baseline of headache intensity of pain
+NCT01488825,Episodic Tension Type Headache,Yoga Intervention Study on Episodic Tension Type Headache,meditation | relaxation,fit_rq,fits RQ,Frequency of headache
+NCT03166358,Headache,Yoga for Pediatric Tension-Type Headache,,review_rq,non_psych_only_intervention,Headache diary - changes in headache frequency ove | Headache diary - changes in headache intensity ove | Functional Disability Inventory - changes in pain-
+NCT00389038,Headache,Pediatric Chronic Headache Trial,coping_skills_training | psychoeducation,fit_rq,fits RQ,Headache diaries assess headache frequency.
+NCT02475005,Pain | Headache,An Intervention to Improve Adolescent Headache Self-management,self_management,fit_rq,fits RQ,"Change in pain coping at 2 months, 3 months, and 6 | Change in headache intensity at 2 months, 3 months | Change in headache frequency at 2 months, 3 months"
+NCT00267618,Pediatric Recurrent Headache & Abdominal Pain,Family Help Program: Pediatric Recurrent Headache and Abdominal Pain,,review_rq,non_psych_only_intervention; dual_headache_abdominal_focus,"Diagnosis using KSADS at baseline, 120, 240 and 36"
+NCT03308630,Stress Related Disorder | Musculoskeletal Pain | Headache,Immediate Effect of Energy Alignment and Mantra on Stress Related Pain in Adolescents,,review_rq,non_psych_only_intervention,Self reported Stress

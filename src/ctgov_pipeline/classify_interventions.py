@@ -48,6 +48,8 @@ def _match_approaches(text: str, config: dict[str, Any]) -> tuple[list[str], lis
 
 def _match_non_psych_behavioral(text: str, config: dict[str, Any]) -> tuple[str | None, str | None, bool]:
     for modality, spec in config.get("non_psychological_behavioral", {}).items():
+        if any(re.search(ex, text, re.IGNORECASE) for ex in spec.get("exclude", [])):
+            continue
         if _match_patterns(text, spec.get("patterns", [])):
             return modality, spec.get("patterns", [""])[0], bool(spec.get("review_flag"))
     return None, None, False

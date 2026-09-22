@@ -1,0 +1,181 @@
+version: "0.2.0-proposed"
+
+# Proposed condition patterns for QC review layer (does not replace condition_patterns.yaml in pipeline).
+
+targets:
+  migraine:
+    label: "Migraine"
+    patterns:
+      - "migraine"
+      - "chronic\\s+migraine"
+      - "vestibular\\s+migraine"
+
+  chronic_back_pain:
+    label: "Chronic back pain"
+    patterns:
+      - "chronic\\s+.*back"
+      - "low\\s+back\\s+pain"
+      - "\\bclbp\\b"
+      - "\\blbp\\b"
+      - "non[- ]specific\\s+low\\s+back"
+      - "chronic\\s+low\\s+back"
+
+  fibromyalgia:
+    label: "Fibromyalgia"
+    patterns:
+      - "fibromyalgia"
+      - "\\bfm\\b"
+
+  primary_headache:
+    label: "Primary headache (non-migraine)"
+    patterns:
+      - "tension[- ]?type"
+      - "tension headache"
+      - "\\btth\\b"
+      - "cluster headache"
+      - "trigeminal autonomic"
+      - "hemicrania continua"
+      - "paroxysmal hemicrania"
+      - "\\bsunct\\b"
+      - "\\bsuna\\b"
+      - "chronic daily headache"
+      - "\\bcdh\\b"
+      - "new daily persistent"
+      - "\\bndph\\b"
+      - "primary headache"
+      - "headache disorder"
+      - "chronic headache"
+      - "episodic headache"
+      - "recurrent headache"
+      - "pediatric headache"
+      - "headache in children"
+      - "headache in adolescent"
+      - "^headache$"
+      - "^headaches$"
+
+# Study-level exclusion rules (applied when any target matches).
+global_excludes:
+  post_traumatic:
+    patterns:
+      - "post[- ]?traumatic headache"
+      - "posttraumatic headache"
+      - "post[- ]?traumatic pain"
+      - "post[- ]?concuss"
+      - "post concussion syndrome"
+      - "persistent post.?traumatic"
+      - "post concussive headache"
+
+  tbi_concussion:
+    patterns:
+      - "traumatic brain injury"
+      - "\\btbi\\b"
+      - "brain injur"
+      - "concussion, brain"
+      - "mild traumatic brain"
+      - "post[- ]?concussion syndrome"
+
+  cancer_oncology:
+    patterns:
+      - "(?<!non[- ])(?<!non )cancer"
+      - "carcinoma"
+      - "oncolog"
+      - "neoplasm"
+      - "malignan"
+      - "head and neck carcinoma"
+
+  surgical_postoperative:
+    patterns:
+      - "disc prosthesis"
+      - "total disc replacement"
+      - "lumbar disc prosthesis"
+      - "spinal fusion"
+      - "postoperative"
+      - "post[- ]?operative"
+      - "postsurgical"
+      - "after lumbar spine surgery"
+      - "failed back surgery"
+      - "post[- ]?dural"
+      - "postdural"
+      - "pdph\\b"
+
+  secondary_pain:
+    patterns:
+      - "secondary headache"
+      - "secondary pain"
+      - "cervicogenic"
+      - "pain due to malignancy"
+
+  pathology_other:
+    patterns:
+      - "intracranial hypertension"
+      - "idiopathic intracranial"
+      - "pseudotumor"
+      - "meningitis"
+      - "multiple sclerosis"
+      - "clinically isolated syndrome"
+
+  visual_snow:
+    patterns:
+      - "visual snow"
+
+  vestibular_schwannoma:
+    patterns:
+      - "vestibular schwannoma"
+      - "acoustic neuroma"
+
+  acute_lbp_only:
+    target: chronic_back_pain
+    patterns:
+      - "\\bacute low back pain\\b"
+      - "\\bacute back pain\\b"
+
+# Headache-target-only exclusions (non-migraine headache expansion).
+headache_excludes:
+  moh:
+    patterns:
+      - "medication[- ]?overuse"
+      - "medication overuse"
+      - "\\bmoh\\b"
+      - "rebound headache"
+      - "analgesic overuse"
+
+  cervicogenic:
+    patterns:
+      - "cervicogenic"
+
+  symptom_not_target:
+    patterns:
+      - "delirium"
+      - "diagnostic error"
+      - "opioid prescribing"
+      - "health services misuse"
+      - "unnecessary procedure"
+      - "reflexology"
+      - "breastfeeding"
+      - "occupational stress"
+      - "intensive care nurse"
+      - "anesthesia"
+      - "obesity & overweight"
+
+# Exclude when ME/CFS, long COVID, or POTS is the lead population and target pain
+# conditions are only incidentally co-listed (not in first 3 conditions or title).
+population_primary_excludes:
+  off_target_first_condition:
+    patterns:
+      - "me/cfs"
+      - "myalgic encephalomyelitis"
+      - "chronic fatigue syndrome"
+      - "long covid"
+      - "post[- ]?covid"
+      - "postural orthostatic tachycardia"
+      - "\\bpots\\b"
+
+# Borderline condition flags (manual review).
+borderline_rules:
+  fibromyalgia_inflammatory:
+    target: fibromyalgia
+    patterns:
+      - "systemic lupus erythematosus"
+      - "\\blupus\\b"
+    exclude_if:
+      - "^arthritis$"

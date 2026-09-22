@@ -1,0 +1,313 @@
+nct_id,conditions_raw,brief_title,behavioral_component,non_psych_flag,eligibility,reason
+NCT02624687,Chronic Low Back Pain,Reducing Sedentary Behavior to Decrease Low Back Pain: Stand Back Study,counseling | self_management,False,include,Fits primary chronic pain criterion
+NCT05396014,Chronic Low-back Pain,The BEST Trial: Biomarkers for Evaluating Spine Treatments,act | cbt | coaching | mindfulness_mbsr_mbct | self_management,True,include,Fits primary chronic pain criterion
+NCT01666639,Chronic Low Back Pain,Behavioral Exercise Therapy and Multidisciplinary Rehabilitation for Chronic Non-specific ,cbt | multidisciplinary_pain_program | self_management,False,include,Fits primary chronic pain criterion
+NCT02724930,Chronic Low Back Pain,Cooperative Pain Education and Self-management,other_psychological,False,include,Fits primary chronic pain criterion
+NCT06406699,Chronic Back Pain | Chronic Pain | Neck Pain | Back Pain,Feasibility and Acceptability of Group Pain Reprocessing Therapy for Veterans With Chronic,prt,False,include,Fits primary chronic pain criterion
+NCT04280796,"Pain, Acute | Pain, Chronic | Low Back Pain",Changes in Affective Pain Processing in Human Volunteers,,True,borderline_rq,non_psych_behavioral_only
+NCT05820204,"Pain, Chronic | Back Pain",Acceptability and Efficacy of Pain Reprocessing Therapy in Racially/ Ethnically Diverse Ad,cbt | prt | psychotherapy_general,False,include,Fits primary chronic pain criterion
+NCT00108381,Back Pain,Efficacy of Tailored Cognitive-Behavioral Therapy for Chronic Back Pain,cbt,False,include,Fits primary chronic pain criterion
+NCT06268522,Low Back Pain,Adjunctive Mindfulness During Opioid Tapering for patientS With Chronic Pain (The AMOS Stu,mindfulness_mbsr_mbct | psychoeducation,False,include,Fits primary chronic pain criterion
+NCT04730700,Chronic Low-back Pain,Evaluation of Multi-Tined Expandable Electrode (MEE) Efficacy and Safety in Treatment of L,,True,borderline_rq,non_psych_behavioral_only
+NCT05085782,Chronic Low-back Pain | Fibromyalgia,Reconsolidation Therapy With Propranolol as a Treatment for Chronic Pain,pain_education,False,include,Fits primary chronic pain criterion
+NCT05257356,Chronic Pain | Low Back Pain,Increased Emotional-motivational Processing in Patients with Chronic Pain and Its Neural C,,True,borderline_rq,non_psych_behavioral_only
+NCT01025752,Chronic Low Back Pain,Interactive Voice Response (IVR)-Based Treatment for Chronic Low Back Pain,cbt,False,include,Fits primary chronic pain criterion
+NCT01599143,Cancer | Diabetes | Hypertension,Identifying Therapeutic Factors in an 8-Week (30 Hour) Mindfulness-Based Stress Reduction ,meditation | mindfulness_mbsr_mbct,False,exclude_cancer_oncology,Secondary/non-primary pain pattern: exclude_cancer_oncology
+NCT02552992,Chronic Low Back Pain,Yoga for Chronic Low Back Pain and Its Mechanism of Action: Impact of Strength and Stretch,,True,borderline_rq,non_psych_behavioral_only
+NCT03720821,Chronic Pain | Knee Pain Chronic | Hip Pain Chronic | Back Pain,Cognitive Flexibility Training for Persistent Pain: Neuroimaging Pilot (COFLEX-i),,True,borderline_rq,non_psych_behavioral_only
+NCT01981798,Chronic Low Back Pain | Neck Pain,Effect of an Outpatient Intervention Program in Patients With Chronic Back or Neck Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT03115359,Chronic Low Back Pain,Strategies to Assist With Management of Pain,cbt | meditation | mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT05611476,Low Back Pain | Chronic Pain | Muscle Tightness,Cognitive Muscular Therapy for Low Back Pain,biofeedback,False,include,Fits primary chronic pain criterion
+NCT07539116,Chronic Non-specific Low-Back Pain | Chronic Non-specific Neck Pain,Diaphragmatic Breathing Training in Chronic Spinal Pain,biofeedback,True,include,Fits primary chronic pain criterion
+NCT07766616,Low Back Pain,Acceptance and Commitment Therapy Plus Physiotherapy for Chronic Low Back Pain,act | mindfulness_mbsr_mbct,True,include,Fits primary chronic pain criterion
+NCT03398174,Chronic Low Back Pain,A Pilot Study of Motor Control Exercise and Patient Education for the Management of Chroni,psychoeducation | self_management,True,include,Fits primary chronic pain criterion
+NCT06922981,Low Back Pain,Periodized Resistance and Aerobic Training in Non-Specific Chronic Low Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT07724704,Chronic Non-specific Low Back Pain,McGill Versus Sahrmann's Exercises for Chronic Non-Specific Low Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT05846087,Chronic Low-back Pain | Insomnia,Mobile App-delivered Sleep Therapy (SleepFix) for Individuals With Chronic Low Back Pain a,,True,borderline_rq,non_psych_behavioral_only
+NCT04518891,Chronic Low-back Pain,Cognitive Functional Therapy Compared With Sham-treatment for Low Back Pain,cognitive_functional_therapy,True,include,Fits primary chronic pain criterion
+NCT03986489,Chronic Low-back Pain,Mindfulness-based Dance/Movement Therapy for Chronic Low Back Pain,mindfulness_mbsr_mbct | psychoeducation | psychotherapy_general,False,include,Fits primary chronic pain criterion
+NCT06106191,Chronic Low-back Pain,Integrative Mindfulness-Based Predictive Approach for Chronic Low Back Pain Treatment,meditation | mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT01405716,Low Back Pain,Aging Successfully With Pain,meditation | mindfulness_mbsr_mbct,True,include,Fits primary chronic pain criterion
+NCT03909048,Chronic Low Back Pain,Chronic Low Back Pain Graded - Exposure Psychoeducation Intervention,psychoeducation,False,include,Fits primary chronic pain criterion
+NCT04980612,Chronic Low-back Pain,Development and Feasibility of Mindfulness Based Pain Reduction,mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT05302882,Chronic Low-back Pain,Evaluation of The Immediate Effect of Myofascial Release Application in Patients With Chro,relaxation,False,include,Fits primary chronic pain criterion
+NCT02327325,Low Back Pain,Physical Activity for Older Adults Chronic Low Back Pain,cbt | counseling,False,include,Fits primary chronic pain criterion
+NCT06347991,Chronic Low-back Pain,Alberta Chiropractic SelfBack Study,self_management,False,include,Fits primary chronic pain criterion
+NCT07334782,Chronic Low-back Pain (cLBP),Effects of Vertebral Axial Loading Walking Combined With Core Stabilization Exercises in I,,True,borderline_rq,non_psych_behavioral_only
+NCT01060280,Subacute Nonspecific Low Back Pain | Chronic Nonspecific Low Back Pain,Effectiveness of Group GDS and Individual GDS for Treatment of Low Back Pain in Primary Ca,,False,include,Fits primary chronic pain criterion
+NCT07621302,Non-specific Chronic Low Back Pain | Chronic Low-back Pain (cLBP) | Mindfulness Meditation,Mindfulness-Based Therapy for Chronic Low Back Pain in Office Workers,meditation | mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT07418983,Scoliosis Idiopathic | Fascia | Low Back Pain,"Exercise Effects on Fascia, Low Back Pain, and Function in Scoliosis",,True,borderline_rq,non_psych_behavioral_only
+NCT07179016,Chronic Pain (Back / Neck) | Chronic Pain Management | Chronic Knee Pain | Joint Pain,Evaluating the Auricular Point Acupressure-Self Management Program for Chronic Musculoskel,coaching | digital_psychological | self_management,False,include,Fits primary chronic pain criterion
+NCT07652944,Lower Back Pain Chronic,Trial to Test the Efficacy of Using Magnetic Fields to Stimulate the Back to Treat Chronic,,True,borderline_rq,non_psych_behavioral_only
+NCT06114264,"Pain, Chronic | Neurologic Manifestations | Back Pain | Low Back Pain | Behavior, Health",Multimodal Intervention in Patients With Non-specific Chronic Low Back Pain: the HEALTHY B,mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT06044649,Chronic Pain | Neck Pain | Back Pain,Moderators and Mediators (M & M Trial) of Psychosocial Treatments of Chronic Pain,act | cbt,False,include,Fits primary chronic pain criterion
+NCT00170118,Chronic Low Back Pain,Effects of Motivational Interviewing on Self-Efficacy and Standardized Low Back Pain Outco,motivational_interviewing,False,include,Fits primary chronic pain criterion
+NCT06419439,Chronic Low Back Pain | Depression,Ketamine-assisted Integrative Treatment for Veterans With Chronic Low Back Pain and Comorb,,False,include,Fits primary chronic pain criterion
+NCT00864422,Chronic Low Back Pain,Changes in Motor Cortex Following Exercises for Chronic Low Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT05811624,Overweight or Obesity | Chronic Low-back Pain,Lifestyle Intervention in Overweight/Obese Chronic Low Back Pain (CLBP) Patients: an Inter,coping_skills_training | pain_education,False,include,Fits primary chronic pain criterion
+NCT04610905,Chronic Low-back Pain | Sedentary Behavior,The Effect of Reducing Sedentary Behaviour in Comparison to Promoting Physical Activity on,,True,borderline_rq,non_psych_behavioral_only
+NCT06335485,Back Pain | Cognitive Behavioral Therapy | Surgery,Cognitive Behavioral Therapy (CBT) Pain Prevention Intervention for Women Undergoing Surge,cbt,False,exclude_surgical_postop,Secondary/non-primary pain pattern: exclude_surgical_postop
+NCT07249710,Chronic Non-specific Low Back Pain | Physiotherapist Students,Pain Neuroscience Education in Physiotherapy Students With Chronic Non-Specific Low Back P,cbt | pain_education,False,include,Fits primary chronic pain criterion
+NCT00600197,Chronic Low Back Pain,Biopsychosocial Education and Chronic Low Back Pain,multidisciplinary_pain_program,False,include,Fits primary chronic pain criterion
+NCT04678297,Chronic Low Back Pain,Physical Activity Interventions To Heal Chronic Low Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT00796536,Chronic Pain,Using Functional MRI to Evaluate Cognitive Behavioral Therapy Treatment Response in Adults,cbt | pain_education | relaxation,False,include,Fits primary chronic pain criterion
+NCT01971151,Chronic Low Back Pain,Exposure Therapy and Safety-seeking Behavior in Chronic Low Back Pain,exposure_therapy,False,include,Fits primary chronic pain criterion
+NCT01704677,Chronic Low Back Pain,Lumbar Disc Prosthesis Versus Multidisciplinary Rehabilitation; 8-year Follow-up,multidisciplinary_pain_program,False,exclude_surgical_postop,Secondary/non-primary pain pattern: exclude_surgical_postop
+NCT00229957,Chronic Disease | Hypertension | Back Pain | Obesity | Arthritis,Rehabilitation in Primary Care: A Project to Maximize the Health Status of Adults With Chr,self_management,False,include,Fits primary chronic pain criterion
+NCT07172828,Chronic Low Back Pain (CLBP) | Musculoskeletal Pain | Postural Balance | Exercise Therapy,Virtual Reality-Based Rehabilitation in Chronic Low Back Pain: Effects on Muscle Architect,digital_psychological,True,include,Fits primary chronic pain criterion
+NCT06027099,Chronic Pain | Back Pain | Neck Pain | Opioid Misuse,"CARES (Comprehensive Analgesic, Recovery, and Education Support) for Surgery Trial",motivational_interviewing,False,exclude_surgical_postop,Secondary/non-primary pain pattern: exclude_surgical_postop
+NCT00454064,Back Pain,Cognitive-behavioural Treatment of Chronic Back Pain,cbt,False,include,Fits primary chronic pain criterion
+NCT07688564,Non-specific Chronic Low Back Pain | Central Sensitization,Exercise Interventions for Overweight Men With Chronic Low Back Pain,psychoeducation | self_management,True,include,Fits primary chronic pain criterion
+NCT01467843,Low Back Pain,Comparison of CAM and Conventional Mind-Body Therapies for Chronic Back Pain,cbt | mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT01993355,Chronic Pain,Chronic Low Back Pain: A Multidisciplinary Approach,cbt | motivational_interviewing | relaxation | self_management,True,include,Fits primary chronic pain criterion
+NCT05666427,Low Back Pain | Urinary Incontinence,Investigation of the Effects of Stabilization Exercises and Pelvic Floor Muscle Training o,,True,borderline_rq,non_psych_behavioral_only
+NCT05843890,Chronic Lower Back Pain,Tailored Pain Guide (TPG) Study,digital_psychological,False,include,Fits primary chronic pain criterion
+NCT07480460,Chronic Low Back Pain (CLBP),Brain and Gene Expression Responses to Exercise in Chronic Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT07766824,Medium-/Long-segment Spinal Fusion Patients | Spine Surgeons | Chronic Low Back Pain | Scoliosis Patients | Lumbar Spond,Evaluation of an Online Peri-operative Health Education Platform for Patients Undergoing S,mindfulness_mbsr_mbct,False,exclude_surgical_postop,Secondary/non-primary pain pattern: exclude_surgical_postop
+NCT01343927,Back Pain Lower Back Chronic,Yoga vs. Physical Therapy vs. Education for Chronic Low Back Pain in Minority Populations,,True,borderline_rq,non_psych_behavioral_only
+NCT06443229,Telerehabilitation | Low Back Pain,Effect of Telerehabilitation Use in the Treatment of Non-specific Chronic Low Back Pain in,relaxation,False,include,Fits primary chronic pain criterion
+NCT05220202,Chronic Back Pain | Depression | Aging | Musculoskeletal Pain,MOTIVATE to Improve Outcomes for Older Veterans With Musculoskeletal Pain and Depression,,True,borderline_rq,non_psych_behavioral_only
+NCT07745465,People With Chronic Low Back Pain,Self-Selected Versus Physiotherapist-Prescribed Resistance Training Program In People With,,True,borderline_rq,non_psych_behavioral_only
+NCT04009837,Chronic Low-back Pain | Hip Impairments | Hip-spine Syndrome | Osteoarthritis,Manual Therapy and Strengthening for the Hip in Older Adults With Chronic Low Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT01329861,Back Pain Lower Back Chronic,Internet-based Cognitive Behavioural Treatment for Chronic Back Pain,cbt,False,include,Fits primary chronic pain criterion
+NCT03167086,Chronic Low Back Pain,Single Session Pain Psychology Treatment: Comparative Efficacy & Mechanisms,cbt | relaxation,True,include,Fits primary chronic pain criterion
+NCT00386243,"Low Back Pain | Pain | Pain, Intractable",Evaluation of Stepped Care for Chronic Pain in Iraq/Afghanistan Veterans (ESCAPE),cbt | self_management,False,include,Fits primary chronic pain criterion
+NCT06576414,Chronic Low-back Pain,"Feasibility, Effectiveness, and Patient Experience of Online Acceptance and Commitment The",act | counseling,True,include,Fits primary chronic pain criterion
+NCT07061743,Low Back Pain,Activity Management Training in Low Back Pain,relaxation,False,include,Fits primary chronic pain criterion
+NCT02133976,Chronic Low Back Pain,Comparative Mechanisms of Psychosocial Chronic Pain Treatments,behavioral_therapy_general | mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT03393104,Nonspecific Chronic Low Back Pain,Patient Education and Motor Control Exercise Among Rural Community-dwelling Adults With Ch,psychoeducation | self_management,True,include,Fits primary chronic pain criterion
+NCT07248813,"Chronic Low Back Pain (Non-specific, Uncomplicated)",Telerehabilitation Program to Improve Function in People With Chronic Low Back Pain Compar,psychoeducation | relaxation,True,include,Fits primary chronic pain criterion
+NCT02503475,Chronic Low Back Pain,Stanford Center for Back Pain,biofeedback | cbt | mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT04115670,Chronic Low-back Pain,Influence of Health Determinants on Physical Exercise Therapy With a Neurocognitive Focus ,,True,borderline_rq,non_psych_behavioral_only
+NCT04785963,Low Back Pain | Chronic Pain | Sleep | Aging,Effect of Music and Other Audio Recordings for Chronic Pain in Aging Adults,other_psychological,False,include,Fits primary chronic pain criterion
+NCT07649707,Low Back Pain | Chronic Pain,Preparatory Lifestyle Program Before Functional Restoration for Chronic Low Back Pain,multidisciplinary_pain_program | self_management,False,include,Fits primary chronic pain criterion
+NCT07216417,Low Back Pain,TeleYoga for Chronic Low Back Pain: A Quantitative and Qualitative Study,meditation | mindfulness_mbsr_mbct,True,include,Fits primary chronic pain criterion
+NCT01893073,Chronic Low Back Pain,Mindful Walking in Low Back Pain,mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT06546956,Chronic Low-back Pain,Integrative Breathwork Intervention for Chronic Pain,mindfulness_mbsr_mbct | relaxation,False,include,Fits primary chronic pain criterion
+NCT06787209,Chronic Low-back Pain (cLBP),Effects of a Hip Flexor and Extensor Muscle Training Program in Individuals with Chronic M,,True,borderline_rq,non_psych_behavioral_only
+NCT04172038,Low Back Pain | Chronic Pain | Military Personnel | Veterans,SMART Stepped Care Management for Low Back Pain in the Military Health System,mindfulness_mbsr_mbct | self_management,False,include,Fits primary chronic pain criterion
+NCT02286232,Chronic Low Back Pain,Chronic Low Back Pain Randomized Controlled Trial,relaxation,True,include,Fits primary chronic pain criterion
+NCT00803413,Chronic Low Back Pain,Effect of Back School and Supervised Walking in Sedentary Women With Chronic Low Back Pain,multidisciplinary_pain_program | relaxation,True,include,Fits primary chronic pain criterion
+NCT03354585,Chronic Low Back Pain,Mindfulness and Chronic Low Back Pain,meditation | mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT07129356,Chronic Pain | Rural Health | Physical Therapy | Rehabilitation,Field and Home Exercise Program for Improving Function in Iraqi Rural Women,,True,borderline_rq,non_psych_behavioral_only
+NCT07011537,Back Pain Lower Back Chronic | Chronic Pain | Musculoskeletal Pain,Examining the Impact of a Digital Health Program and TENS Device for Patients With Chronic,coaching,True,include,Fits primary chronic pain criterion
+NCT03172962,Musculoskeletal Pain | Low Back Pain,Effect of Strength Training for Chronic Low Back Pain Patients (IRMA20),,True,borderline_rq,non_psych_behavioral_only
+NCT05437016,Chronic Low-back Pain,Functional Rehabilitation With HUBER Platform in the Treatment of Non-specific Chronic Low,,True,borderline_rq,non_psych_behavioral_only
+NCT01407549,Low Back Pain | Osteoarthritis,The Influence of Mindfulness Based Intervention on Pain Perception in Chronic Pain Patient,meditation | mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT01769729,Depression | Chronic Low Back Pain,Program for Emotional and Physical Pain - Pilot Randomized Clinical Trial,other_psychological,False,include,Fits primary chronic pain criterion
+NCT07700589,Chronic Non-Specific Low Back Pain | Low Back Pain,"Comparison of Traditional, Synchronous, and Asynchronous Telerehabilitation in Office Work",,True,borderline_rq,non_psych_behavioral_only
+NCT04436003,"Low Back Pain, Recurrent | Degenerative Disc Disease",GDS Muscle and Articulation Chain Treatment for Chronic LBP and Spinal Stenosis,,False,include,Fits primary chronic pain criterion
+NCT07576062,Chronic Low Back Pain | After Lumbar Spine Surgery | Failed Back Surgery Syndrome (FBSS),Efficacy of Cognitive Functional Therapy in Individuals With Chronic Low Back Pain After S,cognitive_functional_therapy,False,exclude_surgical_postop,Secondary/non-primary pain pattern: exclude_surgical_postop
+NCT06895317,Chronic Low Back Pain (CLBP),Chronic Low Back Pain: TOTALSPINE - UO04,,False,include,Fits primary chronic pain criterion
+NCT02409420,Chronic Low Back Pain,A Trial of Brief Physiotherapy Informed by Acceptance and Commitment Therapy for Chronic L,act,False,include,Fits primary chronic pain criterion
+NCT03483168,Chronic Low Back Pain,Culturally Sensitive Pain Education Program for Turkish Patients,pain_education,False,include,Fits primary chronic pain criterion
+NCT04715789,Low Back Pain,COGNITIVE BEHAVIOURAL THERAPY FOR TREATMENT OF CHRONIC NON-SPECIFIC LOW BACK PAIN,exposure_therapy,False,include,Fits primary chronic pain criterion
+NCT01944150,Limbs Arthrosis | Non Arthrosic Limbs Arthralgia | Chronic Lomboradiculalgia | Chronic Back Pain | Cervical Radiculopath,Association of Transcutaneous Electrical Nerve Stimulation and Hypnosis,hypnosis,False,exclude_surgical_postop,Secondary/non-primary pain pattern: exclude_surgical_postop
+NCT01465698,Low Back Pain,Prevention of Chronic Low Back Pain in Female Nurses,cbt | counseling,True,include,Fits primary chronic pain criterion
+NCT06971809,Chronic Low Back Pain (CLBP),Pain Resilience Therapy for Low Back Pain.,pain_education,False,include,Fits primary chronic pain criterion
+NCT03273114,Low Back Pain | Back Pain | Pain | Signs and Symptoms | Neuromuscular Manifestations,Cognitive Functional Therapy (CFT) Compared With Core Training Exercise and Manual Therapy,cognitive_functional_therapy,False,include,Fits primary chronic pain criterion
+NCT07438470,Non Specific Chronic Low Back Pain,Combined Effects of Mckenzie and Motor Control Exercises in Chronic Non-specific Low Back ,,True,borderline_rq,non_psych_behavioral_only
+NCT03686748,Ehlers-Danlos Syndrome (EDS) | Complex Regional Pain Syndrome (CRPS) | Amplified Musculoskeletal Pain Syndrome (AMPS) | ,Two Point Discrimination,,True,borderline_rq,non_psych_behavioral_only
+NCT04023162,Chronic Nonspecific Low Back Pain,Therapy Exercises and Physiotherapy Delivered Operant Conditioning in the Treatment Chroni,multidisciplinary_pain_program,True,include,Fits primary chronic pain criterion
+NCT06630676,Chronic Low Back Pain,The Ability of Chronic Pain Patients to Self-diagnose Their Chief Source of Low Back Pain,other_psychological,False,include,Fits primary chronic pain criterion
+NCT04976790,Chronic Nonspecific Low Back Pain,Chinese Tuina Therapy for Treatment of Chronic Nonspecific Low Back Pain,,False,include,Fits primary chronic pain criterion
+NCT05102097,Chronic Low Back Pain,Effectiveness of Treadmill Walk on Chronic Low Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT01147120,Low Back Pain,Chronic Low Back Pain and Primary Health Care,relaxation,False,include,Fits primary chronic pain criterion
+NCT07258927,Chronic Mechanical Low Back Pain,Neuromuscular Inhibition vs Muscle Energy Techniques With Core Exercises in Mechanical Low,relaxation,True,include,Fits primary chronic pain criterion
+NCT04648683,Chronic Low-back Pain | Postsurgical Pain | Opioid Use | Lumbar Spine Surgery,Postoperative Telehealth Mindfulness Intervention After Spine Surgery,digital_psychological | mindfulness_mbsr_mbct,False,exclude_surgical_postop,Secondary/non-primary pain pattern: exclude_surgical_postop
+NCT07205991,Low Back Pain,ADHERE Trial: Strategies to Improve Mobile App Adherence,other_psychological,False,include,Fits primary chronic pain criterion
+NCT00447668,Chronic Non-specific Low Back Pain,Effect of Yoga Vs. Stretching on Chronic Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT01484418,Low Back Pain,Exposure-based Treatment for Avoidant Back Pain Patients,cbt | psychotherapy_general | relaxation,False,include,Fits primary chronic pain criterion
+NCT07738965,Chronic Non Specific Low Back Pain | Pain | Core Strength | Quality of Life,Mind-Body Pilates vs Pressure Biofeedback for Chronic Non-Specific Low Back Pain,biofeedback,True,include,Fits primary chronic pain criterion
+NCT07448766,Chronic Low-back Pain (cLBP),Core Muscle Training in Patients With Chronic Mechanical Low Back Pain,biofeedback,True,include,Fits primary chronic pain criterion
+NCT06984354,"Low Back Pain | Chronic Pain (Back / Neck) | General Practice (GP), Primary Care Settings | Digital Health | Hypnosis, C",Digitally Delivered Treatments to Reduce Chronic Low Back Pain,digital_psychological | hypnosis | pain_education | self_management,False,include,Fits primary chronic pain criterion
+NCT02244645,Low Back Pain,"Effects of Yoga Versus Passive Modality on Pain, Disability, Salivary Cortisol Concentrati",,True,borderline_rq,non_psych_behavioral_only
+NCT07163546,"Low Back Pain, Chronic",Person-Centered Lifestyle Redesign in Chronic Low Back Pain,psychoeducation,False,include,Fits primary chronic pain criterion
+NCT00594243,Chronic Low Back Pain,Feasibility of Mindfulness Meditation for Adults 65+ With Chronic Low Back Pain,mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT02469077,Chronic Pain,Reduced Opioid Analgesic Requirements Via Improved Endogenous Opioid Function,,True,borderline_rq,non_psych_behavioral_only
+NCT07470307,Non-specific Chronic Low Back Pain,"Dynamic Lumbar Strengthening Exercises Versus Pilates, Combined With Myofascial Release in",,True,borderline_rq,non_psych_behavioral_only
+NCT07211464,Chronic Low-back Pain (cLBP),Acceptance and Commitment Therapy Plus Exercise for Older People With Chronic Low-back Pai,act | counseling,True,include,Fits primary chronic pain criterion
+NCT00887419,Back Pain,Spinal Cord Stimulator Implant Study,coping_skills_training,False,include,Fits primary chronic pain criterion
+NCT07137715,Chronic Pain | Back Pain | Back Pain Lower Back Chronic | Neck Pain,Psychological Options for Wellness and Recovery (POWeR) Trial for Veterans With Chronic Ba,cbt | prt | psychotherapy_general,False,include,Fits primary chronic pain criterion
+NCT05086159,Chronic Low Back Pain | Post-traumatic Stress,Effectiveness of Pain Neuroscience Education (PNE) to Veterans With Post-Traumatic Stress ,mindfulness_mbsr_mbct | pain_education,True,include,Fits primary chronic pain criterion
+NCT04740710,Chronic Low-back Pain,Breathing and Attention Training for Chronic Low Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT07125027,Lumbosacral Radiculopathy | Sciatica | Chronic Low Back Pain With a Neuropathic Component | Radiculopathy Lumbar | Chron,A Multicomponent Intervention for Patients With Lumbosacral Radiculopathy: Move-MORE,mindfulness_mbsr_mbct | motivational_interviewing,False,include,Fits primary chronic pain criterion
+NCT07152171,Chronic Low Back Pain,Pain Neuroscience Education Delivered During Aerobic Exercise Versus Exercise Alone,pain_education | self_management,True,include,Fits primary chronic pain criterion
+NCT05698914,Lumbar Spine Surgery | Chronic Low-back Pain | Postsurgical Pain,Telehealth Mindfulness After Spine Surgery,digital_psychological | mindfulness_mbsr_mbct,False,exclude_surgical_postop,Secondary/non-primary pain pattern: exclude_surgical_postop
+NCT07318454,"Chronic Low Back Pain (Non-specific, Uncomplicated)",Comparison of Abdominal Expansion and Abdominal Drawing-In Training With Manual and Verbal,,True,borderline_rq,non_psych_behavioral_only
+NCT06835439,Pain | Back Pain | Low Back Pain | Chronic Pain | Neck Pain,Development of STEPPT,psychoeducation,False,include,Fits primary chronic pain criterion
+NCT07570641,Core Stability | Breathing Exercise | Low Back Pain,Effects of Combined Ciaphragmatic Breathing and Trunk Stabilization in Chronic Low Back Pa,,True,borderline_rq,non_psych_behavioral_only
+NCT05261828,Non Specific Low Back Pain,Efficacy of a Short Multidisciplinary Education and Rehabilitation Program for Patients Wi,multidisciplinary_pain_program,False,include,Fits primary chronic pain criterion
+NCT06771713,Chronic Lower Back Pain (CLBP),Brief Pain Reprocessing Therapy in Veterans,prt,False,include,Fits primary chronic pain criterion
+NCT00209820,Low Back Pain,Nordic Walking and Chronic Low Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT06679205,Chronic Low-back Pain (cLBP) | Chronic Low-back Pain | Back Pain,Effectiveness of a Multidisciplinary Treatment for Patients With Chronic Low Back Pain,multidisciplinary_pain_program | pain_education | psychotherapy_general,False,include,Fits primary chronic pain criterion
+NCT06471920,Chronic Low-back Pain,Improving Health for Patients With Chronic Low Back Pain in Rural Communities Through Tele,digital_psychological | self_management,False,include,Fits primary chronic pain criterion
+NCT06236529,Chronic Low-back Pain | Patient Activation,Self-Management of Chronic Low Back Pain: Targeting Patient Activation,counseling | motivational_interviewing | self_management,False,include,Fits primary chronic pain criterion
+NCT07324538,"Chronic Low Back Pain (Non-specific, Uncomplicated)",Immediate Effects of Manual and Verbal Cueing During Movement Control Training in Chronic ,,True,borderline_rq,non_psych_behavioral_only
+NCT05578781,Chronic Low-back Pain,Music-based Treatments and Pain: Underlying Mechanisms and the Beneficial Effects of Music,other_psychological,False,include,Fits primary chronic pain criterion
+NCT06944730,Chronic Low Back Pain (CLBP),Movement Quality and Balance Improvement in People With Chronic Low Back Pain Following Tr,multidisciplinary_pain_program | psychoeducation,True,include,Fits primary chronic pain criterion
+NCT03484403,Degenerative Disc Disease | Lumbar Spondylosis | Low Back Pain,Benefit of Lumbar Bracing for Chronic Low Back Pain Due to Degenerative Disc Disease,multidisciplinary_pain_program | psychoeducation,False,include,Fits primary chronic pain criterion
+NCT01967342,Chronic Pain | Pain | Widespread Chronic Pain | Chronic Pain Syndrome | Chronic Pain Due to Injury,"Literacy-Adapted Psychosocial Treatments for Chronic Pain --- ""Learning About Mastering/My",cbt,False,include,Fits primary chronic pain criterion
+NCT05843149,Chronic Low-back Pain,Manual Therapy/Exercises vs. Physiotherapy/Back School vs. Waiting List in Patients With C,multidisciplinary_pain_program,True,include,Fits primary chronic pain criterion
+NCT00608530,Pain | Back Pain,Telehealth Outreach for Chronic Back Pain,cbt | psychotherapy_general | self_management,False,include,Fits primary chronic pain criterion
+NCT05895630,Chronic Low-back Pain,Online Physical Exercise for Chronic Low Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT03637998,Chronic Low Back Pain | Self-Management,Physical Activity on Neurophysiologic Gene Expression Profiles of Chronic Low Back Pain,self_management,False,include,Fits primary chronic pain criterion
+NCT02019498,Chronic Low Back Pain,Effectiveness of App-based Relaxation for Patients With Chronic Low Back Pain (Relaxback),digital_psychological | mindfulness_mbsr_mbct | relaxation,False,include,Fits primary chronic pain criterion
+NCT02837653,Low Back Pain | Physical Activity,Efficacy of a Physical Activity Counselling on the Severity of Chronic Low Back Pain in Pa,counseling,True,include,Fits primary chronic pain criterion
+NCT07158567,Chronic Low Back Pain | Musculoskeletal Pain,Veterans' Intervention Blending NeuRomodulation and YogA for Chronic Low BackPaiN Treatmen,meditation | psychoeducation,False,include,Fits primary chronic pain criterion
+NCT00463970,Chronic Low Back Pain,Cognitive Interventions and Nutritional Supplementation for Patients With Long-lasting Bac,cbt,True,include,Fits primary chronic pain criterion
+NCT07298941,Chronic Low Back Pain (CLBP) | Insomnia,Resilience Enhancement Following Sleep Treatment,cbt | digital_psychological | meditation | pain_education | self_management,False,include,Fits primary chronic pain criterion
+NCT05780021,Chronic Low-back Pain,Motivational Support Program in Chronic Low Back Pain After Multidisciplinary Functional R,digital_psychological | motivational_interviewing | multidisciplinary_pain_program,False,include,Fits primary chronic pain criterion
+NCT00155662,Low Back Pain,The Effect of a Work-hardening Program for Return-to-work for Workers With Low Back Pain,multidisciplinary_pain_program,False,include,Fits primary chronic pain criterion
+NCT01632618,Chronic Low Back Pain,Trunk Muscle Training and Neuromuscular Electrical Stimulation to Improve Function in Olde,,True,borderline_rq,non_psych_behavioral_only
+NCT05919446,Chronic Low-back Pain,"The Feasibility, Potential Efficacy, and Experiences of Using a Group-based Acceptance and",act | counseling,True,include,Fits primary chronic pain criterion
+NCT02647658,Low Back Pain,Targeted Interventions to Prevent Chronic Low Back Pain in High Risk Patients,coaching,False,exclude_acute_only,Secondary/non-primary pain pattern: exclude_acute_only
+NCT07475481,Chronic Low-back Pain (cLBP),Exercise-Based Strategies for Chronic Back Pain,biofeedback,True,include,Fits primary chronic pain criterion
+NCT05585294,Back Pain | Back Pain With Radiation | Back Pain Without Radiation | Back Pain Lower Back Chronic,Water Versus Land Based Perturbation Exercises in Elderly Participants With Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT05571215,Chronic Low-back Pain | Catastrophizing Pain | Kinesiophobia,The Effect of Combining Pain Neuroscience Education and Transcranial Direct Current Stimul,pain_education,False,include,Fits primary chronic pain criterion
+NCT04783532,Low Back Pain | Back Pain | Pain | Chronic Low-back Pain,Feasibility of Telehealth Mindfulness for Back Pain in the Emergency Department,digital_psychological | mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT05103475,Chronic Low Back Pain,Rage Against the Pain to Address Chronic Low Back Pain Among Veterans,meditation,True,include,Fits primary chronic pain criterion
+NCT01345123,Knee Pain Chronic | Arthritis (Hip) | Arthritis (Knee) | Back Pain,Supporting Decision Making for Musculoskeletal Preference-Sensitive Care,other_psychological,False,exclude_surgical_postop,Secondary/non-primary pain pattern: exclude_surgical_postop
+NCT02029131,Healthy Volunteers With and Without Chronic Low Back Pain,Exercise and Low Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT07005765,Non Specific Chronic Low Back Pain | Exercise Therapy,"Effect of Video-based Stabilization Exercises on Pain, Function, Adherence, Kinesiophobia ",,True,borderline_rq,non_psych_behavioral_only
+NCT04257539,Chronic Low-back Pain,Reducing Sedentary Time in Chronic Low Back Pain: Sedentary Intervention Using Motivationa,motivational_interviewing,False,include,Fits primary chronic pain criterion
+NCT00494845,Low Back Pain,Mindfulness Meditation for Chronic Low Back Pain in Older Adults,mindfulness_mbsr_mbct,True,include,Fits primary chronic pain criterion
+NCT01850875,Non-specific Chronic Back Pain,Eye Movement Desensitization and Reprocessing (EMDR) in Non-specific Chronic Back Pain,other_psychological,False,include,Fits primary chronic pain criterion
+NCT03426709,Depression | Chronic Disease (Diabetes/Low Back Pain),Efficacy of a Blended Low Intensity Internet-delivered Psychological Program in Patients W,digital_psychological | mindfulness_mbsr_mbct | psychoeducation | psychotherapy_general,False,include,Fits primary chronic pain criterion
+NCT03327753,Chronic Low Back Pain | Non Specific Low Back Pain,Which Exercise for Low Back Pain: A Validation Study,cbt,True,include,Fits primary chronic pain criterion
+NCT03722394,"Low Back Pain | Pain, Chronic | Pain, Back",Pain Neuroscience Education for Acute and Sub-Acute Low Back Pain,pain_education,False,exclude_acute_only,Secondary/non-primary pain pattern: exclude_acute_only
+NCT06921694,"Low Back Pain, Chronic","A Combined Exercise Programme Involving Strengthening, Flexibility and Aerobic Exercise fo",,True,borderline_rq,non_psych_behavioral_only
+NCT01794988,Chronic Pain,Can Therapy Alter CNS Processing of Chronic Pain: A Longitudinal Study,cbt | pain_education | relaxation,False,include,Fits primary chronic pain criterion
+NCT07089472,Meralgia Paresthetica | Chronic Low-back Pain (cLBP),"Dry Needling Versus Cyriax Technique on Pain, Paraesthesia and Functional Disability in Pa",,True,borderline_rq,non_psych_behavioral_only
+NCT01775995,Chronic Pain | Low Back Pain,Meditation-CBT for Opioid-treated Chronic Low Back Pain,cbt | meditation,False,include,Fits primary chronic pain criterion
+NCT00360802,Chronic Low Back Pain,Effectiveness of Cognitive Behavioral Treatment and Mindfulness Based Stress Reduction (MB,cbt | mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT06030128,Chronic Low-back Pain | Older Adults | Core Stabilization Exercise Therapy,Core Stabilization Exercise Therapy in Chronic Lower Back Back Management in Community Dwe,,True,borderline_rq,non_psych_behavioral_only
+NCT06931158,Chronic Low-back Pain | Chronic Pain,HOnest Placebos With Explanations: Evaluating Open-Label Placebos for Chronic Pain,mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT03859713,Low Back Pain | Chronic Pain,Optimize Low Back Pain,cbt | mindfulness_mbsr_mbct | psychoeducation | relaxation | self_management,False,include,Fits primary chronic pain criterion
+NCT06050083,Chronic Low-back Pain | Chronic Pain,Digital Clinical Hypnosis for Chronic Pain Management,hypnosis,False,include,Fits primary chronic pain criterion
+NCT03456050,Chronic Low Back Pain,Effectiveness of 'Functional Range Conditioning' in Treating Patients With Chronic Non-spe,,True,borderline_rq,non_psych_behavioral_only
+NCT05443880,Low Back Pain,Exercise and Mindfulness in Patients With Non-specific Chronic Low Back Pain: The BACKFIT ,meditation | mindfulness_mbsr_mbct,True,include,Fits primary chronic pain criterion
+NCT07425964,Migraine Disorder | Low Back Pain | Chronic Pain | Sleep Disorder (Disorder),Sleep Hygiene Education to Improve Sleep in Chronic Migraine and Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT03157544,"Pain, Chronic | Musculoskeletal Pain | Low Back Pain | Neck Pain",Complementary Management of Chronic Neck and/or Low Back Pain With a Pain Relief Kit,other_psychological,False,include,Fits primary chronic pain criterion
+NCT07772154,Low Back Pain | Chronic Low-back Pain (cLBP),Virtual Tai Chi for Chronic Low Back Pain (Spine 2027),meditation,False,include,Fits primary chronic pain criterion
+NCT03952741,Low Back Pain,Cognitive Functional Therapy Compared to Cognitive Patient Education and Physiotherapy for,,False,include,Fits primary chronic pain criterion
+NCT05607381,Low Back Pain | Opioid Use,Neural Mechanisms of Meditation for Opioid-Treated Chronic Low Back Pain,meditation,False,include,Fits primary chronic pain criterion
+NCT00056212,Low Back Pain,Evaluating Yoga for Chronic Low Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT04068922,Aging | Chronic Low-back Pain,Adaptability and Resilience in Aging Adults-2,acceptance_based,False,include,Fits primary chronic pain criterion
+NCT03524378,Chronic Low Back Pain,Modifiable Work and Movement Solutions Low Back Pain in Seafood Workers,self_management,False,include,Fits primary chronic pain criterion
+NCT07731750,Chronic Low-back Pain,Algorithm-informed Decision-making to Advance Pain Treatment,cbt | digital_psychological | relaxation | self_management,True,include,Fits primary chronic pain criterion
+NCT03324659,Chronic Low Back Pain,Meditation and Exercise to Treat Chronic Back Pain,meditation | mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT07182825,Low Back Pain | Non Specific Chronic Low Back Pain | Healthy Vollunteer,"Effects of Multifidus Lift Exercise on Endurance, Pain, and Disability in University Stude",,True,borderline_rq,non_psych_behavioral_only
+NCT01739140,Chronic Low Back Pain,Yoga for Chronic Low Back Pain and Its Mechanism of Action (YoMA),,True,borderline_rq,non_psych_behavioral_only
+NCT03356886,Low Back Pain,Additional Effect of Pain Neuroscience Education to Spinal Manipulative Therapy in Chronic,pain_education,False,include,Fits primary chronic pain criterion
+NCT00361270,"Low Back Pain, Recurrent",Treatment of Veterans With Chronic Low Back Pain,biofeedback | hypnosis,False,include,Fits primary chronic pain criterion
+NCT07677189,Chronic Nonspecific Low Back Pain,Sensorimotor Balance Training for Chronic Nonspecific Low Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT06619418,Chronic Lower Back Pain,Assessment of Usability and Satisfaction With a Take-home Device Presenting Sound and Body,coaching,False,include,Fits primary chronic pain criterion
+NCT05103462,Low Back Pain,Telehealth Physical Therapy for Chronic Back Pain - Ancillary Study to NCT03859713,digital_psychological,False,include,Fits primary chronic pain criterion
+NCT07346651,Chronic Low Back Pain (CLBP),Percussive Massage Therapy Using Heat Attachment in Chronic Low Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT03482856,Chronic Low Back Pain | Chronic Neck Pain | Insomnia Chronic,Cognitive Behavioural Therapy for Insomnia in Chronic Spinal Pain,cbt | pain_education | relaxation | sleep_intervention,False,include,Fits primary chronic pain criterion
+NCT06169488,Chronic Low-back Pain,The Lumbar Interbody Fusion vs. Multidisciplinary Rehabilitation (LIFEHAB) Trial,cognitive_functional_therapy | multidisciplinary_pain_program,False,exclude_surgical_postop,Secondary/non-primary pain pattern: exclude_surgical_postop
+NCT03463824,Chronic Low Back Pain | Fear of Pain | Fear of Injury,The VIGOR Study - Virtual Immersive Gaming to Optimize Recovery in Low Back Pain,other_psychological,False,include,Fits primary chronic pain criterion
+NCT01303588,Low Back Pain,Yoga and Qigong for Elderly Patients With Chronic Low Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT06605248,Low Back Pain,NOTUS Feasibility Study: Reducing Chronic Low Back Pain With Mobile App Intervention,digital_psychological | hypnosis | pain_education | self_management,False,include,Fits primary chronic pain criterion
+NCT07053787,Chronic Low Back Pain,Durability of Yoga for Veterans With Low Back Pain,coaching,True,include,Fits primary chronic pain criterion
+NCT02027623,Mechanical Low Back Pain | Chronic Low Back Pain,Spinal Control During Functional Activities to Improve Low Back Pain Outcomes,,True,borderline_rq,non_psych_behavioral_only
+NCT07764354,Low Back Pain | Knee Arthritis Osteoarthritis | Shoulder Disease | Shoulder and Upper Arm Injury,How Patient Education Helps Patients With Chronic Musculoskeletal Disorders Stick to Home ,self_management,True,include,Fits primary chronic pain criterion
+NCT07415941,Chronic Low Back Pain,MBM and taVNS for Low Back Pain and Depressive Symptoms,,False,include,Fits primary chronic pain criterion
+NCT07589790,Chronic Non-specific Low Back Pain,Effect of VR-MBCT in Chronic Nonspecific Low Back Pain,digital_psychological | exposure_therapy | mindfulness_mbsr_mbct | pain_education,False,include,Fits primary chronic pain criterion
+NCT02106741,Fatigue | Chronic Low Back Pain,Acupressure for Fatigue and Low Back Pain,relaxation,False,include,Fits primary chronic pain criterion
+NCT05513274,Chronic Pain (Back / Neck),Heartache and Backache- An Online Intervention Addressing Emotional and Physical Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT00672880,Low Back Pain | Depression,Self System Therapy and Chronic Low Back Pain Trial,other_psychological,False,include,Fits primary chronic pain criterion
+NCT02284958,Low Back Pain,"Walking Away From Back Pain, One Step at a Time",,True,borderline_rq,non_psych_behavioral_only
+NCT03896035,Chronic Back Pain | Depression | Aging,Improving Outcomes for Older Veterans With Chronic Back Pain and Depression,,True,borderline_rq,non_psych_behavioral_only
+NCT02674711,Low Back Pain | Opiate Addiction | Neck Pain,Study of Opioid Use After Lumbar and Cervical Spine Surgery,psychoeducation,False,exclude_surgical_postop,Secondary/non-primary pain pattern: exclude_surgical_postop
+NCT07603609,Low Back Pain,Sensorimotor Training With a Mobilized Balance Platform in Patients With Chronic Low Back ,,True,borderline_rq,non_psych_behavioral_only
+NCT04923334,Low Back Pain | Chronic Pain,Nonpharmacologic Pain Management in FQHC Primary Care Clinics,cbt | digital_psychological | mindfulness_mbsr_mbct | pain_education | relaxation,False,include,Fits primary chronic pain criterion
+NCT06696352,Chronic Pain | Back Pain | Neck Pain | Self-management | Complementary Therapies,Partners4Pain & Wellbeing: A Randomized Trial of Community Supported Complementary and Int,meditation | psychoeducation | relaxation,False,include,Fits primary chronic pain criterion
+NCT04074798,"Low Back Pain, Recurrent | Hyperventilation Syndrome",Hyperventilation in Patients With Chronic Low Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT07667062,Chronic Non-specific Low Back Pain,Effects of Thoracolumbar Fascia Myofascial Release in Chronic Low Back Pain,,False,include,Fits primary chronic pain criterion
+NCT02222935,Chronic Low Back Pain,Effectiveness of Balance Training in Chronic Low Back Pain Patients,,True,borderline_rq,non_psych_behavioral_only
+NCT07743905,Chronic Pain | Chronic Pain Due to Injury | Failed Back Syndrome | Persistent Spinal Pain Syndrome | Chronic Leg Pain | ,Virtual Pain Education for Spinal Cord Stimulation Patients,cbt | digital_psychological | pain_education,False,include,Fits primary chronic pain criterion
+NCT03863808,Chronic Low Back Pain | Central Sensitisation,Effect of Cognitive Behavioral Therapy on Chronic Low Back Pain With Sensitization,biofeedback | cbt | exposure_therapy | relaxation,True,include,Fits primary chronic pain criterion
+NCT04164225,Low Back Pain,Feasibility of Identifying Brain Mechanisms of Qigong and Behavioral Outcomes After Qigong,,True,borderline_rq,non_psych_behavioral_only
+NCT04447508,Low Back Pain,Reframe Your Pain: A Feasibility and Acceptability Study,motivational_interviewing,False,include,Fits primary chronic pain criterion
+NCT04824248,Chronic Low-back Pain | Overweight or Obesity,Weight Reduction in CLBP,coping_skills_training | pain_education,True,include,Fits primary chronic pain criterion
+NCT02483468,"Chronic Low Back Pain | Opioid Use, Unspecified",The Effects of Cognitive Behavioral Therapy and Transcranial Current Stimulation (tDCS) on,cbt,False,include,Fits primary chronic pain criterion
+NCT07136480,Low Back Pain,Comparison of the Effectiveness of Various Deep Heating Modalities in the Management of Ch,,True,borderline_rq,non_psych_behavioral_only
+NCT07251959,Back Pain | Neck Pain | Low Back Pain,Workplace Exercise Therapy With or Without Manual Therapy in Chronic Spinal Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT05480982,Low Back Pain,Cognitive Functional Therapy Compared With Pilates in Elderly Patients With Chronic Low Ba,cognitive_functional_therapy,True,include,Fits primary chronic pain criterion
+NCT07696741,Chronic Low Back Pain (CLBP) | Nociplastic Pain,PRT for Chronic Low Back Pain,pain_education | prt | self_management,False,include,Fits primary chronic pain criterion
+NCT02301741,Low Back Pain,Using an Interactive Game to Reduce Fear and Increase Spine Motion in Low Back Pain,other_psychological,False,include,Fits primary chronic pain criterion
+NCT04142177,Chronic Low Back Pain,Sequential and Comparative Evaluation of Pain Treatment Effectiveness Response,cbt | pain_education | relaxation | self_management,True,include,Fits primary chronic pain criterion
+NCT07207083,Virtual Reality | Kinesiophobia | Chronic Low Back Pain (CLBP) | Central Sensitization | Fear of Movement,Can Virtual Reality Exercise Help Restore Both Body and Mind in Chronic Low Back Pain,digital_psychological,False,include,Fits primary chronic pain criterion
+NCT03157622,Chronic Low Back Pain,Single-Case Study on Therapeutic Change in Chronic Low Back Pain,cbt | psychotherapy_general | relaxation,False,include,Fits primary chronic pain criterion
+NCT06506604,Chronic Low-back Pain,"""Psychological Intervention Enhanced by Virtual Reality for the Improvement of Appreciatio",acceptance_based | digital_psychological | psychoeducation,False,include,Fits primary chronic pain criterion
+NCT05294081,Chronic Low Back Pain,EFFects of EXPosure and Cognitive-behavioural Therapy for Chronic BACK Pain,cbt | exposure_therapy | relaxation,False,include,Fits primary chronic pain criterion
+NCT04399772,Chronic Low-back Pain,COgNitive FuncTional Therapy+ for Chronic Low Back paIn,act | cognitive_functional_therapy | exposure_therapy | mindfulness_mbsr_mbct | multidisciplinary_pain_program | psychoeducation | relaxation,False,include,Fits primary chronic pain criterion
+NCT03546153,Chronic Low Back Pain,Examining Effects of Aerobic Exercise on Pain Sensation,,True,borderline_rq,non_psych_behavioral_only
+NCT07338045,Low Back Pain | Baduanjin,The Effects of Eight-Week Baduanjin Exercise on Chronic Low Back Pain and Disability Among,,True,borderline_rq,non_psych_behavioral_only
+NCT05423145,Low Back Pain,Self-Administered Acupressure for Veterans With Chronic Back Pain,other_psychological,False,include,Fits primary chronic pain criterion
+NCT06835270,Chronic Nonspecific Low Back Pain | Elderly (People Aged 65 or More),Investigation of Different Treatment Approaches in Elderly Individuals With Chronic Low Ba,,True,borderline_rq,non_psych_behavioral_only
+NCT05136729,Chronic Low-back Pain,The Effects of Self-Natural Posture Exercise Programs on Chronic Low Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT01800604,Multiple Sclerosis | Spinal Cord Injury | Chronic Pain | Other and Unspecified Amputation Stump Complications | Muscular,Power Over Pain (POP) Study,relaxation | self_management,False,include,Fits primary chronic pain criterion
+NCT03581123,"Acute Pain | Low Back Pain, Mechanical",Spinal Manipulation and Patient Self-Management for Preventing Acute to Chronic Back Pain,pain_education | self_management,False,include,Fits primary chronic pain criterion
+NCT04770480,"Low Back Pain | Chronic Pain | Surgery | Back Pain, Low | Back Pain Lower Back Chronic",Non-pharmacological Treatment for Pain After Spine Surgery,mindfulness_mbsr_mbct,False,exclude_surgical_postop,Secondary/non-primary pain pattern: exclude_surgical_postop
+NCT00561652,Low Back Pain,Education/Exercise and Chiropractic for Chronic Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT07285824,Chronic Pain | Low Back Pain,Virtual McKenzie Exercises and Centralization of Pain: A Pilot Study,other_psychological,False,include,Fits primary chronic pain criterion
+NCT07497425,Chronic Low Back Pain (CLBP),Neuroimmune Responses to Exercise in Chronic Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT01761617,Back Pain Lower Back Chronic,Yoga Dosing Study for Chronic Low Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT00201513,Low Back Pain,Anticipatory Muscle Control and Effect of Stabilizing Exercises in Patients With Subacute ,biofeedback,False,include,Fits primary chronic pain criterion
+NCT05093543,Low Back Pain,Feasibility and Effect of a Multidisciplinary Telematics Approach for Chronic Non-specific,,False,include,Fits primary chronic pain criterion
+NCT01802671,Low Back Pain,Efficacy Study of Cognitive Behavioural Treatment With Support on Communication and Inform,cbt | mindfulness_mbsr_mbct | multidisciplinary_pain_program | psychoeducation | relaxation | self_management,False,include,Fits primary chronic pain criterion
+NCT03633578,Chronic Low Back Pain | Gait | Motor Activity,Complexity & Distraction in LBP,,True,borderline_rq,non_psych_behavioral_only
+NCT06915532,Chronic Low Back Pain (CLBP),Pain Neurophysiology Education in Chronic Low Back Pain,pain_education,True,include,Fits primary chronic pain criterion
+NCT03520387,Low Back Pain,Selecting Effective Combinations of Treatment for Low Back Pain,cbt | digital_psychological | self_management,False,include,Fits primary chronic pain criterion
+NCT03294148,"Chronic Pain | Back Pain Lower Back Chronic | Back Pain, Low",Mind-body Treatments for Chronic Back Pain,psychotherapy_general,False,include,Fits primary chronic pain criterion
+NCT06025201,Chronic Low-back Pain | Healthy,Detection of EEG-Based Biomarkers of Chronic Low Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT00269321,Low Back Pain,Chiropractic and Exercise for Seniors With Low Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT07000006,End Stage Renal Disease (ESRD) | Peritoneal Dialysis Complication,The Effect of Exercise on Low Back Pain in Peritoneal Dialysis Patients,,True,borderline_rq,non_psych_behavioral_only
+NCT07664267,Chronic Low Back Pain,Safety and Efficacy of MORA Cure LBP in Patients With Chronic Low Back Pain,cbt | digital_psychological,True,include,Fits primary chronic pain criterion
+NCT02503410,Non-specific Chronic Low Back Pain,An Interactive Gaming-based Intervention for Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT01918189,Chronic Low Back Pain,Internet-based Behavioral Pain Management,coping_skills_training | relaxation | self_management,False,include,Fits primary chronic pain criterion
+NCT03031158,Low Back Pain,Hip-spine Intervention for Older Adults With Chronic Low Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT00070915,Low Back Pain,"Massage, Meditation, and Tai Chi for Chronic Lower Back Pain",mindfulness_mbsr_mbct,True,include,Fits primary chronic pain criterion
+NCT03816007,Post-Traumatic Stress Disorder | Chronic Low Back Pain | Chronic Neck Pain,Yoga and Mantram for Chronic Pain and PTSD,relaxation,True,include,Fits primary chronic pain criterion
+NCT06054074,Chronic Low-back Pain | Low Back Pain,Virtual Reality-based Induction to Improve Positive Body Image in Low Back Pain Patients.,other_psychological,False,include,Fits primary chronic pain criterion
+NCT00394732,Chronic Low Back Pain | Degenerative Disc Disease,Disc Prosthesis Versus Multidisciplinary Rehabilitation,multidisciplinary_pain_program,False,exclude_surgical_postop,Secondary/non-primary pain pattern: exclude_surgical_postop
+NCT04270617,Chronic Back Pain,The Effect of Yoga Practice on Chronic Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT03658226,Chronic Low Back Pain,Case Series Evaluation of Psychodynamic Interpersonal Therapy in Chronic Low Back Pain,psychotherapy_general,False,include,Fits primary chronic pain criterion
+NCT06384001,Chronic Low Back Pain,Meditation for Older Adults With Chronic Low Back Pain,meditation | mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT02546466,Low Back Pain,Effects of Functional Taping on Static Postural Control in Patients With Non-specific Chro,counseling,False,include,Fits primary chronic pain criterion
+NCT06910982,Chronic Low-back Pain (cLBP),Yoga and Mindfulness for Chronic Low Back Pain: A Randomized Controlled Trial,,True,borderline_rq,non_psych_behavioral_only
+NCT00964886,Back Pain,Efficacy of Antidepressants in Chronic Back Pain,cbt | psychotherapy_general,False,include,Fits primary chronic pain criterion
+NCT07504094,"Chronic Back Pain | Chronic Pain | Back Pain | Low Back Pain, Chronic | Musculoskeletal Pain | Kinesiophobia","Active Coping: Interdisciplinary Program for Chronic Pain, Physiotherapy Unit (Spain)",pain_education,True,include,Fits primary chronic pain criterion
+NCT00865358,Chronic Low Back Pain,Yoga for Chronic Low Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT07282925,Low Back Pain | Non Specific Chronic Low Back Pain,Comparative Effects of Cognitive Functional Therapy With Kinetic Control Training on Non-s,cognitive_functional_therapy | exposure_therapy,True,include,Fits primary chronic pain criterion
+NCT02145728,Chronic Low Back Pain,The Effect of Cognitive Functional Therapy on Patients With Non-specific Chronic Low Back ,cognitive_functional_therapy | mindfulness_mbsr_mbct | relaxation,False,include,Fits primary chronic pain criterion
+NCT07173335,Musculoskeletal Pain | Osteoarthritis | Low Back Pain,Integrated Healthy Lifestyle and Pain Care for People With Musculoskeletal Conditions Livi,coaching | counseling | digital_psychological | multidisciplinary_pain_program | pain_education,False,include,Fits primary chronic pain criterion
+NCT07686237,Chronic Non-specific Low Back Pain,Core Stability Training in Young Adults With Chronic Non-Specific Low Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT04870957,Chronic Low-back Pain,The Back Pain Consortium Research Program Study,digital_psychological | meditation | mindfulness_mbsr_mbct | self_management,True,include,Fits primary chronic pain criterion
+NCT00410319,Low Back Pain,Information or Physical Activity for Chronic LBP,,True,borderline_rq,non_psych_behavioral_only
+NCT07406711,Chronic Low Back Pain | Multidisciplinary Biopsychosocial Program | Quality of Life,Biopsychosocial vs Multimodal Chronic Pain Management,multidisciplinary_pain_program | psychoeducation,False,include,Fits primary chronic pain criterion
+NCT05998434,Chronic Low Back Pain,Home-Based Rehabilitation Training for Chronic Low Back Pain Patients,,True,borderline_rq,non_psych_behavioral_only
+NCT02224183,Recurrent Low Back Pain,Yoga vs. Education for Veterans With Chronic Low Back Pain,,True,borderline_rq,non_psych_behavioral_only
+NCT02884466,Low Back Pain,Comparison of Two Multidisciplinary Rehabilitation Interventions in Patients With Chronic ,multidisciplinary_pain_program,False,include,Fits primary chronic pain criterion
+NCT06148896,Chronic Low Back Pain,Combining Physiotherapy Group Exercise With Acceptance and Commitment Therapy in Elderly W,act,True,include,Fits primary chronic pain criterion
+NCT03644927,Chronic Low Back Pain | Posttraumatic Stress Disorder,Exercise Maintenance in Chronic Pain and PTSD,motivational_interviewing,False,include,Fits primary chronic pain criterion
+NCT02378519,Musculoskeletal Pain,Interactive Web-based Program and CBT-coaching With Physiotherapy for Patients With Chroni,cbt | coaching | digital_psychological,False,include,Fits primary chronic pain criterion
+NCT02497625,Low Back Pain,Effectiveness of Therapeutic Alliance and Minimal Intervention for Chronic Low Back Pain,other_psychological,False,include,Fits primary chronic pain criterion
+NCT07532070,Osteo Arthritis Knee and Hip | Low Back Pain | Insomnia,"COMPARATIVE EFFECTIVENESS OF EXERCISE, COGNITIVE BEHAVIOURAL THERAPY, AND THEIR COMBINATIO",cbt | sleep_intervention,False,include,Fits primary chronic pain criterion
+NCT03221439,Low Back Pain | Back Pain | Pain | Signs and Symptoms | Neuromuscular Manifestations,Cognitive Functional Therapy for Chronic Low Back Pain,cognitive_functional_therapy,False,include,Fits primary chronic pain criterion
+NCT02524158,Chronic Low Back Pain,Yoga for Veterans With CLBP,,True,borderline_rq,non_psych_behavioral_only
+NCT05022121,"Low Back Pain | Sciatica | Back Related Leg Pain | Pain, Chronic | Intervertebral Disc Displacement",Integrated Supported Biopsychosocial Self-Management for Back Related Leg Pain,self_management,False,include,Fits primary chronic pain criterion
+NCT04744883,Chronic Low-back Pain,Efficacy of Spinal Manipulation Therapy or Mindfulness-based Reduction Therapy on Patients,meditation | mindfulness_mbsr_mbct,True,include,Fits primary chronic pain criterion
+NCT05319691,Chronic Pain | Back Pain,Yoga for Chronic Low Back Pain in the Cleveland Clinic Employee Health Plan,,True,borderline_rq,non_psych_behavioral_only
+NCT05005416,Low Back Pain | Neck Pain | Chronic Pain | Chronic Low-back Pain,Goal Oriented Activity for Latinos With Spine Pain,cbt | coping_skills_training | pain_education | self_management,False,include,Fits primary chronic pain criterion
+NCT06821607,Chronic Low Back Pain,Telerehabilitation for Patients With Chronic Low Back Pain (TeleBACK Clinical Trial),digital_psychological | psychoeducation,False,include,Fits primary chronic pain criterion
+NCT06226298,Chronic Pain | Low Back Pain | Exercise,Benefits of the Xiaxi Postural Hammock and a Xiaxi Exercise Program,,True,borderline_rq,non_psych_behavioral_only
+NCT06208514,"Fibromyalgia | Lupus Erythematosus, Systemic | Chronic Pelvic Pain | Chronic Low Back Pain (CLBP)",Brief Pain Exposure Therapy (BPET) For Nociplastic Pain,digital_psychological | exposure_therapy | meditation | mindfulness_mbsr_mbct | pain_education,False,include,Fits primary chronic pain criterion
+NCT05860205,Myofascial Pain Syndrome,A Multiple Component Mobile-aid Pain Reduction Intervention to Decrease Myofascial Pain,biofeedback,True,include,Fits primary chronic pain criterion
+NCT06342219,"Chronic Migraine, Headache",Chronic Migraines and Neurofdeeback Mindfulness,biofeedback | mindfulness_mbsr_mbct,False,include,Fits primary chronic pain criterion
+NCT07297901,Migraine | Heart Rate Variability (HRV) | Autonomic Nervous System | Headache (Migraine) | Headache | Chronic Pain | mHe,App-based Breathing Program for Migraine Relief,biofeedback | digital_psychological,False,include,Fits primary chronic pain criterion
+NCT05889624,"Headache | Headache Disorders | Headache, Migraine | Migraine | Migraine Disorders | Migraine With Aura | Migraine Witho",Responding With Evidence and Access for Childhood Headaches,cbt | coping_skills_training | digital_psychological,False,include,Fits primary chronic pain criterion
+NCT04715685,"Headache | Headache Disorders | Headache, Migraine | Migraine | Migraine Disorders | Migraine With Aura | Migraine Witho",Mind Body Balance for Pediatric Migraine,biofeedback | digital_psychological | pain_education,False,include,Fits primary chronic pain criterion

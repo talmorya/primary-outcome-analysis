@@ -1,4 +1,4 @@
-version: "0.1.0"
+version: "0.2.0"
 
 # Psychological/behavioral approaches among BEHAVIORAL intervention types.
 approaches:
@@ -76,6 +76,12 @@ approaches:
     patterns:
       - "psychoeducation"
       - "psycho-education"
+      - "patient\\s+education"
+      - "migraine\\s+education"
+      - "headache\\s+education"
+      - "awareness\\s+session"
+      - "educational\\s+video"
+    review_flag: true
 
   self_management:
     patterns:
@@ -107,15 +113,77 @@ approaches:
       - "internet-delivered"
       - "web-based"
       - "mobile\\s+app"
+      - "smartphone\\s+app"
       - "telehealth"
       - "telemedicine"
       - "virtual\\s+reality"
+      - "RELAXaHEAD"
+      - "PainGuide"
+      - "Migraine\\s+Manager"
+      - "Emotiv"
     review_flag: true
+
+  cognitive_functional_therapy:
+    patterns:
+      - "cognitive\\s+functional"
+      - "\\bcft\\b"
+
+  motivational_interviewing:
+    patterns:
+      - "motivational\\s+interview"
+      - "motivational\\s+support"
+      - "mi-opioid"
+
+  exposure_therapy:
+    patterns:
+      - "exposure\\s+therapy"
+      - "graded\\s+exposure"
+      - "\\bI-EAET\\b"
+      - "in\\s+vivo\\s+exposure"
+
+  coping_skills_training:
+    patterns:
+      - "coping\\s+skills"
+      - "pain\\s+coping\\s+skills"
+      - "PainCOACH"
+
+  operant_behavioral:
+    patterns:
+      - "operant\\s+behavioral"
+      - "operant\\s+learning"
+    exclude:
+      - "paradigm"
+      - "experimental"
+      - "psychophysical"
+
+  multidisciplinary_pain_program:
+    patterns:
+      - "multidisciplinary"
+      - "interdisciplinary"
+      - "back\\s+school"
+      - "fibrowalk"
+      - "work[- ]hardening"
+      - "functional\\s+restoration"
+      - "headache\\s+management\\s+program"
+    review_flag: true
+
+  sleep_intervention:
+    patterns:
+      - "behavioral\\s+insomnia"
+      - "\\bcbt[- ]i\\b"
+      - "sleep\\s+stabilization"
 
   dialectical_behavior:
     patterns:
       - "dialectical\\s+behavior"
       - "\\bdbt\\b"
+
+  other_psychological:
+    patterns:
+      - "emotional\\s+regulation"
+      - "\\bpbre\\b"
+      - "emotional\\s+(positive|negative)\\s+words"
+    review_flag: true
 
 # Behavioral interventions that are typically not psychological in focus.
 non_psychological_behavioral:
@@ -149,11 +217,45 @@ non_psychological_behavioral:
       - "smoking\\s+cessation"
       - "health\\s+education"
       - "wellness"
+      - "light\\s+exposure"
+      - "light\\s+deprivation"
 
   behavioral_other:
     patterns:
       - "behavioral\\s+intervention"
       - "behavioural\\s+intervention"
+    review_flag: true
+
+  research_paradigm:
+    patterns:
+      - "psychophysical"
+      - "experimental\\s+heat\\s+pain"
+      - "cover\\s+story"
+      - "nocebo"
+      - "PASAT"
+      - "quantitative\\s+sensory"
+      - "\\bqst\\b"
+      - "resting\\s+state\\s+eeg"
+      - "picture\\s+viewing\\s+eeg"
+      - "cognitive\\s+assessment\\s+mapping"
+      - "affective\\s+touch"
+      - "walk\\s+test"
+      - "light\\s+deprivation"
+      - "light\\s+exposure.*flash"
+      - "word\\s+reading\\s+task"
+      - "virtual\\s+dodgeball"
+      - "hyperventilation.*postural\\s+control"
+      - "thermal\\s+stimuli"
+      - "pressure\\s+pain\\s+threshold"
+      - "pain\\s+threshold\\s+test"
+      - "functional\\s+magnetic\\s+resonance"
+      - "\\bfmri\\b"
+    exclude:
+      - "emotional\\s+regulation"
+      - "emotional\\s+(positive|negative)"
+      - "\\bpbre\\b"
+      - "consecutive\\s+days"
+      - "administered\\s+for\\s+one\\s+hour"
     review_flag: true
 
 # Non-behavioral co-intervention modalities (when present in the same trial).
