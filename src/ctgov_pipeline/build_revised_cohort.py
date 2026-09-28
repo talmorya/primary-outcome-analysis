@@ -124,7 +124,6 @@ def _parse_record(
     cohort_included = (
         cond.eligibility in {"eligible", "borderline"}
         and intervention_elig.intervention_eligible
-        and not mechanism_elig.mechanism_excluded
     )
 
     if cond.eligibility == "excluded":
@@ -133,9 +132,6 @@ def _parse_record(
     elif not intervention_elig.intervention_eligible:
         exclusion_stage = "intervention"
         exclusion_reason = intervention_elig.exclusion_reason or "intervention_ineligible"
-    elif mechanism_elig.mechanism_excluded:
-        exclusion_stage = "mechanism"
-        exclusion_reason = mechanism_elig.exclusion_reason or "mechanism_study"
     else:
         exclusion_stage = ""
         exclusion_reason = ""
@@ -165,6 +161,9 @@ def _parse_record(
         "intervention_review_flag": intervention_cls.review_flag,
         "is_multimodal": intervention_cls.is_multimodal,
         "multimodal_modalities": _join(intervention_cls.multimodal_modalities),
+        "control_arm_types": _join(intervention_cls.control_arm_types),
+        "control_arms_raw": json.dumps(intervention_cls.control_arms_raw, ensure_ascii=False),
+        "mechanism_study_outcomes_only": mechanism_elig.all_outcomes_mechanistic,
         "interventions_raw": json.dumps(interventions, ensure_ascii=False),
         "intervention_names": _join([item.get("name", "") for item in interventions]),
         "intervention_types": _join(sorted({item.get("type", "") for item in interventions})),
@@ -314,11 +313,18 @@ def _write_report(
     for reason, n in int_excl["exclusion_reason"].value_counts().items():
         lines.append(f"- `{reason}`: {n}")
 
-    lines.extend(["", "### Mechanism exclusion reasons", ""])
-    for reason, n in mech_excl["exclusion_reason"].value_counts().items():
-        lines.append(f"- `{reason}`: {n}")
-
-    lines.extend(["", "## Intervention categories (eligible cohort)", ""])
+    lines.extend(
+        [
+            "",
+            "### Mechanism-only outcome flag (not an exclusion stage)",
+            "",
+            f"- **Studies with all registered outcomes mechanistic (historical flag):** "
+            f"{int((included['mechanism_study_outcomes_only'] == True).sum()) if 'mechanism_study_outcomes_only' in included.columns else 0}",
+            "",
+            "## Intervention categories (eligible cohort)",
+            "",
+        ]
+    )
     cat_counts: dict[str, int] = {}
     for cats in included["intervention_categories"].fillna(""):
         for cat in [c.strip() for c in str(cats).split("|") if c.strip()]:

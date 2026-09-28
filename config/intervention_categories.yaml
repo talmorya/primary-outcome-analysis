@@ -1,9 +1,8 @@
-version: "1.0.0"
+version: "2.0.0"
 
-# Treatment-oriented behavioral intervention categories for cohort classification.
-# Applied to BEHAVIORAL (and behavioral-text OTHER) arms; control/sham arms are ignored.
-
+# Treatment-oriented intervention categories (active arms only; comparators excluded).
 # Comparator arms: matched against intervention arm NAME only (not description).
+
 control_arm:
   patterns:
     - "placebo"
@@ -49,16 +48,17 @@ mechanism_arm:
     - "administered\\s+for\\s+one\\s+hour"
 
 categories:
-  psychological_therapy:
-    label: "Psychological therapy"
+  psychological_cognitive:
+    label: "Psychological & cognitive therapy"
+    description: >
+      Changing thoughts, cognitive distortions, and behavioral coping (not brain-retraining
+      or exposure-based unlearning of pain loops).
     patterns:
       - "cognitive\\s+behav"
       - "cognitive-behavioral"
       - "\\bcbt\\b"
       - "acceptance\\s+and\\s+commitment"
       - "\\bact\\b"
-      - "exposure\\s+therapy"
-      - "graded\\s+exposure"
       - "psychotherapy"
       - "psychodynamic"
       - "interpersonal\\s+therapy"
@@ -74,8 +74,25 @@ categories:
       - "cognitive\\s+functional"
       - "\\bcft\\b"
 
-  mind_body:
-    label: "Mind-body"
+  neuroplastic_recovery_therapy:
+    label: "Neuroplastic recovery therapy"
+    description: >
+      Brain-retraining approaches aimed at unlearning maladaptive neural pain loops
+      (distinct from general cognitive coping).
+    patterns:
+      - "pain\\s+reprocess"
+      - "pain\\s+re-processing"
+      - "\\bprt\\b"
+      - "emotional\\s+awareness\\s+and\\s+expression"
+      - "\\beaet\\b"
+      - "exposure\\s+therapy"
+      - "graded\\s+exposure"
+
+  mind_body_integrative:
+    label: "Mind-body & integrative practice"
+    description: >
+      Movement, touch, or body-based practice integrated with mental focus to calm
+      the nervous system (includes former mind-body and complementary categories).
     patterns:
       - "mindful"
       - "\\bmbsr\\b"
@@ -92,9 +109,21 @@ categories:
       - "biofeedback"
       - "neurofeedback"
       - "guided\\s+imagery"
+      - "acupuncture"
+      - "massage"
+      - "tuina"
+      - "chiropractic"
+      - "osteopath"
+      - "shiatsu"
+      - "music\\s+therapy"
+      - "music\\s+listening"
+      - "art\\s+therapy"
 
-  pain_education_self_management:
-    label: "Pain education & self-management"
+  education_self_management:
+    label: "Education & self-management"
+    description: >
+      Educational and habit-focused tools to conceptualize pain and alter daily
+      routines (includes pain education and lifestyle-oriented behavioral content).
     patterns:
       - "pain\\s+education"
       - "pain\\s+neuroscience\\s+education"
@@ -103,32 +132,11 @@ categories:
       - "psycho-education"
       - "patient\\s+education"
       - "self[- ]management"
-      - "pain\\s+reprocessing"
-      - "\\bprt\\b"
       - "coping\\s+skills"
       - "pain\\s+coping"
       - "coaching"
       - "counsel"
-
-  physical_activity_exercise:
-    label: "Physical activity & exercise"
-    patterns:
-      - "exercise"
-      - "physical\\s+activity"
-      - "aerobic"
-      - "walking"
-      - "walk with ease"
-      - "stretching"
-      - "workout"
-      - "movement\\s+therapy"
-      - "physiotherapy"
-      - "physical\\s+therapy"
-      - "rehabilitation"
-      - "manual\\s+therapy"
-
-  lifestyle_behavioral:
-    label: "Lifestyle & behavioral health"
-    patterns:
+      - "pacing"
       - "diet"
       - "nutrition"
       - "dietary"
@@ -143,21 +151,30 @@ categories:
       - "light\\s+deprivation"
       - "wellness"
 
-  complementary_integrative:
-    label: "Complementary & integrative"
+  physical_rehabilitation:
+    label: "Physical rehabilitation"
+    description: >
+      Biomechanics and physical capacity (exercise, strengthening, structured PT).
     patterns:
-      - "acupuncture"
-      - "massage"
-      - "tuina"
-      - "chiropractic"
-      - "osteopath"
-      - "shiatsu"
-      - "music\\s+therapy"
-      - "music\\s+listening"
-      - "art\\s+therapy"
+      - "exercise"
+      - "physical\\s+activity"
+      - "aerobic"
+      - "walking"
+      - "walk with ease"
+      - "stretching"
+      - "workout"
+      - "strengthening"
+      - "resistance\\s+training"
+      - "movement\\s+therapy"
+      - "physiotherapy"
+      - "physical\\s+therapy"
+      - "rehabilitation"
+      - "manual\\s+therapy"
 
-  multidisciplinary_program:
-    label: "Multidisciplinary pain program"
+  multidisciplinary_interdisciplinary:
+    label: "Multidisciplinary / interdisciplinary program"
+    description: >
+      Formal multi-provider programs (e.g. intensive pain clinics combining disciplines).
     patterns:
       - "multidisciplinary"
       - "interdisciplinary"
@@ -167,8 +184,11 @@ categories:
       - "work[- ]hardening"
       - "headache\\s+management\\s+program"
 
-  digital_behavioral:
-    label: "Digital behavioral intervention"
+  digital_health_delivery:
+    label: "Digital health delivery"
+    description: >
+      Technology-mediated delivery (apps, telehealth, VR); may co-occur with content
+      categories (e.g. app-based CBT → psychological_cognitive + digital_health_delivery).
     patterns:
       - "internet-delivered"
       - "web-based"
@@ -177,11 +197,11 @@ categories:
       - "telehealth"
       - "telemedicine"
       - "virtual\\s+reality"
+      - "\\bvr\\b"
       - "RELAXaHEAD"
       - "PainGuide"
       - "Migraine\\s+Manager"
 
-# Non-behavioral co-intervention types (for is_multimodal flag only).
 multimodal_modalities:
   pharmacological:
     intervention_types: ["DRUG", "BIOLOGICAL", "DIETARY SUPPLEMENT"]

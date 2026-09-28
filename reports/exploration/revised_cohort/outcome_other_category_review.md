@@ -1,11 +1,11 @@
 # Outcome `other` category review
 
-Eligible cohort primary outcomes classified as `other` / `other` or `uncertain`: **343**
+Eligible cohort primary outcomes classified as `other` / `other` or `uncertain`: **321**
 
 ## Likely misclassification themes
 
-- **instrument_name_only:** 23
 - **sleep:** 23
+- **instrument_name_only:** 19
 - **fatigue:** 5
 
 ## Sample `other` primary outcome measures (top 40 by frequency)
@@ -23,8 +23,6 @@ Eligible cohort primary outcomes classified as `other` / `other` or `uncertain`:
 - (2) State Optimism/Positive Future Expectancies
 - (2) Sleep Quality
 - (2) Fatigue
-- (2) Attentional bias from baseline (pre-training)
-- (2) Changes on Attentional bias from baseline (pre-training) to 1 day post-training
 - (2) Change from baseline of psychological flexibility at immediately after the 4-week treatments
 - (2) Hip flexors range of movement
 - (2) Circadian core body temperature
@@ -50,6 +48,8 @@ Eligible cohort primary outcomes classified as `other` / `other` or `uncertain`:
 - (1) Physical activity level
 - (1) Physical Function
 - (1) Physical Activity Level
+- (1) 6-minute walk
+- (1) Walking behaviors
 
 ## Recommended fixes before finalization
 

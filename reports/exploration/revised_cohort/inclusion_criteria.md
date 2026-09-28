@@ -19,7 +19,7 @@ A study is **`cohort_included = True`** only if it passes all three stages:
 
 - **Include:** ≥1 treatment-oriented behavioral arm classified into an intervention category
 - **Exclude:** no behavioral arm, control/sham-only behavioral arms, mechanism/lab arms only
-- **Categories:** `psychological_therapy`, `mind_body`, `pain_education_self_management`, `physical_activity_exercise`, `lifestyle_behavioral`, `complementary_integrative`, `multidisciplinary_program`, `digital_behavioral`, `other_behavioral_treatment`
+- **Categories (v2.0.0):** `psychological_cognitive`, `neuroplastic_recovery_therapy`, `mind_body_integrative`, `education_self_management`, `physical_rehabilitation`, `multidisciplinary_interdisciplinary`, `digital_health_delivery`, `other_behavioral_treatment` — see `FINAL_INCLUSION_RULES.md`
 - **Multimodal flag:** `is_multimodal` = behavioral treatment + drug/device/procedure co-intervention (trial still eligible)
 
 ### 3. Treatment vs mechanism (outcome-based)

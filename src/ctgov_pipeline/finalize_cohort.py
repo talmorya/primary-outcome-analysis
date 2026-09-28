@@ -16,7 +16,7 @@ from .config_loader import PROJECT_ROOT
 
 FINAL_RUN_ID = "final_cohort_20260922"
 SOURCE_EXTRACTION_RUN_ID = "full_20260823_201251"
-EXPECTED_ELIGIBLE_STUDIES = 664
+EXPECTED_ELIGIBLE_STUDIES = 666
 
 
 def _write_cohort_report(
@@ -119,8 +119,25 @@ def _write_manifest(path: Path, *, eligible: int, outcomes: int) -> None:
     path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
 
 
-def finalize_cohort() -> Path:
-    review_dir = build_revised_cohort()
+def finalize_cohort(*, review_dir: Path | None = None) -> Path:
+    if review_dir is None:
+        raw_studies = (
+            PROJECT_ROOT
+            / "data"
+            / "raw"
+            / "full"
+            / SOURCE_EXTRACTION_RUN_ID
+            / "studies"
+        )
+        if raw_studies.is_dir() and any(raw_studies.glob("*.json")):
+            review_dir = build_revised_cohort()
+        else:
+            review_dir = PROJECT_ROOT / "reports" / "exploration" / "revised_cohort"
+            if not (review_dir / "studies.csv").is_file():
+                raise FileNotFoundError(
+                    "No raw JSON and no reports/exploration/revised_cohort/studies.csv; "
+                    "run build_revised_cohort or scripts/refresh_revised_cohort_from_tables.py"
+                )
     studies_df = pd.read_csv(review_dir / "studies.csv")
     outcomes_df = pd.read_csv(review_dir / "primary_outcomes.csv")
     audit_df = pd.read_csv(review_dir / "exclusion_audit.csv")

@@ -1,5 +1,13 @@
 # Primary outcome analysis — ClinicalTrials.gov extraction pipeline
 
+**Canonical git repository (use this folder in Cursor / terminal):**
+
+`~/Library/Mobile Documents/com~apple~CloudDocs/Documents/academic/phd/מחקר/Projects/primary_outcome_analysis`
+
+Remote: `https://github.com/talmorya/primary-outcome-analysis.git`
+
+An older duplicate folder may exist under `.../nociplastic_pain/Projects/primary_outcome_analysis` **without** `.git`. Do not edit that copy; open the **מחקר** path above so commits and GitHub stay in sync.
+
 Reproducible pipeline for extracting registered primary outcomes from **behavioral interventional** chronic pain trials on ClinicalTrials.gov API v2.
 
 ## Research scope

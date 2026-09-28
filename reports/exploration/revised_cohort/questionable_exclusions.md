@@ -4,17 +4,16 @@ Cases that may warrant manual review after classifier fix.
 
 ## Mechanism-stage exclusions (outcome-based)
 
-**2 studies** — all registered outcomes mechanistic with no clinical/treatment-relevant outcome among primary, secondary, or other outcomes.
+**0 studies** — all registered outcomes mechanistic with no clinical/treatment-relevant outcome among primary, secondary, or other outcomes.
 
-- **NCT01857219** — `mechanism_only_outcomes` | A Brain Imaging Study of Tai Chi on Fibromyalgia
-- **NCT05773482** — `mechanism_only_outcomes` | Effects of Breathing and Attention Training (BAT) on Pain Modulation
 
 ## Included with mechanistic primary outcomes
 
-**16 studies** — treatment-oriented cohort members whose registered primary outcomes are mechanistic (clinical outcomes may appear in secondary/other).
+**18 studies** — treatment-oriented cohort members whose registered primary outcomes are mechanistic (clinical outcomes may appear in secondary/other).
 
 - **NCT00796536** | Using Functional MRI to Evaluate Cognitive Behavioral Therapy Treatmen
 - **NCT00864422** | Changes in Motor Cortex Following Exercises for Chronic Low Back Pain
+- **NCT01857219** | A Brain Imaging Study of Tai Chi on Fibromyalgia
 - **NCT02407665** | Tai Chi Intervention and Brain Imaging Study Among Fibromyalgia Patien
 - **NCT02969707** | Use of Repetitive Transcranial Magnetic Stimulation to Augment Hypnoti
 - **NCT03354585** | Mindfulness and Chronic Low Back Pain
@@ -22,6 +21,7 @@ Cases that may warrant manual review after classifier fix.
 - **NCT04451564** | Understanding and Restoring Dopaminergic Function in Fibromyalgia Pati
 - **NCT04862871** | Enhancing Analgesia in Chronic Pain Through Exercise
 - **NCT05578781** | Music-based Treatments and Pain: Underlying Mechanisms and the Benefic
+- **NCT05773482** | Effects of Breathing and Attention Training (BAT) on Pain Modulation
 - **NCT05905159** | Attentional Bias Modification in Fibromyalgia Patients (ABM)
 - **NCT06157866** | Cognitive Training to Enhance Brain Concordance During Acupuncture
 - **NCT07023523** | Self-regulation of Real-time fMRI Brain Activity in Chronic Pain
@@ -43,7 +43,7 @@ Cases that may warrant manual review after classifier fix.
 - **NCT05257356** — `mechanism_arms_only` | Increased Emotional-motivational Processing in Patients with Chronic P
 - **NCT06322550** — `mechanism_arms_only` | Influence of Role-expectancy on Patient Reported Outcomes Among Patien
 - **NCT07691164** — `mechanism_arms_only` | Evolution of the Cognitive Profile and Quality of Life of Adult Patien
-- **NCT07720895** — `no_treatment_behavioral_arm` | Default Mode Network Connectivity and Nocebo Responses in Migraine: A 
+- **NCT07720895** — `mechanism_arms_only` | Default Mode Network Connectivity and Nocebo Responses in Migraine: A 
 
 ## Included condition-borderline cases
 
@@ -54,7 +54,7 @@ Cases that may warrant manual review after classifier fix.
 
 ## Included: other_behavioral_treatment only (catch-all)
 
-**70 studies**
+**68 studies**
 
 - **NCT00000423** | Support, Health, and Fibromyalgia
 - **NCT00267618** | Family Help Program: Pediatric Recurrent Headache and Abdominal Pain
@@ -81,4 +81,4 @@ Cases that may warrant manual review after classifier fix.
 - **NCT03207828** | Testing Interventions for Patients With Fibromyalgia and Depression
 - **NCT03463824** | The VIGOR Study - Virtual Immersive Gaming to Optimize Recovery in Low
 - **NCT03466008** | Whole-Body Cryotherapy (WBC) as an Adjunct Treatment on Pain in Fibrom
-- … and 45 more
+- … and 43 more

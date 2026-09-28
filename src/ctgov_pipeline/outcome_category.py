@@ -5,6 +5,8 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
+from .outcome_mechanism import is_mechanistic_outcome
+
 
 @dataclass
 class OutcomeCategory:
@@ -18,12 +20,32 @@ def _text(measure: str | None, description: str | None, time_frame: str | None) 
     return " ".join(part for part in [measure or "", description or "", time_frame or ""] if part).lower()
 
 
+def _mechanistic_subcategory(text: str) -> str:
+    if re.search(r"\bfmri\b|\beeg\b|neuroimaging|connectivity|brain activity|neural", text):
+        return "neuroimaging_neural"
+    if re.search(r"qst|quantitative sensory|pain threshold|hyperalgesia|pressure pain", text):
+        return "sensory_qst"
+    if re.search(r"biomarker|cytokine|cortisol|gene expression|neurotransmitter|inflammation", text):
+        return "biomarker_inflammatory"
+    if re.search(r"\bhrv\b|heart rate variability|psychophysiol|electrophysiol", text):
+        return "psychophysiological"
+    return "other_mechanistic"
+
+
 def classify_outcome_category(
     measure: str | None,
     description: str | None,
     time_frame: str | None,
 ) -> OutcomeCategory:
     text = _text(measure, description, time_frame)
+
+    if is_mechanistic_outcome(measure, description, time_frame):
+        sub = _mechanistic_subcategory(text)
+        return OutcomeCategory(
+            outcome_category="mechanistic",
+            outcome_subcategory=sub,
+            rule="CAT_MECHANISTIC",
+        )
 
     rules: list[tuple[str, str, str, list[str]]] = [
         (

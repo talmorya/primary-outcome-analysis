@@ -26,19 +26,19 @@ class RevisedCohortTests(unittest.TestCase):
         cls.intervention_config = load_yaml("intervention_categories.yaml")
         cls.condition_config = load_yaml("condition_patterns_proposed.yaml")
 
-    def test_cbt_classified_as_psychological_therapy(self) -> None:
+    def test_cbt_classified_as_psychological_cognitive(self) -> None:
         result = classify_intervention_categories(
             [{"type": "BEHAVIORAL", "name": "Cognitive Behavioral Therapy"}],
             self.intervention_config,
         )
-        self.assertIn("psychological_therapy", result.intervention_categories)
+        self.assertIn("psychological_cognitive", result.intervention_categories)
 
     def test_exercise_classified_and_eligible(self) -> None:
         result = classify_intervention_categories(
             [{"type": "BEHAVIORAL", "name": "Aerobic exercise program"}],
             self.intervention_config,
         )
-        self.assertIn("physical_activity_exercise", result.intervention_categories)
+        self.assertIn("physical_rehabilitation", result.intervention_categories)
         self.assertTrue(evaluate_intervention_eligibility(result).intervention_eligible)
 
     def test_psychophysical_mechanism_excluded(self) -> None:
@@ -60,7 +60,7 @@ class RevisedCohortTests(unittest.TestCase):
             }
         }
         mech = evaluate_mechanism_exclusion(classification=result, record=record)
-        self.assertTrue(mech.mechanism_excluded)
+        self.assertTrue(mech.mechanism_excluded)  # descriptive flag; cohort no longer excludes on this
 
     def test_mechanistic_primary_with_clinical_other_included(self) -> None:
         result = classify_intervention_categories(
@@ -169,7 +169,7 @@ class RevisedCohortTests(unittest.TestCase):
             ],
             self.intervention_config,
         )
-        self.assertIn("psychological_therapy", result.intervention_categories)
+        self.assertIn("psychological_cognitive", result.intervention_categories)
         record = {
             "protocolSection": {
                 "designModule": {"designInfo": {"primaryPurpose": "TREATMENT"}},
@@ -183,10 +183,69 @@ class RevisedCohortTests(unittest.TestCase):
         self.assertEqual(cat.outcome_category, "pain_recovery")
         self.assertEqual(cat.outcome_subcategory, "pain_intensity")
 
+    def test_prt_maps_to_neuroplastic_recovery(self) -> None:
+        result = classify_intervention_categories(
+            [{"type": "BEHAVIORAL", "name": "Pain reprocessing therapy (PRT)"}],
+            self.intervention_config,
+        )
+        self.assertIn("neuroplastic_recovery_therapy", result.intervention_categories)
+
+    def test_eaet_maps_to_neuroplastic_recovery(self) -> None:
+        result = classify_intervention_categories(
+            [
+                {
+                    "type": "BEHAVIORAL",
+                    "name": "Emotional Awareness and Expression Therapy (EAET)",
+                }
+            ],
+            self.intervention_config,
+        )
+        self.assertIn("neuroplastic_recovery_therapy", result.intervention_categories)
+
+    def test_mechanistic_outcome_category(self) -> None:
+        cat = classify_outcome_category(
+            "Functional connectivity (fMRI)", "Resting-state brain networks", "12 weeks"
+        )
+        self.assertEqual(cat.outcome_category, "mechanistic")
+        self.assertEqual(cat.outcome_subcategory, "neuroimaging_neural")
+
+    def test_acupuncture_not_multimodal_with_behavioral_control(self) -> None:
+        result = classify_intervention_categories(
+            [
+                {"type": "DEVICE", "name": "Verum acupuncture"},
+                {"type": "DEVICE", "name": "Sham acupuncture"},
+                {
+                    "type": "BEHAVIORAL",
+                    "name": "Usual care",
+                    "description": "Health education on lifestyle and migraine self-management.",
+                },
+            ],
+            self.intervention_config,
+        )
+        self.assertEqual(result.intervention_categories, ["mind_body_integrative"])
+        self.assertIn("usual_care", result.control_arm_types)
+        # DEVICE delivery may set multimodal_modalities=device even when control is behavioral usual care
+        self.assertIn("device", result.multimodal_modalities)
+
     def test_outcome_disability(self) -> None:
         cat = classify_outcome_category("Roland Morris Disability Questionnaire", None, None)
         self.assertEqual(cat.outcome_category, "pain_interference")
         self.assertEqual(cat.outcome_subcategory, "disability")
+
+    def test_usual_care_comparator_skips_description_categories(self) -> None:
+        result = classify_intervention_categories(
+            [
+                {"type": "DEVICE", "name": "Verum acupuncture"},
+                {"type": "DEVICE", "name": "Sham acupuncture"},
+                {
+                    "type": "BEHAVIORAL",
+                    "name": "Usual care",
+                    "description": "Health education on lifestyle and migraine self-management.",
+                },
+            ],
+            self.intervention_config,
+        )
+        self.assertEqual(result.intervention_categories, ["mind_body_integrative"])
 
     def test_acupuncture_on_device_arm(self) -> None:
         result = classify_intervention_categories(
@@ -197,7 +256,7 @@ class RevisedCohortTests(unittest.TestCase):
             ],
             self.intervention_config,
         )
-        self.assertIn("complementary_integrative", result.intervention_categories)
+        self.assertIn("mind_body_integrative", result.intervention_categories)
         self.assertTrue(evaluate_intervention_eligibility(result).intervention_eligible)
 
     def test_cbt_not_control_when_waitlist_in_description(self) -> None:
@@ -211,7 +270,7 @@ class RevisedCohortTests(unittest.TestCase):
             ],
             self.intervention_config,
         )
-        self.assertIn("psychological_therapy", result.intervention_categories)
+        self.assertIn("psychological_cognitive", result.intervention_categories)
         self.assertTrue(evaluate_intervention_eligibility(result).intervention_eligible)
 
     def test_cbt_on_other_arm_type(self) -> None:
@@ -227,7 +286,7 @@ class RevisedCohortTests(unittest.TestCase):
             ],
             self.intervention_config,
         )
-        self.assertIn("psychological_therapy", result.intervention_categories)
+        self.assertIn("psychological_cognitive", result.intervention_categories)
         self.assertTrue(result.is_multimodal)
 
 

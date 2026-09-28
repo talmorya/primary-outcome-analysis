@@ -1,10 +1,10 @@
 {
   "run_id": "final_cohort_20260922",
-  "frozen_at_utc": "2026-09-22T14:57:58.450566+00:00",
+  "frozen_at_utc": "2026-09-28T13:02:34.413162+00:00",
   "source_extraction_run_id": "full_20260823_201251",
   "master_pool_studies": 696,
-  "eligible_studies": 664,
-  "primary_outcome_rows": 1537,
+  "eligible_studies": 666,
+  "primary_outcome_rows": 1539,
   "manual_decisions": {
     "NCT00864422": "KEEP; primary_outcome_mechanistic=TRUE, has_clinical_outcome_anywhere=TRUE",
     "NCT01118988": "KEEP; heterogeneous chronic pain conditions retained (no heterogeneity exclusion)"

@@ -31,22 +31,27 @@ class MechanismEligibility:
 def evaluate_intervention_eligibility(
     classification: InterventionCategoryResult,
 ) -> InterventionEligibility:
-    if not classification.has_behavioral_arm:
+    if not classification.has_active_treatment_arm:
+        if classification.has_control_arm:
+            return InterventionEligibility(
+                intervention_eligible=False,
+                exclusion_reason="control_arms_only",
+            )
         return InterventionEligibility(
             intervention_eligible=False,
-            exclusion_reason="no_behavioral_arm",
+            exclusion_reason="no_active_treatment_arm",
         )
 
     if not classification.intervention_categories:
-        if classification.has_mechanism_arm and not classification.has_control_arm:
+        if classification.has_mechanism_arm:
             return InterventionEligibility(
                 intervention_eligible=False,
                 exclusion_reason="mechanism_arms_only",
             )
-        if classification.has_control_arm and not classification.has_mechanism_arm:
+        if not classification.has_active_behavioral_arm:
             return InterventionEligibility(
                 intervention_eligible=False,
-                exclusion_reason="control_arms_only",
+                exclusion_reason="no_active_behavioral_arm",
             )
         return InterventionEligibility(
             intervention_eligible=False,

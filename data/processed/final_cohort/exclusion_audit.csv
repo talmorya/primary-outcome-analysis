@@ -134,7 +134,7 @@ NCT01800604,existing_extraction,False,condition,pathology_other,excluded,True,Fa
 NCT01802671,existing_extraction,True,,,eligible,True,False
 NCT01813669,existing_extraction,True,,,eligible,True,False
 NCT01850875,existing_extraction,True,,,eligible,True,False
-NCT01857219,existing_extraction,False,mechanism,mechanism_only_outcomes,eligible,True,True
+NCT01857219,existing_extraction,True,,,eligible,True,False
 NCT01893073,existing_extraction,True,,,eligible,True,False
 NCT01918189,existing_extraction,True,,,eligible,True,False
 NCT01944150,existing_extraction,True,,,eligible,True,False
@@ -430,7 +430,7 @@ NCT05695274,existing_extraction,True,,,eligible,True,False
 NCT05698914,existing_extraction,False,condition,surgical_postoperative,excluded,True,False
 NCT05738213,existing_extraction,True,,,eligible,True,False
 NCT05755698,existing_extraction,True,,,eligible,True,False
-NCT05773482,existing_extraction,False,mechanism,mechanism_only_outcomes,eligible,True,True
+NCT05773482,existing_extraction,True,,,eligible,True,False
 NCT05780021,existing_extraction,True,,,eligible,True,False
 NCT05804812,existing_extraction,True,,,eligible,True,False
 NCT05811624,existing_extraction,True,,,eligible,True,False
@@ -662,7 +662,7 @@ NCT07691164,existing_extraction,False,intervention,mechanism_arms_only,eligible,
 NCT07696741,existing_extraction,True,,,eligible,True,False
 NCT07698249,existing_extraction,True,,,eligible,True,False
 NCT07700589,existing_extraction,True,,,eligible,True,False
-NCT07720895,existing_extraction,False,intervention,no_treatment_behavioral_arm,eligible,False,True
+NCT07720895,existing_extraction,False,intervention,mechanism_arms_only,eligible,False,True
 NCT07722923,existing_extraction,True,,,eligible,True,False
 NCT07724704,existing_extraction,True,,,eligible,True,False
 NCT07731750,existing_extraction,True,,,eligible,True,False
