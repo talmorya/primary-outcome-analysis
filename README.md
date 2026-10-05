@@ -1,22 +1,37 @@
 # Primary outcome analysis — ClinicalTrials.gov extraction pipeline
 
-**Canonical git repository (use this folder in Cursor / terminal):**
+Reproducible pipeline for downloading **behavioral interventional** chronic pain trials from ClinicalTrials.gov API v2 and producing structured tables of registered **primary outcomes** (verbatim text plus rule-based features).
+
+**Canonical repository path:**
 
 `~/Library/Mobile Documents/com~apple~CloudDocs/Documents/academic/phd/מחקר/Projects/primary_outcome_analysis`
 
 Remote: `https://github.com/talmorya/primary-outcome-analysis.git`
 
-An older duplicate folder may exist under `.../nociplastic_pain/Projects/primary_outcome_analysis` **without** `.git`. Do not edit that copy; open the **מחקר** path above so commits and GitHub stay in sync.
+---
 
-Reproducible pipeline for extracting registered primary outcomes from **behavioral interventional** chronic pain trials on ClinicalTrials.gov API v2.
+## Research question
 
-## Research scope
+Among behavioral interventions for chronic pain, what primary outcomes do researchers register, and how does that vary by intervention type and over time?
 
-Among behavioral/psychological interventions for chronic pain, what kinds of primary outcomes do researchers register, and how does this differ across intervention approaches and over time?
+**Production extraction** copies outcome text as registered and adds exploratory features (instruments, keywords, legacy intervention taxonomy). It does **not** build the paper’s analytic cohort or assign final outcome categories—that is a separate layer (see [Documentation map](#documentation-map)).
 
-The pipeline preserves all registered primary outcomes verbatim. Conceptual categories (pain intensity vs interference vs coping) are **not** assigned at extraction time.
+---
 
-## Cohort definition
+## Documentation map
+
+| Document | Use when you need… |
+|---|---|
+| **This README** | Setup, running **API extraction** (`run_full` / `run_pilot`), layout, **production** `studies.csv` / `primary_outcomes.csv` columns |
+| [`FINAL_INCLUSION_RULES.md`](FINAL_INCLUSION_RULES.md) | **Analytic cohort** (696 → 666): condition + intervention inclusion, intervention taxonomy v2, outcome categories, full regex/pattern tables, manual NCT decisions |
+| [`COHORT_REPRODUCTION_GUIDE.md`](COHORT_REPRODUCTION_GUIDE.md) | Commands to **build / refresh / freeze** `data/processed/final_cohort/` and verify tests |
+| [`data/processed/final_cohort/cohort_report.md`](data/processed/final_cohort/cohort_report.md) | **Only** descriptive statistics for the analytic cohort (regenerated on `finalize_cohort`) |
+
+---
+
+## API retrieval (production extraction)
+
+Default query used by `run_full` (see `src/ctgov_pipeline/run_full.py` for exact parameters):
 
 ```
 StudyType = INTERVENTIONAL
@@ -24,11 +39,9 @@ AND InterventionType = BEHAVIORAL
 AND condition ∈ {chronic back pain, fibromyalgia, migraine}
 ```
 
-- **IBS excluded**
-- CT.gov `BEHAVIORAL` is broad (CBT, mindfulness, exercise, lifestyle, etc.); non-psychological behavioral trials are **flagged**, not excluded
-- Local condition validation applied after API retrieval (33 studies excluded in full run for no target-condition match)
+Local condition matching (`config/condition_patterns.yaml`) may exclude studies that pass the API filter. Primary-headache expansion and revised condition rules apply only in the **analytic cohort** pipeline—not in the frozen full extraction run.
 
-## Full extraction (latest run)
+### Latest full extraction run
 
 | Item | Value |
 |---|---|
@@ -36,14 +49,18 @@ AND condition ∈ {chronic back pain, fibromyalgia, migraine}
 | Extraction date (UTC) | 2026-08-23T20:12:51 |
 | API version | 2.0.5 |
 | CT.gov data timestamp | 2026-08-21T09:00:05 |
-| API counts by condition | chronic back pain: 330; fibromyalgia: 233; migraine: 153 |
-| Deduplicated unique NCT IDs (API) | 707 |
-| **Cohort studies (after local filter)** | **674** |
+| **Studies in processed tables** | **674** |
 | **Primary outcome rows** | **1,591** |
 
-Processed files: `data/processed/full/full_20260823_201251/`  
-Raw JSON: `data/raw/full/full_20260823_201251/`  
-Manifest: `data/processed/full/full_20260823_201251/extraction_manifest.json`
+| Output | Path |
+|---|---|
+| Processed tables | `data/processed/full/full_20260823_201251/` |
+| Raw JSON | `data/raw/full/full_20260823_201251/` |
+| Manifest | `data/processed/full/full_20260823_201251/extraction_manifest.json` |
+
+This layer is **immutable** for analysis reproducibility; cohort logic reads from it but does not overwrite it.
+
+---
 
 ## How to run
 
@@ -52,225 +69,127 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 
-# Full extraction (~700 studies)
+# Full extraction (~700 API hits → 674 after local condition filter)
 PYTHONPATH=src python -m ctgov_pipeline.run_full
 
 # Pilot sample (~40 studies)
 PYTHONPATH=src python -m ctgov_pipeline.run_pilot
 
-# Tests
-PYTHONPATH=src python -m unittest tests.test_instrument_extraction -v
+# Extraction / feature tests
+PYTHONPATH=src python -m unittest discover -s tests -v
 ```
 
-## What the pipeline creates
+**Analytic cohort** (separate from extraction):
 
-### Two structured tables (no third analysis table)
+```bash
+PYTHONPATH=src python -m ctgov_pipeline.build_revised_cohort
+PYTHONPATH=src python -m ctgov_pipeline.finalize_cohort
+```
 
-#### `studies.csv` — one row per interventional trial
-
-| Field group | Columns |
-|---|---|
-| Identification | `nct_id`, `brief_title`, `official_title` |
-| Conditions | `conditions_raw`, `keywords_raw`, `condition_matched`, `condition_review_flag` |
-| Interventions (raw) | `interventions_raw`, `intervention_names`, `intervention_types` |
-| Behavioral classification | `behavioral_component`, `intervention_classification_rule`, `intervention_review_flag` |
-| Multimodal | `is_multimodal`, `other_modality_present`, `other_modality_type`, `other_modality_name` |
-| Non-psych behavioral flag | `non_psychological_behavioral_flag`, `non_psychological_behavioral_type`, `non_psychological_behavioral_name` |
-| Status & dates | `overall_status`, `study_type`, `phases`, `has_results`, `study_first_post_date`, `study_first_post_date_type`, `start_date`, `primary_completion_date`, `completion_date`, `last_update_post_date`, `status_verified_date` |
-| Provenance | `query_source`, `api_version`, `data_timestamp`, `extraction_run_id`, `feature_extraction_version` |
-
-See [Column reference](#column-reference) below for every column.
-
-#### `primary_outcomes.csv` — one row per registered primary outcome
-
-| Field group | Columns |
-|---|---|
-| Linkage | `outcome_id`, `nct_id`, `primary_outcome_index`, `n_primary_outcomes_in_study` |
-| Raw registered text | `primary_outcome_measure`, `primary_outcome_description`, `primary_outcome_time_frame` |
-| Exploratory features | `instruments_detected`, `acronyms_detected`, `keywords_matched`, `phrases_matched`, `action_verbs_matched` |
-| Outcome purpose (heuristic) | `outcome_purpose`, `outcome_purpose_rule`, `outcome_purpose_review_flag` |
-| Denormalized study fields | `brief_title`, `conditions_raw`, `condition_matched`, `behavioral_component`, `intervention_names`, `is_multimodal`, `overall_status`, `study_first_post_date`, `study_type`, `extraction_run_id`, `feature_extraction_version` |
-
-See [Column reference](#column-reference) below for every column.
-
-#### `outcome_annotations_template.csv`
-
-Empty schema for future manual, rule-based, or LLM-assisted annotation. No `outcome_category` assigned at extraction. Column definitions in [Column reference](#column-reference).
-
-### Column reference
-
-**Source types**
-
-| Label | Meaning |
-|---|---|
-| **Raw (API)** | Copied verbatim (or as a single JSON field) from ClinicalTrials.gov API v2 study JSON |
-| **Derived** | Simple aggregation or ID generation from raw fields; no classification rules |
-| **Engineered** | Rule-based field produced by pipeline logic and a versioned config or module |
+Details, refresh-without-raw-JSON, and test list: [`COHORT_REPRODUCTION_GUIDE.md`](COHORT_REPRODUCTION_GUIDE.md).
 
 ---
 
-#### `studies.csv`
+## Production outputs (`data/processed/full/<run_id>/`)
 
-| Column | Source | Description |
-|---|---|---|
-| `nct_id` | Raw (API) | Registry identifier (`protocolSection.identificationModule.nctId`). |
-| `brief_title` | Raw (API) | Short study title (`identificationModule.briefTitle`). |
-| `official_title` | Raw (API) | Full official title (`identificationModule.officialTitle`). |
-| `conditions_raw` | Derived | Pipe-joined list of registered conditions (`conditionsModule.conditions`). |
-| `keywords_raw` | Derived | Pipe-joined condition keywords (`conditionsModule.keywords`). |
-| `condition_matched` | Engineered | Local cohort condition label(s): `chronic_back_pain`, `fibromyalgia`, and/or `migraine`. Regex matching against `conditions_raw` + `keywords_raw` via `config/condition_patterns.yaml` (`match_conditions.py`). |
-| `condition_review_flag` | Engineered | QC flag: `True` if no target condition matched but condition text exists, or if only `chronic_back_pain` matched when generic “chronic pain” is present (possible ambiguity). |
-| `interventions_raw` | Derived | Full JSON string of all registered interventions (`armsInterventionsModule.interventions`). Preserves names, types, descriptions, arm labels. |
-| `intervention_names` | Derived | Pipe-joined intervention names extracted from `interventions_raw`. |
-| `intervention_types` | Derived | Pipe-joined unique CT.gov intervention types (e.g. `BEHAVIORAL`, `DRUG`). |
-| `behavioral_component` | Engineered | Pipe-joined psychological/behavioral approach tags from `config/intervention_taxonomy.yaml` → `approaches`. See [classification logic](#field-definitions-and-classification-logic). |
-| `intervention_classification_rule` | Engineered | Pipe-joined rule IDs that fired (e.g. `APP_CBT`, `APP_OTHER_PSYCH`). Audit trail for `behavioral_component`. |
-| `intervention_review_flag` | Engineered | QC flag for intervention classification. Set when: no interventions; fallback `other_psychological`; multiple psych tags; any matched taxonomy category with `review_flag: true`; or non-psych-only with no psych tag. Does not exclude the study. |
-| `is_multimodal` | Engineered | `True` if `behavioral_component` is non-empty **and** `other_modality_present` is `True` (psych plus another modality). |
-| `other_modality_present` | Engineered | `True` if non-psych BEHAVIORAL arms or non-behavioral co-interventions (drug, device, etc.) are present. |
-| `other_modality_type` | Engineered | Category label(s) for co-interventions (`other_modality_types` in taxonomy, or fallback to non-psych types). |
-| `other_modality_name` | Engineered | Raw intervention name(s) that triggered `other_modality_type`. |
-| `non_psychological_behavioral_flag` | Engineered | `True` if any BEHAVIORAL arm matched `non_psychological_behavioral` patterns (exercise, diet, research paradigm, etc.) without also matching a psych approach on the same arm. Informational—not an exclusion flag. |
-| `non_psychological_behavioral_type` | Engineered | Non-psych category label(s), e.g. `physical_activity`, `research_paradigm`. |
-| `non_psychological_behavioral_name` | Engineered | Raw intervention name(s) that triggered the non-psych flag. |
-| `overall_status` | Raw (API) | Recruitment/completion status (`statusModule.overallStatus`). |
-| `study_type` | Raw (API) | e.g. `INTERVENTIONAL` (`designModule.studyType`). |
-| `phases` | Derived | Pipe-joined trial phases (`designModule.phases`). |
-| `has_results` | Raw (API) | Whether posted results exist (top-level `hasResults`). |
-| `study_first_post_date` | Raw (API) | First public registration date (`statusModule.studyFirstPostDateStruct.date`). Primary time axis for trend analysis. |
-| `study_first_post_date_type` | Raw (API) | Date precision: `ACTUAL` or `ESTIMATED` (`studyFirstPostDateStruct.type`). |
-| `start_date` | Raw (API) | Study start date (`statusModule.startDateStruct.date`). |
-| `primary_completion_date` | Raw (API) | Primary completion date (`statusModule.primaryCompletionDateStruct.date`). |
-| `completion_date` | Raw (API) | Study completion date (`statusModule.completionDateStruct.date`). |
-| `last_update_post_date` | Raw (API) | Last registry update (`statusModule.lastUpdatePostDateStruct.date`). |
-| `status_verified_date` | Raw (API) | Date status last verified (`statusModule.statusVerifiedDate`). |
-| `query_source` | Derived | Human-readable description of the API retrieval query used for this run. |
-| `api_version` | Derived | CT.gov API version at extraction time (from `/studies` metadata). |
-| `data_timestamp` | Derived | CT.gov data snapshot timestamp at extraction time. |
-| `extraction_run_id` | Derived | Pipeline run identifier (e.g. `full_20260823_201251`). |
-| `feature_extraction_version` | Derived | Version string from `config/outcome_lexicon.yaml`; links study row to outcome-feature rule set. |
+Two main tables plus an annotation template. Column definitions below apply to this **extraction** layer only—not to `data/processed/final_cohort/` (different schema; see `FINAL_INCLUSION_RULES.md`).
 
----
+### `studies.csv` — one row per trial
 
-#### `primary_outcomes.csv`
+High-level groups: identification, conditions (`condition_matched`, `condition_review_flag`), raw interventions JSON, **legacy** `behavioral_component` taxonomy (`config/intervention_taxonomy.yaml`), multimodal / non-psych behavioral flags, status and dates, provenance (`extraction_run_id`, `feature_extraction_version`).
 
-| Column | Source | Description |
-|---|---|---|
-| `outcome_id` | Derived | Stable row ID: `{nct_id}__po_{index}`. |
-| `nct_id` | Raw (API) | Parent study identifier. |
-| `primary_outcome_index` | Derived | 1-based index of this outcome within the study's registered primary outcomes. |
-| `n_primary_outcomes_in_study` | Derived | Total count of primary outcomes registered for the study. |
-| `primary_outcome_measure` | Raw (API) | Outcome measure text, verbatim (`outcomesModule.primaryOutcomes[].measure`). |
-| `primary_outcome_description` | Raw (API) | Outcome description, verbatim (`primaryOutcomes[].description`). |
-| `primary_outcome_time_frame` | Raw (API) | Outcome time frame, verbatim (`primaryOutcomes[].timeFrame`). |
-| `instruments_detected` | Engineered | Pipe-joined instrument names matched by word-boundary/phrase rules in `config/outcome_lexicon.yaml` → `instruments` (`extract_outcome_features.py`). Not a conceptual pain-domain category. |
-| `acronyms_detected` | Engineered | Acronyms extracted from outcome text via regex (parenthetical and uppercase tokens, with stopword filtering). |
-| `keywords_matched` | Engineered | Lexicon keywords found in outcome text (word-boundary match). |
-| `phrases_matched` | Engineered | Lexicon phrases found as substrings in outcome text. |
-| `action_verbs_matched` | Engineered | Lexicon action verbs found in outcome text (word-boundary match). |
-| `outcome_purpose` | Engineered | Exploratory heuristic tag (e.g. `therapeutic_clinical`, `psychological`, `functional`, `feasibility_recruitment`). First-match rule cascade in `outcome_purpose.py`. **Not used to exclude outcomes.** |
-| `outcome_purpose_rule` | Engineered | Rule ID that assigned `outcome_purpose` (e.g. `PURPOSE_THERAPEUTIC`). |
-| `outcome_purpose_review_flag` | Engineered | QC flag: `True` when purpose is `uncertain` or `other` (including very short outcome text). |
-| `feature_extraction_version` | Derived | Version from `config/outcome_lexicon.yaml` used for this row's feature extraction. |
-| `brief_title` | Denormalized | Copied from `studies.csv` for convenience. |
-| `conditions_raw` | Denormalized | Copied from `studies.csv`. |
-| `condition_matched` | Denormalized | Copied from `studies.csv`. |
-| `behavioral_component` | Denormalized | Copied from `studies.csv`. Updated if intervention classification is reprocessed. |
-| `intervention_names` | Denormalized | Copied from `studies.csv`. |
-| `is_multimodal` | Denormalized | Copied from `studies.csv`. Updated if intervention classification is reprocessed. |
-| `overall_status` | Denormalized | Copied from `studies.csv`. |
-| `study_first_post_date` | Denormalized | Copied from `studies.csv`. |
-| `study_type` | Denormalized | Copied from `studies.csv`. |
-| `extraction_run_id` | Denormalized | Copied from `studies.csv`. |
+### `primary_outcomes.csv` — one row per registered primary outcome
 
-**Denormalized** columns duplicate study-level fields onto each outcome row so outcome tables can be filtered without joining. They are not re-derived from outcome text.
+Linkage (`outcome_id`, `nct_id`, indices), verbatim measure/description/time frame, lexicon-based features (`instruments_detected`, etc.), exploratory `outcome_purpose` (not exclusion), denormalized study fields.
 
----
+### `outcome_annotations_template.csv`
 
-#### `outcome_annotations_template.csv`
-
-| Column | Source | Description |
-|---|---|---|
-| `outcome_id` | — | Join key to `primary_outcomes.csv`. |
-| `nct_id` | — | Join key to `studies.csv`. |
-| `outcome_category` | Manual (future) | Planned conceptual category (pain intensity, interference, etc.). Not assigned at extraction. |
-| `instrument_name` | Manual (future) | Confirmed or corrected instrument label. |
-| `instrument_subscale` | Manual (future) | Subscale, if applicable. |
-| `annotation_method` | Manual (future) | e.g. manual, rule-based, LLM-assisted. |
-| `annotator_id` | Manual (future) | Who performed the annotation. |
-| `annotation_confidence` | Manual (future) | Annotator confidence level. |
-| `annotation_notes` | Manual (future) | Free-text notes. |
-| `annotation_version` | Manual (future) | Annotation schema/pass version. |
-| `annotated_at` | Manual (future) | Timestamp of annotation. |
+Empty schema for future manual annotation.
 
 ### Raw data (immutable)
 
 ```
 data/raw/full/<run_id>/
-├── search_pages/          # Paginated API responses per condition
-├── studies/               # One JSON file per cohort NCT ID
+├── search_pages/
+├── studies/              # one JSON per NCT ID
 └── extraction_manifest.json
 ```
 
-Raw JSON is never modified after write. Reprocessing intervention classification uses saved JSON + updated `config/intervention_taxonomy.yaml` via `PYTHONPATH=src python -m ctgov_pipeline.reprocess_interventions <run_id>`.
+Re-run legacy intervention labels on a saved run:
 
-### Field definitions and classification logic
+```bash
+PYTHONPATH=src python -m ctgov_pipeline.reprocess_interventions full_20260823_201251
+```
 
-Intervention fields are assigned by scanning each registered intervention arm against `config/intervention_taxonomy.yaml`. Rules are applied per arm, then aggregated to the study level.
+---
 
-#### `behavioral_component`
+## Column reference (production extraction only)
 
-Pipe-joined psychological/behavioral approach tags (e.g. `cbt | pain_education | motivational_interviewing`). Matched from the `approaches` section of the taxonomy. Empty when no psychological approach matched; falls back to `other_psychological` only when nothing else matched.
+**Source types:** **Raw (API)** — from CT.gov JSON; **Derived** — joins/IDs; **Engineered** — config-driven rules.
 
-#### `non_psychological_behavioral_flag`, `non_psychological_behavioral_type`, `non_psychological_behavioral_name`
+### `studies.csv`
 
-Flag and detail fields for BEHAVIORAL arms that match `non_psychological_behavioral` patterns (e.g. exercise, diet, lifestyle, research paradigms) **and did not also match a psychological approach on the same arm**.
+| Column | Source | Description |
+|---|---|---|
+| `nct_id` | Raw (API) | Registry ID (`identificationModule.nctId`). |
+| `brief_title` | Raw (API) | `identificationModule.briefTitle`. |
+| `official_title` | Raw (API) | `identificationModule.officialTitle`. |
+| `conditions_raw` | Derived | Pipe-joined `conditionsModule.conditions`. |
+| `keywords_raw` | Derived | Pipe-joined `conditionsModule.keywords`. |
+| `condition_matched` | Engineered | Labels from `config/condition_patterns.yaml` (`match_conditions.py`). |
+| `condition_review_flag` | Engineered | QC when matching is ambiguous or empty. |
+| `interventions_raw` | Derived | JSON of `armsInterventionsModule.interventions`. |
+| `intervention_names` | Derived | Pipe-joined intervention names. |
+| `intervention_types` | Derived | Pipe-joined CT.gov types (e.g. `BEHAVIORAL`, `DRUG`). |
+| `behavioral_component` | Engineered | Legacy psych approach tags (`intervention_taxonomy.yaml`). |
+| `intervention_classification_rule` | Engineered | Rule IDs for `behavioral_component`. |
+| `intervention_review_flag` | Engineered | QC for taxonomy assignment. |
+| `is_multimodal` | Engineered | Psych `behavioral_component` plus `other_modality_present`. |
+| `other_modality_*` | Engineered | Non-psych co-interventions (see taxonomy). |
+| `non_psychological_behavioral_*` | Engineered | Exercise/diet/paradigm-style BEHAVIORAL arms (informational). |
+| `overall_status`, `study_type`, `phases`, `has_results` | Raw/Derived | Design and status modules. |
+| `study_first_post_date`, date fields | Raw (API) | Status module dates. |
+| `query_source`, `api_version`, `data_timestamp`, `extraction_run_id`, `feature_extraction_version` | Derived | Run provenance. |
 
-- **`non_psychological_behavioral_flag`** — `True` if any arm matched.
-- **`non_psychological_behavioral_type`** — category label(s), e.g. `physical_activity | research_paradigm`.
-- **`non_psychological_behavioral_name`** — raw intervention name(s) that triggered the match.
+### `primary_outcomes.csv`
 
-`non_psychological_behavioral_flag = True` does **not** mean the study should be excluded. It indicates that a non-psychological behavioral component is present (often exercise-only or lab-paradigm trials typed as BEHAVIORAL on CT.gov). Define the analysis subset separately—for example, studies with an identifiable psychological `behavioral_component`, optionally excluding exercise-only trials.
+| Column | Source | Description |
+|---|---|---|
+| `outcome_id` | Derived | `{nct_id}__po_{index}`. |
+| `nct_id`, `primary_outcome_index`, `n_primary_outcomes_in_study` | Derived | Linkage and ordering. |
+| `primary_outcome_measure`, `description`, `time_frame` | Raw (API) | Verbatim registered text. |
+| `instruments_detected`, `acronyms_detected`, `keywords_matched`, `phrases_matched`, `action_verbs_matched` | Engineered | `outcome_lexicon.yaml` / `extract_outcome_features.py`. |
+| `outcome_purpose`, `outcome_purpose_rule`, `outcome_purpose_review_flag` | Engineered | Exploratory purpose tags (`outcome_purpose.py`). |
+| Denormalized study columns | Denormalized | Copy of selected `studies.csv` fields for filtering without joins. |
 
-#### `other_modality_present`, `other_modality_type`, `other_modality_name`
+### Legacy intervention / multimodal logic (extraction taxonomy)
 
-Indicate co-interventions beyond pure psychological BEHAVIORAL content:
+Intervention fields use `config/intervention_taxonomy.yaml` (approaches + non-psych patterns). Summary:
 
-- Non-BEHAVIORAL CT.gov types (e.g. `DRUG`, `DEVICE`, `PROCEDURE`) or pattern-matched modalities from `other_modality_types` (e.g. pharmacological, device, complementary_integrative, physical_rehabilitation).
-- Also set when `non_psychological_behavioral` arms are present (exercise-only trials have no psych tag but still have another modality present).
+- **`behavioral_component`** — psychological approach tags; empty if none matched.
+- **`non_psychological_behavioral_flag`** — exercise/diet/paradigm BEHAVIORAL arms without psych on same arm; does not exclude studies.
+- **`is_multimodal`** — requires psych in `behavioral_component` **and** `other_modality_present` (not “exercise-only” trials).
 
-- **`other_modality_present`** — `True` if any `other_modality_types` match **or** any non-psychological BEHAVIORAL arm matched.
-- **`other_modality_type`** / **`other_modality_name`** — type label(s) and raw name(s). When both drug/device hits and non-psych BEHAVIORAL hits exist, type/name reflect the non-behavioral co-interventions; non-psych BEHAVIORAL detail stays in `non_psychological_behavioral_*`. When **only** non-psych BEHAVIORAL content exists, type/name fall back to the non-psych fields.
+For the **analytic cohort**, intervention labels use `config/intervention_categories.yaml` v2 (`intervention_categories`, active-arm comparators, etc.)—documented in `FINAL_INCLUSION_RULES.md`.
 
-#### `is_multimodal`
-
-`True` only when the trial has **both** a psychological component in `behavioral_component` **and** `other_modality_present = True` (psych plus something else: drug, device, exercise arm, etc.).
-
-#### `other_modality_present` vs `is_multimodal`
-
-| Situation | `behavioral_component` | `other_modality_present` | `is_multimodal` |
-|---|---|---|---|
-| CBT only | `cbt` | False | False |
-| CBT + drug | `cbt` | True | **True** |
-| CBT + exercise (separate arms) | `cbt` | True | **True** |
-| Exercise only (no psych tag) | *(empty)* | True | **False** |
-| Research paradigm only (e.g. QST) | *(empty)* | True | **False** |
-
-**Important case:** A trial with a non-psychological BEHAVIORAL arm but no psychological component has `other_modality_present = True` and `is_multimodal = False`. Multimodal specifically means psych **plus** other content—not merely “not psych-only.”
-
-**Bundled descriptions:** When exercise or other non-psych content appears only as a bullet inside a single BEHAVIORAL intervention description (not a separate registered arm), it is not split out. If psych patterns match on that same arm, non-psych patterns on that arm are suppressed. See column reference for `intervention_review_flag`, `condition_review_flag`, and outcome fields.
+---
 
 ## Project layout
 
 ```
-config/                   # Condition patterns, intervention taxonomy, outcome lexicon
-src/ctgov_pipeline/       # fetch, parse, classify, feature extraction, run_full, run_pilot
-tests/                    # Instrument extraction regression tests
-data/raw/                 # Immutable API JSON (gitignored)
-data/processed/           # studies.csv, primary_outcomes.csv (gitignored)
-reports/                  # Pilot and extraction summaries
+config/                      # condition_patterns, intervention_taxonomy, intervention_categories, outcome_lexicon
+src/ctgov_pipeline/          # fetch, parse, extract, run_full, cohort builders
+tests/
+data/raw/                    # API JSON (gitignored)
+data/processed/full/         # Production extraction tables (gitignored)
+data/processed/final_cohort/ # Frozen analytic cohort (tracked in git)
+reports/                     # Exploration QC and revised_cohort review layer
+FINAL_INCLUSION_RULES.md     # Cohort + classification spec
+COHORT_REPRODUCTION_GUIDE.md # How to rebuild final_cohort
 ```
 
-## Reproducibility
+---
 
-Each run writes `extraction_manifest.json` with API version, data timestamp, query criteria, filter stats, and cohort NCT IDs. Config files are versioned in `config/`.
+## Reproducibility (extraction)
+
+Each full run writes `extraction_manifest.json` (API version, data timestamp, query, filter stats, NCT list). Config versions live under `config/`. Cohort freezes add `data/processed/final_cohort/cohort_manifest.json`.

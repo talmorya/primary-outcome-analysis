@@ -29,7 +29,7 @@
 
 ### Mechanism-only outcome flag (not an exclusion stage)
 
-- **Studies with all registered outcomes mechanistic (historical flag):** 0
+- **Studies with all registered outcomes mechanistic (historical flag):** 2
 
 ## Intervention categories (eligible cohort)
 

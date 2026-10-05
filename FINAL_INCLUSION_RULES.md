@@ -5,6 +5,8 @@
 
 This document is the single reference for **cohort inclusion**, **intervention classification**, and **primary-outcome classification**. Pattern matching is **case-insensitive** unless noted. Intervention category patterns are defined in `config/intervention_categories.yaml`; condition patterns in `config/condition_patterns_proposed.yaml`; outcome rules in `src/ctgov_pipeline/outcome_category.py` and `src/ctgov_pipeline/outcome_mechanism.py`.
 
+**Related docs:** CT.gov **extraction** pipeline and production table columns → [`README.md`](README.md). **Commands** to build/freeze the cohort → [`COHORT_REPRODUCTION_GUIDE.md`](COHORT_REPRODUCTION_GUIDE.md).
+
 **Cohort inclusion:** `cohort_included = TRUE` when **Stage 1 (condition)** and **Stage 2 (intervention)** pass. **Outcomes do not exclude studies.** Mechanistic outcomes are classified and flagged descriptively.
 
 ---
@@ -378,24 +380,9 @@ Instrument acronyms and keyword features: `config/outcome_lexicon.yaml` via `ext
 | `primary_outcome_mechanistic = TRUE` (eligible) | 18 |
 | Primary outcomes `outcome_category = mechanistic` | 91 rows |
 
-See `data/processed/final_cohort/cohort_report.md` for latest category counts.
+**Descriptive counts** (intervention/outcome distributions, status, registration year, cross-tabs): [`data/processed/final_cohort/cohort_report.md`](data/processed/final_cohort/cohort_report.md) (auto-generated on `finalize_cohort`).
 
-### Intervention category counts (eligible cohort; taxonomy v2.0.0)
-
-| Category | Studies (count) |
-|---|---:|
-| `physical_rehabilitation` | 319 |
-| `mind_body_integrative` | 272 |
-| `education_self_management` | 218 |
-| `other_behavioral_treatment` | 159 |
-| `psychological_cognitive` | 152 |
-| `digital_health_delivery` | 70 |
-| `multidisciplinary_interdisciplinary` | 29 |
-| `neuroplastic_recovery_therapy` | 22 |
-
-*(Studies may have multiple categories; counts overlap.)*
-
-**v1.0.0 → v2.0.0 ID mapping (for older tables):**
+**v1.0.0 → v2.0.0 intervention ID mapping (for older tables):**
 
 | Former ID | New ID |
 |---|---|
@@ -420,11 +407,7 @@ See `data/processed/final_cohort/cohort_report.md` for latest category counts.
 
 ## Reproduction
 
-With raw JSON: `PYTHONPATH=src python -m ctgov_pipeline.build_revised_cohort` then `finalize_cohort`.
-
-Without raw JSON: `PYTHONPATH=src python scripts/refresh_revised_cohort_from_tables.py` then `finalize_cohort`.
-
-See `COHORT_REPRODUCTION_GUIDE.md` if present in repo.
+See [`COHORT_REPRODUCTION_GUIDE.md`](COHORT_REPRODUCTION_GUIDE.md) (full rebuild vs label refresh, tests, file paths).
 
 ---
 

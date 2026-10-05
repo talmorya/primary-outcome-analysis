@@ -11,45 +11,45 @@ Eligible cohort primary outcomes classified as `other` / `other` or `uncertain`:
 ## Sample `other` primary outcome measures (top 40 by frequency)
 
 - (6) Diabetes control measured by VR d= Hb glucosidal
-- (3) Illness Perception Scale
-- (3) Change in Physical Function - Chair Stands
 - (3) Change in Physical Function - 6 Minute Walk
+- (3) Change in Physical Function - Chair Stands
+- (3) Illness Perception Scale
 - (3) Muscle Capacity
-- (2) Change in locus of control
-- (2) Dizziness Handicap Inventory
-- (2) Change in physical activity
-- (2) Participant Retention
-- (2) Positive Affect
-- (2) State Optimism/Positive Future Expectancies
-- (2) Sleep Quality
+- (2) Thoracolumbar Fascia Thickness
 - (2) Fatigue
+- (2) Sleep Quality
+- (2) State Optimism/Positive Future Expectancies
+- (2) Positive Affect
 - (2) Change from baseline of psychological flexibility at immediately after the 4-week treatments
+- (2) Participant Retention
+- (2) Change in physical activity
+- (2) Dizziness Handicap Inventory
 - (2) Hip flexors range of movement
 - (2) Circadian core body temperature
-- (2) Thoracolumbar Fascia Thickness
-- (1) Biobehavioral Fibromyalgia Index
-- (1) SF - 12
-- (1) Muscle activity onset in transversus abdominal muscle
-- (1) fatigue
-- (1) Degree of conditioning of subjects at baseline
-- (1) Proportion of completed exercise tests and questionnaires
-- (1) Estimates of the effect sizes for exercise tests and questionnaire data
-- (1) Total wake time
-- (1) Total sleep time
-- (1) Sleep efficiency
-- (1) Ambulatory Fatigue, Higher Values Indicate Greater Fatigue
-- (1) Activities Limitation Scale at six months and one year
-- (1) Stretching and strengthening exercise at six months and one year
-- (1) Visits of Physicians at six months and one year
-- (1) The measure is taken by telephone at the screening interview and by mailed survey at basel
-- (1) Back-related function
-- (1) Sickness leave
-- (1) Positive and Negative Affect Scale
-- (1) Physical activity level
-- (1) Physical Function
-- (1) Physical Activity Level
-- (1) 6-minute walk
-- (1) Walking behaviors
+- (2) Change in locus of control
+- (1) Change in Sleep Quality (PSQI Global Score)
+- (1) Appreciation of Body Functionality: Baseline
+- (1) Positive Embodiment: Positive Body Connection and Comfort (PBCC); Baseline
+- (1) Body Awareness: Body Trusting; Post negative induction procedure
+- (1) Body Awareness: Body Trusting; Post positive induction procedure
+- (1) Body Awareness: Body Trusting; Baseline
+- (1) Appreciation of Body Functionality: Post negative induction procedure
+- (1) Appreciation of Body Functionality: Post positive induction procedure
+- (1) Willingness to Pay for Continued Use of Rose Application
+- (1) Number of Biceps Curl Repetitions
+- (1) Continued Interest in Using Rose Application
+- (1) Frequency of Using Rose Application
+- (1) Lumbar Proprioception Assessment
+- (1) Paediatric Dizziness Handicap Inventory
+- (1) Size of the Myofascial Trigger Point
+- (1) Depth of the Myofascial Trigger Point
+- (1) Positive Embodiment: Positive Body Connection and Comfort (PBCC); Post positive induction procedure
+- (1) Positive Embodiment: Positive Body Connection and Comfort (PBCC); Post negative induction procedure
+- (1) Attitudes or Feelings towards One's Own Body; Baseline
+- (1) Attitudes or Feelings towards One's Own Body; Post first induction procedure
+- (1) Number of Days of At-Home Practice
+- (1) Psychosomatic status
+- (1) Assessing the impact of dietary approach on the severity of fibromyalgia, particularly on sleep quality through the Pittsburgh Sleep Quality Index (PSQI).
 
 ## Recommended fixes before finalization
 
