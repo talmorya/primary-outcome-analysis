@@ -15,24 +15,24 @@ Reproducible ClinicalTrials.gov API v2 pipeline for studying **registered primar
 ```
 StudyType = INTERVENTIONAL
 AND InterventionType = BEHAVIORAL
-AND condition ∈ {chronic back pain, fibromyalgia, migraine}
+AND condition IN (chronic back pain, fibromyalgia, migraine, headache)
 ```
 
-- **IBS excluded**
+- **IBS excluded** at condition-matching stage
 - All trial statuses retained (`overall_status` is a variable, not a filter)
-- Local condition validation post-API (`config/condition_patterns.yaml`)
-- CT.gov `BEHAVIORAL` is broad — exercise/lifestyle trials are **flagged** via `non_psychological_behavioral_flag`, not excluded
+- Local condition validation post-API (`config/condition_patterns_cohort.yaml`)
+- **Inclusion:** condition stage only (`docs/COHORT_FILTERING_RULES.md`); acute population rules in `acute_population_screen.py`
 
-Latest full run: `full_20260823_201251` — **674 studies**, **1,591 primary outcomes**
+Latest extraction run: `full_20261019_125300`. Analytic tables: `data/processed/cohort/studies.csv` (see `manifest.json` for counts).
 
 ---
 
 ## Critical constraints
 
 1. **Preserve raw outcome text verbatim** — `primary_outcome_measure`, `primary_outcome_description`, `primary_outcome_time_frame`
-2. **Do NOT assign conceptual outcome categories at extraction** (pain intensity, interference, coping, etc.). Use the separate annotation layer (`outcome_annotations_template.csv`)
+2. **Outcome categories are descriptive only** — `outcome_category` / `outcome_subcategory` in `primary_outcomes.csv` are rule-based aids for review, never used to include/exclude. The researcher's conceptual coding (pain intensity, interference, coping, etc.) is a separate manual layer; do not overwrite raw outcome text with it
 3. **`outcome_purpose` is exploratory/heuristic only** — do not use it to exclude, filter, or quantitatively classify outcomes
-4. **Two-table architecture only** — `studies.csv` + `primary_outcomes.csv`. No third denormalized analysis table
+4. **Two-table architecture only** — `data/processed/cohort/studies.csv` + `primary_outcomes.csv`. One current version of raw and processed data; no third analysis table, no per-rule audit files
 5. **Raw JSON is immutable** — reprocess from `data/raw/` rather than re-querying CT.gov unless starting a new extraction run
 6. **Instrument matching uses word-boundary logic** — do not revert to substring matching (caused ISI false positives). Run `tests/test_instrument_extraction.py` after lexicon changes
 
@@ -42,14 +42,16 @@ Latest full run: `full_20260823_201251` — **674 studies**, **1,591 primary out
 
 | Path | Contents |
 |---|---|
-| `data/processed/full/full_20260823_201251/studies.csv` | One row per trial |
-| `data/processed/full/full_20260823_201251/primary_outcomes.csv` | One row per registered primary outcome |
-| `data/raw/full/full_20260823_201251/studies/` | Per-NCT JSON (gitignored) |
-| `config/condition_patterns.yaml` | Local condition matching |
-| `config/intervention_taxonomy.yaml` | `behavioral_component`, multimodal, non-psych flags |
-| `config/outcome_lexicon.yaml` | Instrument/keyword/phrase extraction (not categories) |
+| `data/raw/full/<run_id>/studies/` | Per-NCT JSON (gitignored; keep one run) |
+| `data/processed/cohort/studies.csv` | Master pool + inclusion columns |
+| `data/processed/cohort/primary_outcomes.csv` | Primary outcomes |
+| `docs/COHORT_FILTERING_RULES.md` | Inclusion / exclusion rules |
+| `docs/DATA_COLUMNS.md` | Column dictionary |
+| `config/condition_patterns_cohort.yaml` | Target conditions, exclusion patterns, acute patterns |
+| `config/intervention_categories.yaml` | Intervention category taxonomy (active arms only) |
+| `config/outcome_lexicon.yaml` | Instrument/keyword extraction (not categories) |
 | `src/ctgov_pipeline/` | Pipeline modules |
-| `reports/full/extraction_summary.md` | Run metrics |
+| `data/processed/cohort/cohort_report.md` | Auto-generated statistics |
 
 ---
 
@@ -59,35 +61,33 @@ Latest full run: `full_20260823_201251` — **674 studies**, **1,591 primary out
 source .venv/bin/activate
 pip install -r requirements.txt
 
-PYTHONPATH=src python -m ctgov_pipeline.run_full    # full extraction
-PYTHONPATH=src python -m ctgov_pipeline.run_pilot   # ~40 study pilot
-PYTHONPATH=src python -m unittest tests.test_instrument_extraction -v
+PYTHONPATH=src python -m ctgov_pipeline.finalize_cohort   # rebuild cohort from raw JSON (no network)
+PYTHONPATH=src python -m unittest discover -s tests -v    # all tests
+PYTHONPATH=src python -m ctgov_pipeline.run_full          # NEW CT.gov pull (creates a new raw run; delete the old one)
 ```
 
 ---
 
 ## Data model essentials
 
-### `studies.csv`
-- `behavioral_component` — pipe-joined psych approaches (cbt, act, mindfulness_mbsr_mbct, pain_education, prt, etc.)
-- `is_multimodal`, `other_modality_type`, `other_modality_name` — psych component + other modality preserved separately
-- `non_psychological_behavioral_flag` — exercise/lifestyle/diet typed as BEHAVIORAL on CT.gov
+### `studies.csv` (all retrieved trials; filter `cohort_inclusion_status == included`)
+- `exclusion_reason` = `acute` | `condition`; `exclusion_detail` starts with the rule key then the specific cause
+- `brief_summary_50w`, `eligibility_criteria`, `conditions_raw`, `intervention_details` — raw text kept so classifications and exclusions can be audited
+- `intervention_categories` (active arms), `is_multimodal`, `control_arm_types`
 
 ### `primary_outcomes.csv`
 - Linked by `nct_id`; unit of analysis for outcome-selection trends
-- Exploratory: `instruments_detected`, `acronyms_detected`, `keywords_matched`, `phrases_matched`, `action_verbs_matched`
-- Heuristic: `outcome_purpose` (not for filtering)
+- Verbatim `primary_outcome_*` text + descriptive `outcome_category`, `outcome_subcategory`, `outcome_category_rule`, `outcome_category_review_flag`
+- Full definitions: `docs/DATA_COLUMNS.md`
 
 ---
 
-## Known QC issues (as of full extraction)
+## Known limits (as of the current run)
 
-- **232/674 studies** have missing `behavioral_component` — mostly exercise/lifestyle-only BEHAVIORAL trials (expected)
-- **81 studies** in catch-all `other_psychological` — taxonomy gaps (CFT, motivational interviewing, exposure therapy)
-- **279 studies** flagged `non_psychological_behavioral_flag` (41%); **136 multimodal** (20%)
-- For psych-focused analysis, define an explicit subset (studies with assigned `behavioral_component`, not exercise-only)
-
-Taxonomy gaps to address in **annotation pass**, not by re-extraction: Cognitive Functional Therapy, motivational interviewing, exposure/graded exposure, coping skills training.
+- **Judgment call:** NCT03157544 (chronic neck/LBP during an acute flare) is included.
+- **Not screened:** peri-operative / ambiguous surgery-injury timing (~7 included trials); decided not worth a rule.
+- **Classification QC targets:** ~20% of included outcome rows are `outcome_category = other` (many flagged by `outcome_category_review_flag`); ~25% of studies sit in `other_behavioral_treatment`.
+- `run_full` still writes a legacy extraction layer to `data/processed/full/` (gitignored, unused by the cohort).
 
 ---
 
@@ -96,7 +96,7 @@ Taxonomy gaps to address in **annotation pass**, not by re-extraction: Cognitive
 - Match existing style in `src/ctgov_pipeline/`
 - Config-driven rules in YAML under `config/`
 - Minimize scope — focused diffs, no over-engineering
-- Do not commit secrets or large data files (`data/raw/`, `data/processed/` are gitignored)
+- Do not commit secrets or raw data (`data/raw/` is gitignored; only `data/processed/cohort/` is tracked)
 
 ---
 
