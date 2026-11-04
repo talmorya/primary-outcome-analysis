@@ -10,18 +10,19 @@ import pandas as pd
 
 from .config_loader import PROJECT_ROOT, load_yaml
 from .fetch import get_api_version, save_json, search_all_studies
-from .parse import build_tables, parse_study_record
+from .parse import build_tables
 
 CONDITIONS = {
     "chronic_back_pain": "chronic back pain",
     "fibromyalgia": "fibromyalgia",
     "migraine": "migraine",
+    "headache": "headache",
 }
 
 ADVANCED_FILTER = "AREA[StudyType]INTERVENTIONAL AND AREA[InterventionType]BEHAVIORAL"
 QUERY_SOURCE = (
     "StudyType=INTERVENTIONAL AND InterventionType=BEHAVIORAL "
-    "AND condition IN (chronic back pain, fibromyalgia, migraine)"
+    "AND condition IN (chronic back pain, fibromyalgia, migraine, headache)"
 )
 
 
@@ -71,40 +72,6 @@ def _save_study_records(records: list[dict], output_dir: Path) -> list[str]:
     return nct_ids
 
 
-def _filter_cohort(records: list[dict]) -> tuple[list[dict], dict[str, int]]:
-    condition_config = load_yaml("condition_patterns.yaml")
-    intervention_config = load_yaml("intervention_taxonomy.yaml")
-    outcome_lexicon = load_yaml("outcome_lexicon.yaml")
-
-    kept: list[dict] = []
-    stats = {
-        "deduplicated_api_records": len(records),
-        "excluded_no_condition_match": 0,
-        "excluded_non_interventional": 0,
-    }
-
-    for record in records:
-        study_row, _ = parse_study_record(
-            record,
-            condition_config=condition_config,
-            intervention_config=intervention_config,
-            outcome_lexicon=outcome_lexicon,
-            extraction_run_id="filter",
-            api_version=None,
-            data_timestamp=None,
-        )
-        if study_row["study_type"] != "INTERVENTIONAL":
-            stats["excluded_non_interventional"] += 1
-            continue
-        if not study_row["condition_matched"]:
-            stats["excluded_no_condition_match"] += 1
-            continue
-        kept.append(record)
-
-    stats["cohort_studies"] = len(kept)
-    return kept, stats
-
-
 def run_full() -> Path:
     run_id = datetime.now(timezone.utc).strftime("full_%Y%m%d_%H%M%S")
     extraction_date = datetime.now(timezone.utc).isoformat()
@@ -133,11 +100,10 @@ def run_full() -> Path:
         deduped[nct_id] = record
 
     deduplicated = list(deduped.values())
-    cohort_records, filter_stats = _filter_cohort(deduplicated)
-    nct_ids = _save_study_records(cohort_records, raw_dir / "studies")
+    nct_ids = _save_study_records(deduplicated, raw_dir / "studies")
 
     studies_df, outcomes_df = build_tables(
-        cohort_records,
+        deduplicated,
         condition_config=condition_config,
         intervention_config=intervention_config,
         outcome_lexicon=outcome_lexicon,
@@ -180,7 +146,6 @@ def run_full() -> Path:
         },
         "condition_api_total_counts": condition_api_counts,
         "deduplicated_unique_nct_ids": len(deduplicated),
-        "filter_stats": filter_stats,
         "cohort_nct_ids": nct_ids,
         "study_count": len(studies_df),
         "primary_outcome_count": len(outcomes_df),
@@ -189,7 +154,8 @@ def run_full() -> Path:
                 "Exploratory heuristic only; not used to exclude or filter outcomes."
             ),
             "local_condition_validation": (
-                "Studies must match chronic back pain, fibromyalgia, or migraine via local rules."
+                "All deduplicated API hits are retained in raw JSON; cohort inclusion uses "
+                "condition_patterns_cohort.yaml in build_revised_cohort."
             ),
         },
     }

@@ -11,7 +11,9 @@ from ctgov_pipeline.config_loader import PROJECT_ROOT
 from ctgov_pipeline.outcome_category import classify_outcome_category
 from ctgov_pipeline.validate_outcome_categories import recompute_outcome_category, validate_outcome_row
 
-FINAL_OUTCOMES = PROJECT_ROOT / "data" / "processed" / "final_cohort" / "primary_outcomes.csv"
+FINAL_OUTCOMES = (
+    PROJECT_ROOT / "data" / "processed" / "cohort" / "primary_outcomes.csv"
+)
 
 
 class OutcomeCategoryValidationTests(unittest.TestCase):
@@ -19,7 +21,7 @@ class OutcomeCategoryValidationTests(unittest.TestCase):
     def setUpClass(cls) -> None:
         if FINAL_OUTCOMES.is_file():
             cls.outcomes = pd.read_csv(FINAL_OUTCOMES)
-            cls.included = cls.outcomes[cls.outcomes["cohort_included"] == True]
+            cls.included = cls.outcomes[cls.outcomes["cohort_inclusion_status"] == "included"]
         else:
             cls.outcomes = None
             cls.included = None

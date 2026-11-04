@@ -1,6 +1,7 @@
-version: "0.2.0-proposed"
+version: "1.0.0"
 
-# Proposed condition patterns for QC review layer (does not replace condition_patterns.yaml in pipeline).
+# Cohort condition rules (layer 2). API retrieval uses the four condition search terms;
+# local matching refines target flags and inclusion.
 
 targets:
   migraine:
@@ -19,6 +20,7 @@ targets:
       - "\\blbp\\b"
       - "non[- ]specific\\s+low\\s+back"
       - "chronic\\s+low\\s+back"
+      - "back\\s+pain"
 
   fibromyalgia:
     label: "Fibromyalgia"
@@ -26,8 +28,8 @@ targets:
       - "fibromyalgia"
       - "\\bfm\\b"
 
-  primary_headache:
-    label: "Primary headache (non-migraine)"
+  headache:
+    label: "Headache (non-migraine emphasis)"
     patterns:
       - "tension[- ]?type"
       - "tension headache"
@@ -44,17 +46,60 @@ targets:
       - "\\bndph\\b"
       - "primary headache"
       - "headache disorder"
+      - "chronic\\s+headaches?"
       - "chronic headache"
       - "episodic headache"
       - "recurrent headache"
+      - "\\bheadaches\\b"
       - "pediatric headache"
       - "headache in children"
       - "headache in adolescent"
       - "^headache$"
       - "^headaches$"
+      - "\\bheadache\\b"
 
-# Study-level exclusion rules (applied when any target matches).
-global_excludes:
+# Automatic study-level exclusions (condition stage only).
+exclusion_rules:
+  cancer_oncology:
+    patterns:
+      - "(?<!non[- ])(?<!non )cancer"
+      - "carcinoma"
+      - "oncolog"
+      - "neoplasm"
+      - "malignan"
+      - "head and neck carcinoma"
+
+  pathology_other:
+    patterns:
+      - "intracranial hypertension"
+      - "idiopathic intracranial"
+      - "pseudotumor"
+      - "meningitis"
+      - "multiple sclerosis"
+      - "clinically isolated syndrome"
+
+  acute_pain:
+    patterns:
+      - "\\bacute\\s+(low\\s+)?back\\s+pain\\b"
+      - "\\bacute\\s+back\\s+pain\\b"
+      - "\\bpain\\s*,\\s*acute\\b"
+      - "\\bacute\\s+pain\\b"
+      - "\\bacute\\s+brain\\b"
+      - "\\bacute\\s+injur"
+      - "\\bacute\\s+non[- ]cancer"
+      - "\\bacute\\s+(neck|back|musculoskeletal|headache)"
+      - "(?:neck|back|musculoskeletal|headache)(?:\\s+pain)?[\\s,:(\\-]{0,4}\\bacute\\b"
+      - '"acute"'
+      - "\\bacute\\b.{0,80}(?:diagnosis|icd)"
+      - "pain\\s+onset\\s+(within|less than|<)\\s*(3\\s*months|12\\s*weeks|ninety\\s*days)"
+      - "onset\\s+(within|less than|<)\\s*(3\\s*months|12\\s*weeks)\\s+.*pain"
+      - "pain\\s+for\\s+less\\s+than\\s+(3\\s*months|12\\s*weeks)"
+      - "duration\\s+of\\s+pain\\s+.*(less than|<)\\s*(3\\s*months|12\\s*weeks)"
+      - "within\\s+(the\\s+)?(past|previous|last)\\s+3\\s+months.*pain"
+      - "within\\s+(the\\s+)?(past|previous|last)\\s+12\\s+weeks.*pain"
+
+# Descriptive flags only — do not exclude on match alone.
+condition_features:
   post_traumatic:
     patterns:
       - "post[- ]?traumatic headache"
@@ -73,15 +118,6 @@ global_excludes:
       - "concussion, brain"
       - "mild traumatic brain"
       - "post[- ]?concussion syndrome"
-
-  cancer_oncology:
-    patterns:
-      - "(?<!non[- ])(?<!non )cancer"
-      - "carcinoma"
-      - "oncolog"
-      - "neoplasm"
-      - "malignan"
-      - "head and neck carcinoma"
 
   surgical_postoperative:
     patterns:
@@ -105,15 +141,6 @@ global_excludes:
       - "cervicogenic"
       - "pain due to malignancy"
 
-  pathology_other:
-    patterns:
-      - "intracranial hypertension"
-      - "idiopathic intracranial"
-      - "pseudotumor"
-      - "meningitis"
-      - "multiple sclerosis"
-      - "clinically isolated syndrome"
-
   visual_snow:
     patterns:
       - "visual snow"
@@ -123,15 +150,7 @@ global_excludes:
       - "vestibular schwannoma"
       - "acoustic neuroma"
 
-  acute_lbp_only:
-    target: chronic_back_pain
-    patterns:
-      - "\\bacute low back pain\\b"
-      - "\\bacute back pain\\b"
-
-# Headache-target-only exclusions (non-migraine headache expansion).
-headache_excludes:
-  moh:
+  medication_overuse_headache:
     patterns:
       - "medication[- ]?overuse"
       - "medication overuse"
@@ -139,43 +158,5 @@ headache_excludes:
       - "rebound headache"
       - "analgesic overuse"
 
-  cervicogenic:
-    patterns:
-      - "cervicogenic"
-
-  symptom_not_target:
-    patterns:
-      - "delirium"
-      - "diagnostic error"
-      - "opioid prescribing"
-      - "health services misuse"
-      - "unnecessary procedure"
-      - "reflexology"
-      - "breastfeeding"
-      - "occupational stress"
-      - "intensive care nurse"
-      - "anesthesia"
-      - "obesity & overweight"
-
-# Exclude when ME/CFS, long COVID, or POTS is the lead population and target pain
-# conditions are only incidentally co-listed (not in first 3 conditions or title).
-population_primary_excludes:
-  off_target_first_condition:
-    patterns:
-      - "me/cfs"
-      - "myalgic encephalomyelitis"
-      - "chronic fatigue syndrome"
-      - "long covid"
-      - "post[- ]?covid"
-      - "postural orthostatic tachycardia"
-      - "\\bpots\\b"
-
-# Borderline condition flags (manual review).
-borderline_rules:
-  fibromyalgia_inflammatory:
-    target: fibromyalgia
-    patterns:
-      - "systemic lupus erythematosus"
-      - "\\blupus\\b"
-    exclude_if:
-      - "^arthritis$"
+population_mismatch:
+  min_non_target_conditions: 3

@@ -1,4 +1,4 @@
-"""Proposed condition eligibility with QC exclusion rules."""
+"""Cohort condition eligibility: chronic pain targets and minimal exclusions."""
 
 from __future__ import annotations
 
@@ -6,6 +6,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Any
 
+from .acute_population_screen import AcutePopulationScreenResult, screen_acute_population
 from .match_conditions import match_conditions
 
 
@@ -13,10 +14,20 @@ from .match_conditions import match_conditions
 class ConditionEligibility:
     targets_detected: list[str]
     targets_eligible: list[str]
-    eligibility: str  # eligible | excluded | borderline
+    eligibility: str  # eligible | excluded
     exclusion_rule: str | None = None
-    borderline_reason: str | None = None
+    exclusion_detail: str | None = None  # why this specific study hit a non-acute rule
+    condition_feature_flags: list[str] = field(default_factory=list)
     review_flag: bool = False
+    acute_population_decision: str | None = None
+    acute_population_rule: str | None = None
+    acute_population_detail: str | None = None
+    acute_population_source: str | None = None
+    acute_population_snippet: str | None = None
+
+
+# "Chronic Pain" and the MeSH-style inversion "Pain, Chronic".
+_GENERIC_CHRONIC_PAIN = re.compile(r"^(?:chronic\s+pain|pain\s*,\s*chronic)$", re.IGNORECASE)
 
 
 def _compile(patterns: list[str]) -> list[re.Pattern[str]]:
@@ -46,63 +57,120 @@ def _study_text(
     brief_title: str | None = None,
     official_title: str | None = None,
     intervention_names: str | None = None,
+    eligibility_criteria: str | None = None,
 ) -> str:
     parts = list(conditions or []) + list(keywords or [])
-    for item in (brief_title, official_title, intervention_names):
+    for item in (brief_title, official_title, intervention_names, eligibility_criteria):
         cleaned = _clean(item)
         if cleaned:
             parts.append(cleaned)
     return " | ".join(parts)
 
 
-def _population_primary_mismatch(
+def _target_match_text(
     *,
     conditions: list[str] | None,
+    keywords: list[str] | None,
     brief_title: str | None = None,
     official_title: str | None = None,
+) -> str:
+    parts = list(conditions or []) + list(keywords or [])
+    for item in (brief_title, official_title):
+        cleaned = _clean(item)
+        if cleaned:
+            parts.append(cleaned)
+    return " | ".join(parts)
+
+
+def _detect_targets(
+    *,
+    conditions: list[str] | None,
+    keywords: list[str] | None,
     config: dict[str, Any],
-) -> str | None:
-    """Exclude when an off-target disorder is the primary population, not a co-listed target."""
+    brief_title: str | None = None,
+    official_title: str | None = None,
+) -> list[str]:
+    text = _target_match_text(
+        conditions=conditions,
+        keywords=keywords,
+        brief_title=brief_title,
+        official_title=official_title,
+    )
+    if not text.strip():
+        return []
+    compiled = {
+        target: _compile(spec.get("patterns", []))
+        for target, spec in config.get("targets", {}).items()
+    }
+    matched: list[str] = []
+    for target, patterns in compiled.items():
+        if any(p.search(text) for p in patterns):
+            matched.append(target)
+    return matched
+
+
+def _condition_line_is_target(line: str, config: dict[str, Any]) -> bool:
+    text = line.strip()
+    if not text:
+        return False
+    compiled = {
+        target: _compile(spec.get("patterns", []))
+        for target, spec in config.get("targets", {}).items()
+    }
+    for patterns in compiled.values():
+        if _matches_any(text, patterns):
+            return True
+    return False
+
+
+def _is_ignored_non_target_condition(line: str) -> bool:
+    return bool(_GENERIC_CHRONIC_PAIN.match(line.strip()))
+
+
+def _population_non_target_conditions(
+    *,
+    conditions: list[str] | None,
+    config: dict[str, Any],
+) -> list[str]:
+    """Non-target registered conditions when they reach the exclusion threshold, else []."""
     cond_list = [c.strip() for c in (conditions or []) if c and str(c).strip()]
     if not cond_list:
-        return None
-
-    first_lower = cond_list[0].lower()
-    title_text = " ".join(
-        part for part in (_clean(brief_title), _clean(official_title)) if part
-    ).lower()
-    title_has_target = bool(
-        re.search(
-            r"fibromyalgia|migraine|chronic (low )?back pain|low back pain|\bclbp\b|\blbp\b|headache",
-            title_text,
-        )
+        return []
+    non_target = [
+        c
+        for c in cond_list
+        if not _condition_line_is_target(c, config) and not _is_ignored_non_target_condition(c)
+    ]
+    threshold = int(
+        config.get("population_mismatch", {}).get("min_non_target_conditions", 3)
     )
-    target_in_top3 = any(
-        re.search(
-            r"fibromyalgia|migraine|chronic (low )?back|low back pain|\bclbp\b|\blbp\b",
-            cond_list[i].lower(),
-        )
-        for i in range(min(3, len(cond_list)))
-    )
+    return non_target if len(non_target) >= threshold else []
 
-    off_target_first_patterns = _compile(
-        config.get("population_primary_excludes", {}).get("off_target_first_condition", {}).get(
-            "patterns",
-            [
-                r"me/cfs",
-                r"myalgic encephalomyelitis",
-                r"chronic fatigue syndrome",
-                r"long covid",
-                r"post[- ]covid",
-                r"postural orthostatic tachycardia",
-                r"\bpots\b",
-            ],
-        )
-    )
-    if _matches_any(first_lower, off_target_first_patterns) and not target_in_top3 and not title_has_target:
-        return "off_target_primary_population"
 
+def _first_pattern_hit(text: str, patterns: list[re.Pattern[str]]) -> str | None:
+    for pattern in patterns:
+        match = pattern.search(text)
+        if match:
+            return match.group(0)
     return None
+
+
+def _detect_feature_flags(text_lower: str, config: dict[str, Any]) -> list[str]:
+    flags: list[str] = []
+    for feature_id, spec in config.get("condition_features", {}).items():
+        patterns = _compile(spec.get("patterns", []))
+        if _matches_any(text_lower, patterns):
+            flags.append(feature_id)
+    return sorted(flags)
+
+
+def _attach_acute_fields(result: ConditionEligibility, acute: AcutePopulationScreenResult) -> ConditionEligibility:
+    result.acute_population_decision = acute.decision
+    result.acute_population_rule = acute.rule
+    result.acute_population_detail = acute.detail
+    result.acute_population_source = acute.source
+    result.acute_population_snippet = acute.snippet
+    return result
 
 
 def evaluate_condition_eligibility(
@@ -112,124 +180,147 @@ def evaluate_condition_eligibility(
     config: dict[str, Any],
     brief_title: str | None = None,
     official_title: str | None = None,
-    intervention_names: str | None = None,
-    force_headache_include: bool = False,
+    brief_summary: str | None = None,
+    eligibility_criteria: str | None = None,
 ) -> ConditionEligibility:
-    text = _study_text(
+    text_core = _study_text(
         conditions=conditions,
         keywords=keywords,
         brief_title=brief_title,
         official_title=official_title,
-        intervention_names=intervention_names,
     )
-    text_lower = text.lower()
+    text_full = _study_text(
+        conditions=conditions,
+        keywords=keywords,
+        brief_title=brief_title,
+        official_title=official_title,
+        eligibility_criteria=eligibility_criteria,
+    )
+    text_core_lower = text_core.lower()
+    text_full_lower = text_full.lower()
 
+    targets_detected = _detect_targets(
+        conditions=conditions,
+        keywords=keywords,
+        config=config,
+        brief_title=brief_title,
+        official_title=official_title,
+    )
     match = match_conditions(conditions, keywords, config)
-    targets_detected = list(match.matched_targets)
+    review_flag = match.review_flag
+    if not targets_detected and (brief_title or official_title):
+        review_flag = True
+    elif targets_detected and match.review_flag:
+        review_flag = True
 
-    if force_headache_include and "primary_headache" not in targets_detected:
-        targets_detected.append("primary_headache")
+    feature_flags = _detect_feature_flags(text_full_lower, config)
 
-    # Global exclusions apply even when no target matched (e.g. post-concussive headache only).
-    for rule_id, spec in config.get("global_excludes", {}).items():
-        target_scope = spec.get("target")
-        patterns = _compile(spec.get("patterns", []))
-        if not _matches_any(text_lower, patterns):
-            continue
-        if target_scope and target_scope not in targets_detected:
-            continue
-        if rule_id == "acute_lbp_only" and re.search(r"chronic", text_lower):
-            continue
-        return ConditionEligibility(
-            targets_detected=targets_detected,
-            targets_eligible=[],
-            eligibility="excluded",
-            exclusion_rule=rule_id,
-            review_flag=True,
-        )
-
-    if not targets_detected and not force_headache_include:
-        return ConditionEligibility(
-            targets_detected=[],
-            targets_eligible=[],
-            eligibility="excluded",
-            exclusion_rule="no_target_match",
-            review_flag=match.review_flag,
-        )
-
-    population_exclude = _population_primary_mismatch(
+    acute_screen = screen_acute_population(
         conditions=conditions,
         brief_title=brief_title,
         official_title=official_title,
+        brief_summary=brief_summary,
+        eligibility_criteria=eligibility_criteria,
         config=config,
     )
-    if population_exclude:
-        return ConditionEligibility(
-            targets_detected=targets_detected,
-            targets_eligible=[],
-            eligibility="excluded",
-            exclusion_rule=population_exclude,
-            review_flag=True,
-        )
 
-    # Headache-specific exclusions (only when primary_headache is in play)
-    if "primary_headache" in targets_detected or force_headache_include:
-        if re.search(r"migraine", text_lower):
-            targets_detected = [t for t in targets_detected if t != "primary_headache"]
-        else:
-            for rule_id, spec in config.get("headache_excludes", {}).items():
-                patterns = _compile(spec.get("patterns", []))
-                if _matches_any(text_lower, patterns):
-                    return ConditionEligibility(
+    for rule_id, spec in config.get("exclusion_rules", {}).items():
+        if rule_id == "acute_pain":
+            if acute_screen.decision == "exclude":
+                return _attach_acute_fields(
+                    ConditionEligibility(
                         targets_detected=targets_detected,
                         targets_eligible=[],
                         eligibility="excluded",
-                        exclusion_rule=f"headache_{rule_id}",
+                        exclusion_rule=acute_screen.rule or "acute_pain",
+                        condition_feature_flags=feature_flags,
                         review_flag=True,
-                    )
+                    ),
+                    acute_screen,
+                )
+            continue
+        rule_text = text_core_lower if rule_id in {"cancer_oncology", "pathology_other"} else text_full_lower
+        hit = _first_pattern_hit(rule_text, _compile(spec.get("patterns", [])))
+        if hit:
+            return _attach_acute_fields(
+                ConditionEligibility(
+                    targets_detected=targets_detected,
+                    targets_eligible=[],
+                    eligibility="excluded",
+                    exclusion_rule=rule_id,
+                    exclusion_detail=(
+                        f"Matched '{hit}' in registered conditions, keywords, titles or "
+                        "intervention names."
+                    ),
+                    condition_feature_flags=feature_flags,
+                    review_flag=True,
+                ),
+                acute_screen,
+            )
+
+    if not targets_detected:
+        return _attach_acute_fields(
+            ConditionEligibility(
+                targets_detected=[],
+                targets_eligible=[],
+                eligibility="excluded",
+                exclusion_rule="no_target_match",
+                exclusion_detail=(
+                    "No target pattern (migraine, chronic back pain, fibromyalgia, headache) "
+                    "matched conditions, keywords or titles."
+                ),
+                condition_feature_flags=feature_flags,
+                review_flag=review_flag,
+            ),
+            acute_screen,
+        )
+
+    non_target = _population_non_target_conditions(conditions=conditions, config=config)
+    if non_target:
+        return _attach_acute_fields(
+            ConditionEligibility(
+                targets_detected=targets_detected,
+                targets_eligible=[],
+                eligibility="excluded",
+                exclusion_rule="population_non_target_conditions",
+                exclusion_detail=(
+                    f"{len(non_target)} registered conditions are not target pain conditions: "
+                    + "; ".join(non_target)
+                ),
+                condition_feature_flags=feature_flags,
+                review_flag=True,
+            ),
+            acute_screen,
+        )
 
     eligible = list(targets_detected)
-    if "primary_headache" in eligible and re.search(r"migraine", text_lower):
-        eligible = [t for t in eligible if t != "primary_headache"]
-
-    borderline_reason = None
-    for rule_id, spec in config.get("borderline_rules", {}).items():
-        target = spec.get("target")
-        if target not in eligible:
-            continue
-        patterns = _compile(spec.get("patterns", []))
-        if not _matches_any(text_lower, patterns):
-            continue
-        skip = False
-        for ex in spec.get("exclude_if", []):
-            conds = [c.strip().lower() for c in (conditions or [])]
-            if any(re.fullmatch(ex, c, re.I) for c in conds):
-                skip = True
-                break
-        if not skip:
-            borderline_reason = rule_id
+    if "headache" in eligible and re.search(r"migraine", text_full_lower):
+        eligible = [t for t in eligible if t != "headache"]
 
     if not eligible:
-        return ConditionEligibility(
-            targets_detected=targets_detected,
-            targets_eligible=[],
-            eligibility="excluded",
-            exclusion_rule="headache_migraine_only_or_removed",
-            review_flag=True,
+        return _attach_acute_fields(
+            ConditionEligibility(
+                targets_detected=targets_detected,
+                targets_eligible=[],
+                eligibility="excluded",
+                exclusion_rule="no_eligible_target_after_migraine_overlap",
+                exclusion_detail=(
+                    "Only the generic headache target matched and the text mentions migraine, "
+                    "so the headache label was dropped and no target remained."
+                ),
+                condition_feature_flags=feature_flags,
+                review_flag=True,
+            ),
+            acute_screen,
         )
 
-    if borderline_reason:
-        return ConditionEligibility(
+    return _attach_acute_fields(
+        ConditionEligibility(
             targets_detected=targets_detected,
             targets_eligible=eligible,
-            eligibility="borderline",
-            borderline_reason=borderline_reason,
-            review_flag=True,
-        )
-
-    return ConditionEligibility(
-        targets_detected=targets_detected,
-        targets_eligible=eligible,
-        eligibility="eligible",
-        review_flag=match.review_flag,
+            eligibility="eligible",
+            condition_feature_flags=feature_flags,
+            review_flag=review_flag,
+        ),
+        acute_screen,
     )

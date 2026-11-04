@@ -16,7 +16,9 @@ from ctgov_pipeline.validate_intervention_categories import (
     validate_intervention_categories,
 )
 
-FINAL_COHORT_STUDIES = PROJECT_ROOT / "data" / "processed" / "final_cohort" / "studies.csv"
+FINAL_COHORT_STUDIES = (
+    PROJECT_ROOT / "data" / "processed" / "cohort" / "studies.csv"
+)
 
 ACUPUNCTURE_USUAL_CARE_ARMS = [
     {"type": "DEVICE", "name": "Verum acupuncture"},
@@ -38,7 +40,7 @@ class InterventionCategoryValidationTests(unittest.TestCase):
         cls.config = load_yaml("intervention_categories.yaml")
         if FINAL_COHORT_STUDIES.is_file():
             cls.included = pd.read_csv(FINAL_COHORT_STUDIES)
-            cls.included = cls.included[cls.included["cohort_included"] == True]
+            cls.included = cls.included[cls.included["cohort_inclusion_status"] == "included"]
         else:
             cls.included = None
 

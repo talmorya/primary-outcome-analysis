@@ -7,11 +7,10 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from .classify_intervention_categories import (
+    _active_arm_text,
     _arm_name,
-    _arm_text,
     _is_behavioral_item,
     _match_categories,
-    _matches,
     classify_intervention_categories,
     is_comparator_arm,
 )
@@ -49,14 +48,6 @@ def _is_comparator_arm(item: dict[str, Any], config: dict[str, Any]) -> bool:
     )
 
 
-def _is_mechanism_arm(item: dict[str, Any], config: dict[str, Any]) -> bool:
-    mechanism_spec = config.get("mechanism_arm", {})
-    text = _arm_text(item)
-    return _matches(text, mechanism_spec.get("patterns", [])) and not _matches(
-        text, mechanism_spec.get("exclude", [])
-    )
-
-
 def categories_for_arm(
     item: dict[str, Any],
     config: dict[str, Any],
@@ -65,14 +56,11 @@ def categories_for_arm(
     if _is_comparator_arm(item, config):
         return []
 
-    text = _arm_text(item)
+    text = _active_arm_text(item)
     category_defs = config.get("categories", {})
     matched = _match_categories(text, category_defs)
     if matched:
         return matched
-
-    if _is_mechanism_arm(item, config):
-        return []
 
     if _is_behavioral_item(item):
         return ["other_behavioral_treatment"]
@@ -89,7 +77,7 @@ def collect_category_evidence(
 
     for item in interventions:
         name = _arm_name(item)
-        text = _arm_text(item)
+        text = _active_arm_text(item)
         comparator = _is_comparator_arm(item, config)
         arm_type = str(item.get("type", ""))
 
@@ -151,8 +139,19 @@ def validate_intervention_categories(
 
 def load_interventions_from_row(row: dict[str, Any]) -> list[dict[str, Any]]:
     raw = row.get("interventions_raw")
-    if not raw:
+    if raw:
+        if isinstance(raw, str):
+            return json.loads(raw)
+        return list(raw)
+    nct_id = row.get("nct_id")
+    run_id = row.get("extraction_run_id")
+    if not nct_id or not run_id:
         return []
-    if isinstance(raw, str):
-        return json.loads(raw)
-    return list(raw)
+    from .config_loader import PROJECT_ROOT
+
+    path = PROJECT_ROOT / "data" / "raw" / "full" / str(run_id) / "studies" / f"{nct_id}.json"
+    if not path.is_file():
+        return []
+    record = json.loads(path.read_text(encoding="utf-8"))
+    arms = record.get("protocolSection", {}).get("armsInterventionsModule", {}) or {}
+    return list(arms.get("interventions") or [])

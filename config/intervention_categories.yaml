@@ -1,4 +1,4 @@
-version: "2.0.0"
+version: "2.1.0"
 
 # Treatment-oriented intervention categories (active arms only; comparators excluded).
 # Comparator arms: matched against intervention arm NAME only (not description).
@@ -183,6 +183,34 @@ categories:
       - "functional\\s+restoration"
       - "work[- ]hardening"
       - "headache\\s+management\\s+program"
+
+  experimental_research_paradigm:
+    label: "Experimental / mechanistic research paradigm"
+    description: >
+      Laboratory or psychophysical paradigms (QST, experimental pain, neuroimaging
+      tasks) delivered as the registered intervention arm rather than a treatment program.
+    patterns:
+      - "psychophysical"
+      - "experimental\\s+heat\\s+pain"
+      - "cover\\s+story"
+      - "nocebo"
+      - "PASAT"
+      - "quantitative\\s+sensory"
+      - "\\bqst\\b"
+      - "resting\\s+state\\s+eeg"
+      - "picture\\s+viewing\\s+eeg"
+      - "cognitive\\s+assessment\\s+mapping"
+      - "affective\\s+touch"
+      - "walk\\s+test"
+      - "thermal\\s+stimuli"
+      - "pressure\\s+pain\\s+threshold"
+      - "pain\\s+threshold\\s+test"
+      - "functional\\s+magnetic\\s+resonance"
+      - "\\bfmri\\b"
+      - "neuroimaging\\s+paradigm"
+      - "experimental\\s+pain"
+      - "pain\\s+modulation\\s+efficiency"
+      - "conditioned\\s+pain\\s+modulation"
 
   digital_health_delivery:
     label: "Digital health delivery"

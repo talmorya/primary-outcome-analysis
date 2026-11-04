@@ -253,14 +253,6 @@ def classify_outcome_category(
                 rule=rule_id,
             )
 
-    if len(text.strip()) < 8:
-        return OutcomeCategory(
-            outcome_category="other",
-            outcome_subcategory="uncertain",
-            rule="CAT_OTHER_UNCERTAIN",
-            review_flag=True,
-        )
-
     return OutcomeCategory(
         outcome_category="other",
         outcome_subcategory="other",

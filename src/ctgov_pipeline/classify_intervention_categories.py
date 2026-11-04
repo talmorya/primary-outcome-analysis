@@ -15,21 +15,9 @@ class InterventionCategoryResult:
     is_multimodal: bool = False
     multimodal_modalities: list[str] = field(default_factory=list)
     has_control_arm: bool = False
-    has_mechanism_arm: bool = False
-    has_behavioral_arm: bool = False
-    has_active_treatment_arm: bool = False
-    has_active_behavioral_arm: bool = False
     review_flag: bool = False
     control_arm_types: list[str] = field(default_factory=list)
     control_arms_raw: list[dict[str, str]] = field(default_factory=list)
-
-
-# Arm names that deliver active treatment despite mentioning usual/standard care.
-_ACTIVE_TREATMENT_NAME = re.compile(
-    r"intervention|therapy|\bcbt\b|meditation|app[- ]based|self[- ]management|"
-    r"web|training|education|exercise|pain ed|tenacity|\+",
-    re.IGNORECASE,
-)
 
 
 def _compile(patterns: list[str]) -> list[re.Pattern[str]]:
@@ -47,7 +35,8 @@ def _arm_name(item: dict[str, Any]) -> str:
     return str(item.get("name", "")).strip()
 
 
-def _arm_text(item: dict[str, Any]) -> str:
+def _active_arm_text(item: dict[str, Any]) -> str:
+    """Category matching on active arms: name, description, and type."""
     return " ".join(str(item.get(key, "")) for key in ("name", "description", "type"))
 
 
@@ -56,7 +45,7 @@ def _is_behavioral_item(item: dict[str, Any]) -> bool:
     if item_type == "BEHAVIORAL":
         return True
     if item_type == "OTHER":
-        text = _arm_text(item).lower()
+        text = _active_arm_text(item).lower()
         return bool(
             re.search(
                 r"behavior|psych|mindful|exercise|education|therapy|counsel|acupuncture|diet|yoga|hypnosis|meditation",
@@ -95,16 +84,9 @@ def classify_control_type(arm_name: str) -> str:
 
 
 def is_comparator_arm(arm_name: str, control_patterns: list[str]) -> bool:
-    """Comparator detection on arm name; active arms may mention usual care adjunctively."""
+    """Comparator detection from arm name only."""
     name = arm_name.strip()
     if not name:
-        return False
-    lower = name.lower()
-    if _ACTIVE_TREATMENT_NAME.search(name) and re.search(
-        r"usual care|standard care", lower
-    ):
-        return False
-    if re.search(r"standard care and web|web[- ]based|internet[- ]enhanced", lower):
         return False
     return _matches(name, control_patterns)
 
@@ -121,17 +103,12 @@ def classify_intervention_categories(
         )
 
     control_patterns = config.get("control_arm", {}).get("patterns", [])
-    mechanism_spec = config.get("mechanism_arm", {})
-    mechanism_patterns = mechanism_spec.get("patterns", [])
-    mechanism_excludes = mechanism_spec.get("exclude", [])
 
     categories: set[str] = set()
     rules: list[str] = []
     treatment_multimodal_modalities: set[str] = set()
     active_arm_types: set[str] = set()
     has_control = False
-    has_mechanism = False
-    has_active_treatment = False
     has_active_behavioral = False
     review = False
     control_types: set[str] = set()
@@ -145,7 +122,7 @@ def classify_intervention_categories(
 
     for item in interventions:
         name = _arm_name(item)
-        text = _arm_text(item)
+        text = _active_arm_text(item)
         item_type = str(item.get("type", "")).upper()
 
         if is_comparator_arm(name, control_patterns):
@@ -163,7 +140,6 @@ def classify_intervention_categories(
             )
             continue
 
-        has_active_treatment = True
         if item_type == "BEHAVIORAL" or _is_behavioral_item(item):
             has_active_behavioral = True
 
@@ -179,11 +155,6 @@ def classify_intervention_categories(
             has_active_behavioral = True
             for cat_id in arm_categories:
                 rules.append(f"CAT_{cat_id.upper()}")
-            continue
-
-        if _matches(text, mechanism_patterns) and not _matches(text, mechanism_excludes):
-            has_mechanism = True
-            rules.append("ARM_MECHANISM")
             continue
 
         if _is_behavioral_item(item):
@@ -206,10 +177,6 @@ def classify_intervention_categories(
         is_multimodal=is_multimodal,
         multimodal_modalities=sorted(treatment_multimodal_modalities),
         has_control_arm=has_control,
-        has_mechanism_arm=has_mechanism,
-        has_behavioral_arm=has_active_behavioral,
-        has_active_treatment_arm=has_active_treatment,
-        has_active_behavioral_arm=has_active_behavioral,
         review_flag=review,
         control_arm_types=sorted(control_types),
         control_arms_raw=control_raw,
