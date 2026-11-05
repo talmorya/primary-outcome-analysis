@@ -137,13 +137,13 @@ def write_final_cohort_report(
     )
 
     lines.extend(["## Trial status and phase", "", "### `overall_status`", "", "| Status | Studies |", "|---|---:|"])
-    for status, n in included["overall_status"].fillna("").value_counts().items():
+    for status, n in included["raw_overall_status"].fillna("").value_counts().items():
         lines.append(f"| {status or '(missing)'} | {n} |")
     lines.append("")
 
-    if "study_first_post_date" in included.columns:
+    if "raw_study_first_post_date" in included.columns:
         years = (
-            included["study_first_post_date"]
+            included["raw_study_first_post_date"]
             .dropna()
             .astype(str)
             .str.slice(0, 4)

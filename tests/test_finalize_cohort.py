@@ -26,7 +26,7 @@ class FinalizeCohortTests(unittest.TestCase):
         self.assertTrue(excluded["exclusion_detail"].fillna("").str.contains(":").all())
         included = studies[studies["cohort_inclusion_status"] == "included"]
         self.assertTrue(included["exclusion_reason"].isna().all())
-        self.assertIn("brief_summary_50w", studies.columns)
+        self.assertIn("raw_brief_summary_50w", studies.columns)
         manifest = cohort_dir / "manifest.json"
         self.assertTrue(manifest.is_file())
 

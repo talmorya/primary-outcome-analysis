@@ -67,9 +67,9 @@ class OutcomeCategoryValidationTests(unittest.TestCase):
         row = self.included.iloc[0]
         cat, sub = recompute_outcome_category(row)
         direct = classify_outcome_category(
-            row.get("primary_outcome_measure"),
-            row.get("primary_outcome_description"),
-            row.get("primary_outcome_time_frame"),
+            row.get("raw_primary_outcome_measure"),
+            row.get("raw_primary_outcome_description"),
+            row.get("raw_primary_outcome_time_frame"),
         )
         self.assertEqual((cat, sub), (direct.outcome_category, direct.outcome_subcategory))
 

@@ -1,7 +1,7 @@
 # Analytic cohort statistics
 
 **Run ID:** `cohort_simplified_v1`
-**Generated:** 2026-11-04 12:52 UTC
+**Generated:** 2026-11-05 14:27 UTC
 
 Auto-generated from `data/processed/cohort/studies.csv` on each `finalize_cohort` run.
 Inclusion rules: `docs/COHORT_FILTERING_RULES.md`. Column definitions: `docs/DATA_COLUMNS.md`.
@@ -13,25 +13,24 @@ Inclusion rules: `docs/COHORT_FILTERING_RULES.md`. Column definitions: `docs/DAT
 | Metric | Count |
 |---|---:|
 | Master pool (API retrieval) | 789 |
-| Included | **688** |
-| Excluded | 101 |
-| Primary outcome rows (included studies) | 1499 |
-| Studies with ≥1 primary outcome | 675 |
-| Mean primary outcomes per study | 2.2 |
+| Included | **752** |
+| Excluded | 37 |
+| Primary outcome rows (included studies) | 1738 |
+| Studies with ≥1 primary outcome | 739 |
+| Mean primary outcomes per study | 2.3 |
 
 ## Condition exclusions
 
-- **Excluded at condition stage:** 101
+- **Excluded at condition stage:** 37
 
 ### By general reason (`exclusion_reason`)
 
-- `condition`: 95
+- `condition`: 31
 - `acute`: 6
 
 ### By specific rule (start of `exclusion_detail`)
 
-- `population_non_target_conditions`: 65
-- `no_eligible_target_after_migraine_overlap`: 12
+- `no_eligible_target_after_migraine_overlap`: 13
 - `no_target_match`: 8
 - `pathology_other`: 7
 - `acute_pain`: 6
@@ -43,10 +42,10 @@ Flags are non-mutually-exclusive.
 
 | Condition flag | Studies |
 |---|---:|
-| Chronic back pain | 307 |
-| Fibromyalgia | 207 |
-| Migraine | 144 |
-| Primary headache (non-migraine) | 39 |
+| Chronic back pain | 336 |
+| Fibromyalgia | 227 |
+| Migraine | 153 |
+| Primary headache (non-migraine) | 50 |
 
 ## Intervention categories
 
@@ -54,12 +53,12 @@ Pipe-joined; study counts may sum to > cohort size.
 
 | Category | Studies |
 |---|---:|
-| `physical_rehabilitation` | 315 |
-| `mind_body_integrative` | 272 |
-| `education_self_management` | 217 |
-| `other_behavioral_treatment` | 172 |
-| `psychological_cognitive` | 161 |
-| `digital_health_delivery` | 67 |
+| `physical_rehabilitation` | 348 |
+| `mind_body_integrative` | 295 |
+| `education_self_management` | 237 |
+| `other_behavioral_treatment` | 189 |
+| `psychological_cognitive` | 173 |
+| `digital_health_delivery` | 78 |
 | `multidisciplinary_interdisciplinary` | 32 |
 | `neuroplastic_recovery_therapy` | 25 |
 | `experimental_research_paradigm` | 18 |
@@ -68,46 +67,46 @@ Pipe-joined; study counts may sum to > cohort size.
 
 | Type | Studies |
 |---|---:|
-| Not multimodal | 598 |
-| Multimodal | 90 |
+| Not multimodal | 659 |
+| Multimodal | 93 |
 
 ## Primary outcome categories
 
 | `outcome_category` | Outcome rows |
 |---|---:|
-| `pain_recovery` | 414 |
-| `pain_interference` | 362 |
-| `other` | 308 |
-| `feasibility_acceptability` | 226 |
-| `mood` | 112 |
-| `mechanistic` | 77 |
+| `pain_recovery` | 452 |
+| `pain_interference` | 395 |
+| `other` | 379 |
+| `feasibility_acceptability` | 268 |
+| `mood` | 137 |
+| `mechanistic` | 107 |
 
 ### Top outcome subcategories
 
 | Category → subcategory | Outcome rows |
 |---|---:|
-| `other` → `other` | 306 |
-| `pain_interference` → `disability` | 258 |
-| `pain_recovery` → `pain_intensity` | 216 |
-| `pain_recovery` → `general_pain` | 143 |
-| `feasibility_acceptability` → `feasibility_recruitment` | 134 |
-| `pain_interference` → `quality_of_life` | 57 |
-| `pain_recovery` → `pain_frequency` | 52 |
-| `mood` → `anxiety` | 46 |
-| `feasibility_acceptability` → `acceptability_satisfaction` | 42 |
-| `mood` → `depression` | 30 |
-| `mood` → `distress_stress` | 28 |
-| `pain_interference` → `interference` | 25 |
-| `mechanistic` → `neuroimaging_neural` | 23 |
-| `feasibility_acceptability` → `safety` | 22 |
-| `mechanistic` → `other_mechanistic` | 21 |
+| `other` → `other` | 377 |
+| `pain_interference` → `disability` | 278 |
+| `pain_recovery` → `pain_intensity` | 240 |
+| `feasibility_acceptability` → `feasibility_recruitment` | 164 |
+| `pain_recovery` → `general_pain` | 156 |
+| `pain_interference` → `quality_of_life` | 60 |
+| `mood` → `anxiety` | 55 |
+| `pain_recovery` → `pain_frequency` | 53 |
+| `feasibility_acceptability` → `acceptability_satisfaction` | 48 |
+| `mechanistic` → `sensory_qst` | 37 |
+| `mood` → `distress_stress` | 37 |
+| `mood` → `depression` | 34 |
+| `pain_interference` → `interference` | 30 |
+| `mechanistic` → `neuroimaging_neural` | 26 |
+| `feasibility_acceptability` → `adherence_fidelity` | 24 |
 
 ## Primary outcome mechanistic flag (study-level)
 
 | Flag | Studies |
 |---|---:|
-| `primary_outcome_mechanistic = TRUE` | 20 |
-| `primary_outcome_mechanistic = FALSE` | 668 |
+| `primary_outcome_mechanistic = TRUE` | 23 |
+| `primary_outcome_mechanistic = FALSE` | 729 |
 
 ## Trial status and phase
 
@@ -115,14 +114,15 @@ Pipe-joined; study counts may sum to > cohort size.
 
 | Status | Studies |
 |---|---:|
-| COMPLETED | 423 |
-| RECRUITING | 89 |
-| UNKNOWN | 73 |
-| NOT_YET_RECRUITING | 41 |
+| COMPLETED | 456 |
+| RECRUITING | 100 |
+| UNKNOWN | 75 |
+| NOT_YET_RECRUITING | 49 |
 | TERMINATED | 24 |
-| ACTIVE_NOT_RECRUITING | 20 |
-| WITHDRAWN | 9 |
-| ENROLLING_BY_INVITATION | 9 |
+| ACTIVE_NOT_RECRUITING | 23 |
+| WITHDRAWN | 12 |
+| ENROLLING_BY_INVITATION | 12 |
+| SUSPENDED | 1 |
 
 ## Registration year (`study_first_post_date`)
 
@@ -132,25 +132,25 @@ Pipe-joined; study counts may sum to > cohort size.
 | 2001 | 1 |
 | 2003 | 3 |
 | 2004 | 3 |
-| 2005 | 15 |
+| 2005 | 16 |
 | 2006 | 11 |
-| 2007 | 20 |
+| 2007 | 21 |
 | 2008 | 11 |
 | 2009 | 20 |
-| 2010 | 13 |
-| 2011 | 22 |
-| 2012 | 15 |
-| 2013 | 19 |
-| 2014 | 20 |
+| 2010 | 15 |
+| 2011 | 23 |
+| 2012 | 16 |
+| 2013 | 22 |
+| 2014 | 21 |
 | 2015 | 27 |
 | 2016 | 22 |
-| 2017 | 26 |
-| 2018 | 36 |
-| 2019 | 35 |
-| 2020 | 30 |
-| 2021 | 47 |
-| 2022 | 39 |
-| 2023 | 52 |
-| 2024 | 43 |
-| 2025 | 71 |
-| 2026 | 83 |
+| 2017 | 29 |
+| 2018 | 38 |
+| 2019 | 40 |
+| 2020 | 33 |
+| 2021 | 50 |
+| 2022 | 45 |
+| 2023 | 57 |
+| 2024 | 48 |
+| 2025 | 85 |
+| 2026 | 91 |

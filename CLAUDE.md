@@ -4,7 +4,7 @@
 
 Reproducible ClinicalTrials.gov API v2 pipeline for studying **registered primary outcomes** in **behavioral interventional** chronic pain trials.
 
-**Research question:** Among behavioral/psychological interventions for chronic pain, what primary outcomes do researchers register, and how does this differ across intervention approaches and over time (`study_first_post_date`)?
+**Research question:** Among behavioral/psychological interventions for chronic pain, what primary outcomes do researchers register, and how does this differ across intervention approaches and over time (`raw_study_first_post_date`)?
 
 **Motivating hypothesis (to test empirically, not assume):** CBT/ACT/acceptance-oriented approaches may emphasize interference, functioning, coping, or adaptation; PRT/pain-reprocessing/pain-education approaches may more often target pain intensity/severity.
 
@@ -19,7 +19,7 @@ AND condition IN (chronic back pain, fibromyalgia, migraine, headache)
 ```
 
 - **IBS excluded** at condition-matching stage
-- All trial statuses retained (`overall_status` is a variable, not a filter)
+- All trial statuses retained (`raw_overall_status` is a variable, not a filter)
 - Local condition validation post-API (`config/condition_patterns_cohort.yaml`)
 - **Inclusion:** condition stage only (`docs/COHORT_FILTERING_RULES.md`); acute population rules in `acute_population_screen.py`
 
@@ -29,7 +29,7 @@ Latest extraction run: `full_20261019_125300`. Analytic tables: `data/processed/
 
 ## Critical constraints
 
-1. **Preserve raw outcome text verbatim** — `primary_outcome_measure`, `primary_outcome_description`, `primary_outcome_time_frame`
+1. **Preserve raw outcome text verbatim** — `raw_primary_outcome_measure`, `raw_primary_outcome_description`, `raw_primary_outcome_time_frame`
 2. **Outcome categories are descriptive only** — `outcome_category` / `outcome_subcategory` in `primary_outcomes.csv` are rule-based aids for review, never used to include/exclude. The researcher's conceptual coding (pain intensity, interference, coping, etc.) is a separate manual layer; do not overwrite raw outcome text with it
 3. **`outcome_purpose` is exploratory/heuristic only** — do not use it to exclude, filter, or quantitatively classify outcomes
 4. **Two-table architecture only** — `data/processed/cohort/studies.csv` + `primary_outcomes.csv`. One current version of raw and processed data; no third analysis table, no per-rule audit files
@@ -72,12 +72,12 @@ PYTHONPATH=src python -m ctgov_pipeline.run_full          # NEW CT.gov pull (cre
 
 ### `studies.csv` (all retrieved trials; filter `cohort_inclusion_status == included`)
 - `exclusion_reason` = `acute` | `condition`; `exclusion_detail` starts with the rule key then the specific cause
-- `brief_summary_50w`, `eligibility_criteria`, `conditions_raw`, `intervention_details` — raw text kept so classifications and exclusions can be audited
+- `raw_` prefix = copied from the CT.gov record (`raw_brief_summary_50w`, `raw_eligibility_criteria`, `raw_conditions`, `raw_intervention_details`, …); unprefixed = derived by the pipeline. Raw text kept so classifications and exclusions can be audited
 - `intervention_categories` (active arms), `is_multimodal`, `control_arm_types`
 
 ### `primary_outcomes.csv`
 - Linked by `nct_id`; unit of analysis for outcome-selection trends
-- Verbatim `primary_outcome_*` text + descriptive `outcome_category`, `outcome_subcategory`, `outcome_category_rule`, `outcome_category_review_flag`
+- Verbatim `raw_primary_outcome_*` text + descriptive `outcome_category`, `outcome_subcategory`, `outcome_category_rule`, `outcome_category_review_flag`
 - Full definitions: `docs/DATA_COLUMNS.md`
 
 ---

@@ -35,9 +35,9 @@ def _text_field(value: object) -> str | None:
 
 def recompute_outcome_category(row: pd.Series) -> tuple[str, str]:
     result = classify_outcome_category(
-        _text_field(row.get("primary_outcome_measure")),
-        _text_field(row.get("primary_outcome_description")),
-        _text_field(row.get("primary_outcome_time_frame")),
+        _text_field(row.get("raw_primary_outcome_measure")),
+        _text_field(row.get("raw_primary_outcome_description")),
+        _text_field(row.get("raw_primary_outcome_time_frame")),
     )
     return result.outcome_category, result.outcome_subcategory
 

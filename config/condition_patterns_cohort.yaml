@@ -157,6 +157,3 @@ condition_features:
       - "\\bmoh\\b"
       - "rebound headache"
       - "analgesic overuse"
-
-population_mismatch:
-  min_non_target_conditions: 3

@@ -34,9 +34,9 @@ AND condition IN (chronic back pain, fibromyalgia, migraine, headache)
 | `exclusion_reason` | Rule keys (start of `exclusion_detail`) |
 |---|---|
 | `acute` | `acute_pain`, `acute_and_chronic_in_inclusion` |
-| `condition` | `no_target_match`, `no_eligible_target_after_migraine_overlap`, `cancer_oncology`, `pathology_other`, `population_non_target_conditions` |
+| `condition` | `no_target_match`, `no_eligible_target_after_migraine_overlap`, `cancer_oncology`, `pathology_other` |
 
-Rules are checked in the order of `exclusion_rules` in the YAML (cancer, pathology, acute), then target match, then population mismatch. The **first** rule that fires is the one recorded.
+Rules are checked in the order of `exclusion_rules` in the YAML (cancer, pathology, acute), then target match, then the migraine-overlap check. The **first** rule that fires is the one recorded.
 
 ---
 
@@ -63,7 +63,8 @@ Matching text: registered conditions, keywords, brief title, official title. If 
 | `no_eligible_target_after_migraine_overlap` | Only the headache target matched and it was dropped because of migraine overlap. |
 | `cancer_oncology` | Oncology pattern in conditions, keywords, titles or intervention names (not eligibility boilerplate). Detail shows the matched word. |
 | `pathology_other` | Non-pain primary pathology pattern (same text scope). Detail shows the matched word. |
-| `population_non_target_conditions` | ≥3 registered conditions are not target pain conditions. Detail lists them. The generic labels `Chronic Pain` **and** `Pain, Chronic` are not counted. |
+
+Registered comorbid or overlapping conditions (CNS, mood/psychological symptoms, chronic overlapping pain conditions, widespread pain, nociplastic risk factors) are **not** an exclusion rule; a trial with a target pain condition stays in however many other conditions it lists. They are kept in `raw_conditions`.
 
 Descriptive only (never exclude): `condition_feature_flags` (post-traumatic, TBI, visual snow, …).
 
@@ -132,7 +133,7 @@ Peri-operative / ambiguous surgery-injury timing (e.g. "scheduled for lumbar sur
 
 ## 5. Intervention & outcomes (no filtering)
 
-- **Interventions:** `intervention_categories` (from active arms), `is_multimodal`, `control_arm_types`; raw arm text in `intervention_names` and `intervention_details`.
+- **Interventions:** `intervention_categories` (from active arms), `is_multimodal`, `control_arm_types`; raw arm text in `raw_intervention_names` and `raw_intervention_details`.
 - **Outcomes:** raw text preserved in `primary_outcomes.csv`; `outcome_category` / `outcome_subcategory` are descriptive.
 
 See [DATA_COLUMNS.md](DATA_COLUMNS.md).

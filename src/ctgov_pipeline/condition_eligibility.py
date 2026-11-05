@@ -26,10 +26,6 @@ class ConditionEligibility:
     acute_population_snippet: str | None = None
 
 
-# "Chronic Pain" and the MeSH-style inversion "Pain, Chronic".
-_GENERIC_CHRONIC_PAIN = re.compile(r"^(?:chronic\s+pain|pain\s*,\s*chronic)$", re.IGNORECASE)
-
-
 def _compile(patterns: list[str]) -> list[re.Pattern[str]]:
     return [re.compile(p, re.IGNORECASE) for p in patterns]
 
@@ -107,44 +103,6 @@ def _detect_targets(
         if any(p.search(text) for p in patterns):
             matched.append(target)
     return matched
-
-
-def _condition_line_is_target(line: str, config: dict[str, Any]) -> bool:
-    text = line.strip()
-    if not text:
-        return False
-    compiled = {
-        target: _compile(spec.get("patterns", []))
-        for target, spec in config.get("targets", {}).items()
-    }
-    for patterns in compiled.values():
-        if _matches_any(text, patterns):
-            return True
-    return False
-
-
-def _is_ignored_non_target_condition(line: str) -> bool:
-    return bool(_GENERIC_CHRONIC_PAIN.match(line.strip()))
-
-
-def _population_non_target_conditions(
-    *,
-    conditions: list[str] | None,
-    config: dict[str, Any],
-) -> list[str]:
-    """Non-target registered conditions when they reach the exclusion threshold, else []."""
-    cond_list = [c.strip() for c in (conditions or []) if c and str(c).strip()]
-    if not cond_list:
-        return []
-    non_target = [
-        c
-        for c in cond_list
-        if not _condition_line_is_target(c, config) and not _is_ignored_non_target_condition(c)
-    ]
-    threshold = int(
-        config.get("population_mismatch", {}).get("min_non_target_conditions", 3)
-    )
-    return non_target if len(non_target) >= threshold else []
 
 
 def _first_pattern_hit(text: str, patterns: list[re.Pattern[str]]) -> str | None:
@@ -271,24 +229,6 @@ def evaluate_condition_eligibility(
                 ),
                 condition_feature_flags=feature_flags,
                 review_flag=review_flag,
-            ),
-            acute_screen,
-        )
-
-    non_target = _population_non_target_conditions(conditions=conditions, config=config)
-    if non_target:
-        return _attach_acute_fields(
-            ConditionEligibility(
-                targets_detected=targets_detected,
-                targets_eligible=[],
-                eligibility="excluded",
-                exclusion_rule="population_non_target_conditions",
-                exclusion_detail=(
-                    f"{len(non_target)} registered conditions are not target pain conditions: "
-                    + "; ".join(non_target)
-                ),
-                condition_feature_flags=feature_flags,
-                review_flag=True,
             ),
             acute_screen,
         )

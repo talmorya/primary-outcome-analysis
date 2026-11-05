@@ -6,7 +6,7 @@ Repository: `https://github.com/talmorya/primary-outcome-analysis`
 
 ## Research question
 
-Among behavioral interventions for chronic pain, what primary outcomes do researchers register, and how does that vary by intervention approach and over time (`study_first_post_date`)?
+Among behavioral interventions for chronic pain, what primary outcomes do researchers register, and how does that vary by intervention approach and over time (`raw_study_first_post_date`)?
 
 ---
 
@@ -31,7 +31,7 @@ Among behavioral interventions for chronic pain, what primary outcomes do resear
 
 Analysis subset: `studies.csv` where `cohort_inclusion_status == "included"`, joined to `primary_outcomes.csv` on `nct_id`.
 
-Current run `full_20261019_125300`: 789 trials retrieved → **688 included**, 101 excluded (6 `acute`, 95 `condition`).
+Current run `full_20261019_125300`: 789 trials retrieved → **752 included**, 37 excluded (6 `acute`, 31 `condition`).
 
 ---
 

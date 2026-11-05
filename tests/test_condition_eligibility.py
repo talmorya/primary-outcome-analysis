@@ -51,15 +51,16 @@ class ConditionEligibilityTests(unittest.TestCase):
         self.assertIn("migraine", result.targets_eligible)
         self.assertNotIn("headache", result.targets_eligible)
 
-    def test_three_non_target_conditions_excluded(self) -> None:
+    def test_many_non_target_conditions_not_excluded(self) -> None:
+        """Registered comorbidities / overlapping conditions are not an exclusion rule."""
         result = evaluate_condition_eligibility(
             conditions=["ME/CFS", "Long COVID", "POTS", "Fibromyalgia"],
             keywords=[],
             config=self.config,
             brief_title="Swimming for individuals with ME/CFS",
         )
-        self.assertEqual(result.eligibility, "excluded")
-        self.assertEqual(result.exclusion_rule, "population_non_target_conditions")
+        self.assertEqual(result.eligibility, "eligible")
+        self.assertIn("fibromyalgia", result.targets_eligible)
 
     def test_acute_back_pain_excluded(self) -> None:
         result = evaluate_condition_eligibility(
@@ -120,7 +121,7 @@ class ConditionEligibilityTests(unittest.TestCase):
         self.assertEqual(result.eligibility, "eligible")
         self.assertIn("headache", result.targets_eligible)
 
-    def test_chronic_pain_condition_ignored_for_population_mismatch(self) -> None:
+    def test_generic_chronic_pain_with_comorbid_conditions_eligible(self) -> None:
         result = evaluate_condition_eligibility(
             conditions=["Chronic Pain", "Osteoarthritis", "Depression", "Fibromyalgia"],
             keywords=[],
@@ -294,23 +295,14 @@ class ConditionEligibilityTests(unittest.TestCase):
         self.assertEqual(result.eligibility, "excluded")
         self.assertEqual(result.exclusion_rule, "acute_pain")
 
-    def test_inverted_pain_chronic_label_not_counted_as_non_target(self) -> None:
-        """NCT06114264 / NCT03157544: 'Pain, Chronic' is generic chronic pain."""
-        result = evaluate_condition_eligibility(
-            conditions=["Pain, Chronic", "Neck Pain", "Musculoskeletal Pain", "Low Back Pain"],
-            keywords=[],
-            config=self.config,
-        )
-        self.assertEqual(result.eligibility, "eligible")
-
     def test_exclusion_detail_names_the_specific_cause(self) -> None:
         result = evaluate_condition_eligibility(
-            conditions=["Chronic Disease", "Hypertension", "Obesity", "Fibromyalgia"],
+            conditions=["Hypertension"],
             keywords=[],
             config=self.config,
         )
-        self.assertEqual(result.exclusion_rule, "population_non_target_conditions")
-        self.assertIn("Hypertension", result.exclusion_detail)
+        self.assertEqual(result.exclusion_rule, "no_target_match")
+        self.assertTrue(result.exclusion_detail)
 
     def test_chronic_inclusion_acute_exclusion_eligible(self) -> None:
         result = evaluate_condition_eligibility(
