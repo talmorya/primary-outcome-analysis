@@ -17,7 +17,7 @@ Among behavioral interventions for chronic pain, what primary outcomes do resear
 | **Inclusion / exclusion rules** (all of them, including acute) | [`docs/COHORT_FILTERING_RULES.md`](docs/COHORT_FILTERING_RULES.md) |
 | **What every column means** | [`docs/DATA_COLUMNS.md`](docs/DATA_COLUMNS.md) |
 | How to rebuild from raw data | [`docs/COHORT_REPRODUCTION_GUIDE.md`](docs/COHORT_REPRODUCTION_GUIDE.md) |
-| Cohort statistics (auto-generated) | [`data/processed/cohort/cohort_report.md`](data/processed/cohort/cohort_report.md) |
+| Cohort statistics (auto-generated) | [`data/processed/cohort_report.md`](data/processed/cohort_report.md) |
 | Index of docs | [`docs/README.md`](docs/README.md) |
 
 ## Data (one current version of each)
@@ -25,9 +25,9 @@ Among behavioral interventions for chronic pain, what primary outcomes do resear
 | Path | Contents |
 |---|---|
 | `data/raw/full/<run_id>/studies/*.json` | Immutable CT.gov records (gitignored; keep only the latest run) |
-| `data/processed/cohort/studies.csv` | **Every retrieved trial**, with `cohort_inclusion_status`, `exclusion_reason` (`acute` / `condition`) and `exclusion_detail`, plus raw text columns for manual review |
-| `data/processed/cohort/primary_outcomes.csv` | One row per registered primary outcome (verbatim text + descriptive categories) |
-| `data/processed/cohort/manifest.json` | Source run id and counts |
+| `data/processed/studies.csv` | **Every retrieved trial**, with `cohort_inclusion_status`, `exclusion_reason` (`acute` / `condition`) and `exclusion_detail`, plus raw text columns for manual review |
+| `data/processed/primary_outcomes.csv` | One row per registered primary outcome (verbatim text + descriptive categories) |
+| `data/processed/manifest.json` | Source run id and counts |
 
 Analysis subset: `studies.csv` where `cohort_inclusion_status == "included"`, joined to `primary_outcomes.csv` on `nct_id`.
 
@@ -64,5 +64,5 @@ docs/                    filtering rules, column dictionary, reproduction guide
 src/ctgov_pipeline/      run_full (fetch) · build_revised_cohort / finalize_cohort (cohort) · classifiers
 tests/
 data/raw/                raw JSON (gitignored)
-data/processed/cohort/   analytic tables (tracked in git)
+data/processed/   the four analytic files (tracked in git; legacy full/ is ignored)
 ```

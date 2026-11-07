@@ -13,7 +13,7 @@ from ctgov_pipeline.extraction_runs import latest_full_extraction_run_id
 
 class FinalizeCohortTests(unittest.TestCase):
     def test_cohort_tables_present_after_build(self) -> None:
-        cohort_dir = PROJECT_ROOT / "data" / "processed" / "cohort"
+        cohort_dir = PROJECT_ROOT / "data" / "processed"
         studies_csv = cohort_dir / "studies.csv"
         if not studies_csv.is_file():
             self.skipTest("cohort not built in this environment")
@@ -31,7 +31,7 @@ class FinalizeCohortTests(unittest.TestCase):
         self.assertTrue(manifest.is_file())
 
     def test_simplified_rules_no_intervention_exclusions(self) -> None:
-        studies_csv = PROJECT_ROOT / "data" / "processed" / "cohort" / "studies.csv"
+        studies_csv = PROJECT_ROOT / "data" / "processed" / "studies.csv"
         if not studies_csv.is_file():
             self.skipTest("cohort not built")
         df = pd.read_csv(studies_csv)
@@ -40,7 +40,7 @@ class FinalizeCohortTests(unittest.TestCase):
         self.assertFalse(rules.str.contains("intervention|outcome").any())
 
     def test_reference_nct_statuses_after_manual_review(self) -> None:
-        studies_csv = PROJECT_ROOT / "data" / "processed" / "cohort" / "studies.csv"
+        studies_csv = PROJECT_ROOT / "data" / "processed" / "studies.csv"
         if not studies_csv.is_file():
             self.skipTest("cohort not built")
         status = pd.read_csv(studies_csv).set_index("nct_id")["cohort_inclusion_status"]

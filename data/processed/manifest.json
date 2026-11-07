@@ -1,6 +1,6 @@
 {
   "run_id": "cohort_simplified_v1",
-  "frozen_at_utc": "2026-11-05T14:27:33.805636+00:00",
+  "frozen_at_utc": "2026-11-07T11:26:46.095772+00:00",
   "source_extraction_run_id": "full_20261019_125300",
   "cohort_rules_version": "simplified_v1",
   "master_pool_studies": 789,

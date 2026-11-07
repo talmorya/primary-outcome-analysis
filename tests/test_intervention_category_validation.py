@@ -17,7 +17,7 @@ from ctgov_pipeline.validate_intervention_categories import (
 )
 
 FINAL_COHORT_STUDIES = (
-    PROJECT_ROOT / "data" / "processed" / "cohort" / "studies.csv"
+    PROJECT_ROOT / "data" / "processed" / "studies.csv"
 )
 
 ACUPUNCTURE_USUAL_CARE_ARMS = [

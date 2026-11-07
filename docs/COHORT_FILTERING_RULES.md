@@ -19,7 +19,7 @@ AND condition IN (chronic back pain, fibromyalgia, migraine, headache)
 
 - One CT.gov search per term, deduplicated by `nct_id`.
 - Raw JSON: `data/raw/full/<extraction_run_id>/studies/*.json` (keep one run).
-- Master table: `data/processed/cohort/studies.csv` — **every** retrieved trial, with its include/exclude status.
+- Master table: `data/processed/studies.csv` — **every** retrieved trial, with its include/exclude status.
 
 ---
 

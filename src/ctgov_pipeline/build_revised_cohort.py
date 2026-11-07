@@ -11,7 +11,6 @@ import pandas as pd
 from .api_query_hits import load_api_query_hits
 from .classify_intervention_categories import classify_intervention_categories
 from .cohort_export import (
-    COHORT_PROCESSED_ROOT_NAME,
     PRIMARY_OUTCOMES_CSV,
     STUDIES_CSV,
     build_exclusion_fields,
@@ -29,7 +28,7 @@ from .parse import load_raw_studies
 
 COHORT_RULES_VERSION = "simplified_v1"
 
-COHORT_PROCESSED_ROOT = PROJECT_ROOT / "data" / "processed" / COHORT_PROCESSED_ROOT_NAME
+PROCESSED_DIR = PROJECT_ROOT / "data" / "processed"
 
 QUERY_SOURCE = (
     "StudyType=INTERVENTIONAL AND InterventionType=BEHAVIORAL "
@@ -185,7 +184,7 @@ def build_revised_cohort(
         )
 
     if out_dir is None:
-        out_dir = COHORT_PROCESSED_ROOT
+        out_dir = PROCESSED_DIR
     out_dir.mkdir(parents=True, exist_ok=True)
 
     condition_config = load_yaml("condition_patterns_cohort.yaml")

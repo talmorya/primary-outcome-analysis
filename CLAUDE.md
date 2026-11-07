@@ -23,7 +23,7 @@ AND condition IN (chronic back pain, fibromyalgia, migraine, headache)
 - Local condition validation post-API (`config/condition_patterns_cohort.yaml`)
 - **Inclusion:** condition stage only (`docs/COHORT_FILTERING_RULES.md`); acute population rules in `acute_population_screen.py`
 
-Latest extraction run: `full_20261019_125300`. Analytic tables: `data/processed/cohort/studies.csv` (see `manifest.json` for counts).
+Latest extraction run: `full_20261019_125300`. Analytic tables: `data/processed/studies.csv` (see `manifest.json` for counts).
 
 ---
 
@@ -32,7 +32,7 @@ Latest extraction run: `full_20261019_125300`. Analytic tables: `data/processed/
 1. **Preserve raw outcome text verbatim** — `raw_primary_outcome_measure`, `raw_primary_outcome_description`, `raw_primary_outcome_time_frame`
 2. **Outcome categories are descriptive only** — `outcome_category` / `outcome_subcategory` in `primary_outcomes.csv` are rule-based aids for review, never used to include/exclude. The researcher's conceptual coding (pain intensity, interference, coping, etc.) is a separate manual layer; do not overwrite raw outcome text with it
 3. **`outcome_purpose` is exploratory/heuristic only** — do not use it to exclude, filter, or quantitatively classify outcomes
-4. **Two-table architecture only** — `data/processed/cohort/studies.csv` + `primary_outcomes.csv`. One current version of raw and processed data; no third analysis table, no per-rule audit files
+4. **Two-table architecture only** — `data/processed/studies.csv` + `primary_outcomes.csv`. One current version of raw and processed data; no third analysis table, no per-rule audit files
 5. **Raw JSON is immutable** — reprocess from `data/raw/` rather than re-querying CT.gov unless starting a new extraction run
 6. **Instrument matching uses word-boundary logic** — do not revert to substring matching (caused ISI false positives). Run `tests/test_instrument_extraction.py` after lexicon changes
 
@@ -43,15 +43,15 @@ Latest extraction run: `full_20261019_125300`. Analytic tables: `data/processed/
 | Path | Contents |
 |---|---|
 | `data/raw/full/<run_id>/studies/` | Per-NCT JSON (gitignored; keep one run) |
-| `data/processed/cohort/studies.csv` | Master pool + inclusion columns |
-| `data/processed/cohort/primary_outcomes.csv` | Primary outcomes |
+| `data/processed/studies.csv` | Master pool + inclusion columns |
+| `data/processed/primary_outcomes.csv` | Primary outcomes |
 | `docs/COHORT_FILTERING_RULES.md` | Inclusion / exclusion rules |
 | `docs/DATA_COLUMNS.md` | Column dictionary |
 | `config/condition_patterns_cohort.yaml` | Target conditions, exclusion patterns, acute patterns |
 | `config/intervention_categories.yaml` | Intervention category taxonomy (active arms only) |
 | `config/outcome_lexicon.yaml` | Instrument/keyword extraction (not categories) |
 | `src/ctgov_pipeline/` | Pipeline modules |
-| `data/processed/cohort/cohort_report.md` | Auto-generated statistics |
+| `data/processed/cohort_report.md` | Auto-generated statistics |
 
 ---
 
@@ -96,7 +96,7 @@ PYTHONPATH=src python -m ctgov_pipeline.run_full          # NEW CT.gov pull (cre
 - Match existing style in `src/ctgov_pipeline/`
 - Config-driven rules in YAML under `config/`
 - Minimize scope — focused diffs, no over-engineering
-- Do not commit secrets or raw data (`data/raw/` is gitignored; only `data/processed/cohort/` is tracked)
+- Do not commit secrets or raw data (`data/raw/` is gitignored; only the four analytic files directly in `data/processed/` are tracked)
 
 ---
 

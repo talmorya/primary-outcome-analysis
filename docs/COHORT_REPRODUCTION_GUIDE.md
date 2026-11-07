@@ -1,6 +1,6 @@
 # Cohort reproduction guide
 
-How to rebuild **`data/processed/cohort/`** from raw ClinicalTrials.gov JSON.
+How to rebuild **`data/processed/`** from raw ClinicalTrials.gov JSON.
 
 **Rules:** [COHORT_FILTERING_RULES.md](COHORT_FILTERING_RULES.md)  
 **Columns:** [DATA_COLUMNS.md](DATA_COLUMNS.md)
@@ -37,12 +37,12 @@ PYTHONPATH=src python -m ctgov_pipeline.finalize_cohort
 | Path | Contents |
 |---|---|
 | `data/raw/full/<run_id>/studies/*.json` | Immutable API records (keep **one** run; delete older folders when refreshing) |
-| `data/processed/cohort/studies.csv` | Full master pool + `cohort_inclusion_status`, `exclusion_reason`, `exclusion_detail`, review text columns |
-| `data/processed/cohort/primary_outcomes.csv` | All primary outcomes |
-| `data/processed/cohort/cohort_report.md` | Descriptive statistics (included studies) |
-| `data/processed/cohort/manifest.json` | Run metadata |
+| `data/processed/studies.csv` | Full master pool + `cohort_inclusion_status`, `exclusion_reason`, `exclusion_detail`, review text columns |
+| `data/processed/primary_outcomes.csv` | All primary outcomes |
+| `data/processed/cohort_report.md` | Descriptive statistics (included studies) |
+| `data/processed/manifest.json` | Run metadata |
 
-Optional: `run_full` also writes legacy extraction CSVs under `data/processed/full/<run_id>/` (gitignored). The **analytic** tables are only under `data/processed/cohort/`.
+Optional: `run_full` also writes legacy extraction CSVs under `data/processed/full/<run_id>/` (gitignored). The **analytic** tables are the four files directly in `data/processed/`.
 
 ---
 

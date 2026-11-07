@@ -12,7 +12,7 @@ from ctgov_pipeline.outcome_category import classify_outcome_category
 from ctgov_pipeline.validate_outcome_categories import recompute_outcome_category, validate_outcome_row
 
 FINAL_OUTCOMES = (
-    PROJECT_ROOT / "data" / "processed" / "cohort" / "primary_outcomes.csv"
+    PROJECT_ROOT / "data" / "processed" / "primary_outcomes.csv"
 )
 
 

@@ -1,6 +1,6 @@
 # Data column dictionary
 
-Canonical outputs: **`data/processed/cohort/`**
+Canonical outputs: **`data/processed/`**
 
 | File | Rows |
 |---|---|
@@ -106,7 +106,7 @@ Raw outcome text must not be altered for analysis; use annotation templates sepa
 | Path | Role |
 |---|---|
 | `data/raw/full/<run_id>/studies/*.json` | Immutable API source |
-| `data/processed/cohort/cohort_report.md` | Counts and distributions (included only) |
+| `data/processed/cohort_report.md` | Counts and distributions (included only) |
 | `config/condition_patterns_cohort.yaml` | Target and exclusion patterns |
 | `config/intervention_categories.yaml` | Intervention taxonomy |
 | `config/outcome_lexicon.yaml` | Instrument / keyword extraction |

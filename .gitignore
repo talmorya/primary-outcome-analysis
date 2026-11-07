@@ -21,8 +21,10 @@ env/
 # Data
 data/raw/
 data/processed/*
-!data/processed/cohort/
-!data/processed/cohort/**
+!data/processed/studies.csv
+!data/processed/primary_outcomes.csv
+!data/processed/manifest.json
+!data/processed/cohort_report.md
 
 # Outputs
 outputs/

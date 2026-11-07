@@ -6,7 +6,6 @@ from typing import Any
 
 from .condition_eligibility import ConditionEligibility
 
-COHORT_PROCESSED_ROOT_NAME = "cohort"
 STUDIES_CSV = "studies.csv"
 PRIMARY_OUTCOMES_CSV = "primary_outcomes.csv"
 MANIFEST_JSON = "manifest.json"

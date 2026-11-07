@@ -32,7 +32,7 @@ def write_final_cohort_report(
         f"**Run ID:** `{run_id}`",
         f"**Generated:** {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}",
         "",
-        "Auto-generated from `data/processed/cohort/studies.csv` on each `finalize_cohort` run.",
+        "Auto-generated from `data/processed/studies.csv` on each `finalize_cohort` run.",
         "Inclusion rules: `docs/COHORT_FILTERING_RULES.md`. Column definitions: `docs/DATA_COLUMNS.md`.",
         "",
         "---",
