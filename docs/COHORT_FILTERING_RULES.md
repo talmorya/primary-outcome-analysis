@@ -17,7 +17,8 @@ AND InterventionType = BEHAVIORAL
 AND condition IN (chronic back pain, fibromyalgia, migraine, headache)
 ```
 
-- One CT.gov search per term, deduplicated by `nct_id`.
+- One CT.gov search per term (`query.cond=<term>`, `filter.advanced` for interventional + behavioral), deduplicated by `nct_id`. Which search(es) returned a trial is recorded in `api_retrieval_queries`.
+- **Why a trial can have no target in its registered conditions:** CT.gov's `cond` search area is not limited to the Conditions field. It also searches the brief title, official title, condition MeSH terms and their ancestors, keywords and NCT id, with synonym expansion. A trial is therefore pulled if the term appears in its title or keywords, even when its registered condition is something else (e.g. `Arthritis`, `Chronic Pain`). The local condition stage below decides whether it stays in the cohort.
 - Raw JSON: `data/raw/full/<extraction_run_id>/studies/*.json` (keep one run).
 - Master table: `data/processed/studies.csv` — **every** retrieved trial, with its include/exclude status.
 
@@ -55,7 +56,7 @@ Patterns in `condition_patterns_cohort.yaml` set these flags:
 
 **Inclusion** (at least one target matches): registered conditions, keywords, brief title, official title.
 
-**Flags** (`eligible_*`, `condition_matched`): set from the registered **conditions section only**. A trial can have several flags (e.g. migraine and headache). A trial included through its keywords or titles but with no target in its conditions has all four flags `False`.
+**Flags** (`eligible_*`, `condition_matched`): set from the registered **conditions section only**, by pattern-matching each condition line as a substring (so `Pain, Head` → headache, `Pain, Back` → back pain, `Fybromyalgia` → fibromyalgia). A trial can have several flags (e.g. migraine and headache). A trial included through its keywords or titles but with no target in its conditions has all four flags `False`.
 
 There is no migraine/headache overlap rule: mentions of migraine in eligibility text never remove a headache trial.
 

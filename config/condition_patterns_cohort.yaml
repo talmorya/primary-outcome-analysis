@@ -21,11 +21,12 @@ targets:
       - "non[- ]specific\\s+low\\s+back"
       - "chronic\\s+low\\s+back"
       - "back\\s+pain"
+      - "pain\\s*,\\s*back"
 
   fibromyalgia:
     label: "Fibromyalgia"
     patterns:
-      - "fibromyalgia"
+      - "f[iy]bromyalgi"
       - "\\bfm\\b"
 
   headache:
@@ -57,6 +58,8 @@ targets:
       - "^headache$"
       - "^headaches$"
       - "\\bheadache\\b"
+      - "pain\\s*,\\s*head\\b"
+      - "\\bhead\\s+pain"
 
 # Automatic study-level exclusions (condition stage only).
 exclusion_rules:

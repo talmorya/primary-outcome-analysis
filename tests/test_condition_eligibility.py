@@ -61,6 +61,17 @@ class ConditionEligibilityTests(unittest.TestCase):
         self.assertEqual(result.eligibility, "eligible")
         self.assertEqual(result.targets_in_conditions, ["headache"])
 
+    def test_pain_comma_body_part_conditions_flag_targets(self) -> None:
+        for condition, target in [
+            ("Pain, Head", "headache"),
+            ("Pain, Back", "chronic_back_pain"),
+            ("Fybromyalgia", "fibromyalgia"),
+        ]:
+            result = evaluate_condition_eligibility(
+                conditions=[condition], keywords=[], config=self.config
+            )
+            self.assertIn(target, result.targets_in_conditions, condition)
+
     def test_flags_use_conditions_section_only(self) -> None:
         result = evaluate_condition_eligibility(
             conditions=["Pain"],
