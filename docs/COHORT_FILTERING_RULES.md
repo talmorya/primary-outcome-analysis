@@ -38,7 +38,7 @@ AND registered Conditions field contains any of (back pain, fibromyalgia, migrai
 | `acute` | `acute_pain`, `acute_and_chronic_in_inclusion` |
 | `condition` | `no_target_match`, `cancer_oncology`, `pathology_other`, `pregnancy_related` |
 
-Rules are checked in the order of `exclusion_rules` in the YAML (cancer, pathology, acute), then `no_target_match`. The **first** rule that fires is the one recorded.
+Rules are checked in the order of `exclusion_rules` in the YAML (cancer, pathology, pregnancy, acute), then `no_target_match`. The **first** rule that fires is the one recorded.
 
 ---
 
