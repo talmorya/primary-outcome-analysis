@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import unittest
 
-from ctgov_pipeline.condition_eligibility import evaluate_condition_eligibility
+from ctgov_pipeline.condition_eligibility import detect_review_flags, evaluate_condition_eligibility
 from ctgov_pipeline.config_loader import load_yaml
 
 
@@ -71,6 +71,44 @@ class ConditionEligibilityTests(unittest.TestCase):
                 conditions=[condition], keywords=[], config=self.config
             )
             self.assertIn(target, result.targets_in_conditions, condition)
+
+    def test_pregnancy_related_excluded(self) -> None:
+        result = evaluate_condition_eligibility(
+            conditions=["Low Back Pain"],
+            keywords=[],
+            config=self.config,
+            brief_title="Yoga for Pregnancy-Related Low Back Pain",
+        )
+        self.assertEqual(result.eligibility, "excluded")
+        self.assertEqual(result.exclusion_rule, "pregnancy_related")
+        self.assertIn("regnan", result.exclusion_detail)
+
+    def test_pregnancy_word_in_eligibility_text_only_does_not_exclude(self) -> None:
+        result = evaluate_condition_eligibility(
+            conditions=["Chronic Low Back Pain"],
+            keywords=[],
+            config=self.config,
+            eligibility_criteria="Inclusion Criteria: chronic low back pain. Exclusion Criteria: pregnancy",
+        )
+        self.assertEqual(result.eligibility, "eligible")
+
+    def test_provider_level_review_flag_does_not_exclude(self) -> None:
+        flags = detect_review_flags(
+            brief_title="Clinical Decision Support for Patient Migraine Management",
+            official_title=None,
+            config=self.config,
+        )
+        self.assertEqual(flags, ["provider_or_system_level"])
+        result = evaluate_condition_eligibility(
+            conditions=["Migraine"],
+            keywords=[],
+            config=self.config,
+            brief_title="Clinical Decision Support for Patient Migraine Management",
+        )
+        self.assertEqual(result.eligibility, "eligible")
+        self.assertEqual(
+            detect_review_flags(brief_title="Yoga for Back Pain", official_title=None, config=self.config), []
+        )
 
     def test_target_only_in_title_or_keywords_is_excluded(self) -> None:
         result = evaluate_condition_eligibility(

@@ -81,6 +81,17 @@ exclusion_rules:
       - "multiple sclerosis"
       - "clinically isolated syndrome"
 
+  # Pregnancy / postpartum / menstrual / pelvic girdle pain is a different pain population.
+  pregnancy_related:
+    patterns:
+      - "pregnan"
+      - "postpartum"
+      - "post-partum"
+      - "childbirth"
+      - "menstrual"
+      - "dysmenorr"
+      - "pelvic\\s+girdle"
+
   acute_pain:
     patterns:
       - "\\bacute\\s+(low\\s+)?back\\s+pain\\b"
@@ -160,3 +171,24 @@ condition_features:
       - "\\bmoh\\b"
       - "rebound headache"
       - "analgesic overuse"
+
+# Descriptive review flags (never exclude). Matched against brief + official title.
+review_flags:
+  provider_or_system_level:
+    patterns:
+      - "clinician"
+      - "physician"
+      - "provider"
+      - "decision support"
+      - "clinical decision"
+      - "nudge"
+      - "guideline"
+      - "implementation"
+      - "champion"
+      - "care model"
+      - "health system"
+      - "quality improvement"
+      - "referral"
+      - "clinical practice"
+      - "knowledge translation"
+      - "general practitioner"

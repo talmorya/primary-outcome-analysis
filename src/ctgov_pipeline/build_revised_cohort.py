@@ -18,7 +18,7 @@ from .cohort_export import (
     interventions_text,
     project_study_row,
 )
-from .condition_eligibility import evaluate_condition_eligibility
+from .condition_eligibility import detect_review_flags, evaluate_condition_eligibility
 from .config_loader import PROJECT_ROOT, load_yaml
 from .extract_outcome_features import extract_outcome_features
 from .extraction_runs import latest_full_extraction_run_id
@@ -127,6 +127,13 @@ def _parse_record(
             "raw_eligibility_criteria": eligibility_criteria,
             "condition_matched": _join(eligible_targets),
             "condition_feature_flags": _join(cond.condition_feature_flags),
+            "review_flags": _join(
+                detect_review_flags(
+                    brief_title=id_mod.get("briefTitle"),
+                    official_title=id_mod.get("officialTitle"),
+                    config=condition_config,
+                )
+            ),
             "eligible_migraine": "migraine" in eligible_targets,
             "eligible_chronic_back_pain": "chronic_back_pain" in eligible_targets,
             "eligible_fibromyalgia": "fibromyalgia" in eligible_targets,

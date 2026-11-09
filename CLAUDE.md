@@ -86,7 +86,7 @@ PYTHONPATH=src python -m ctgov_pipeline.run_full          # NEW CT.gov pull (cre
 
 - **Conditions-field pull:** trials whose registered condition is only generic (e.g. `Chronic Pain`) are not retrieved, even if the title names a target (e.g. NCT00796536, NCT01794988, NCT01993355). Intended (AND of all filters).
 - **Judgment call:** NCT03157544 (chronic neck/LBP during an acute flare) is included.
-- **Not screened:** peri-operative / ambiguous surgery-injury timing (~7 included trials); decided not worth a rule.
+- **Relevance review (Nov 2026), suspected-irrelevant groups found among included trials:** `pregnancy_related` (15) is now an exclusion rule; `provider_or_system_level` (20) is a `review_flags` tag. Reviewed but **not** acted on: target is one of many conditions and the title is not about pain (~41, e.g. arthritis/ME-CFS/tinnitus programs), peri-operative or post-surgical course (~16), concussion/TBI as the primary population (~10), healthy or non-patient samples (~6), asymptomatic prevention/school groups (~10-15), back pain with no duration stated (~47). Revisit if the cohort needs tightening.
 - **Classification QC targets:** ~20% of included outcome rows are `outcome_category = other` (many flagged by `outcome_category_review_flag`); ~25% of studies sit in `other_behavioral_treatment`.
 - `run_full` still writes a legacy extraction layer to `data/processed/full/` (gitignored, unused by the cohort).
 

@@ -35,6 +35,7 @@ STUDY_TABLE_COLUMNS: list[str] = [
     "raw_eligibility_criteria",
     "condition_matched",
     "condition_feature_flags",
+    "review_flags",
     "eligible_migraine",
     "eligible_chronic_back_pain",
     "eligible_fibromyalgia",

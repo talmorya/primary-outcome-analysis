@@ -73,6 +73,21 @@ def _detect_targets_in_conditions(
     return matched
 
 
+def detect_review_flags(
+    *,
+    brief_title: str | None,
+    official_title: str | None,
+    config: dict[str, Any],
+) -> list[str]:
+    """Descriptive review flags from the titles (never used to exclude)."""
+    text = " | ".join(t for t in (_clean(brief_title), _clean(official_title)) if t)
+    flags: list[str] = []
+    for flag_id, spec in config.get("review_flags", {}).items():
+        if _matches_any(text, _compile(spec.get("patterns", []))):
+            flags.append(flag_id)
+    return sorted(flags)
+
+
 def _first_pattern_hit(text: str, patterns: list[re.Pattern[str]]) -> str | None:
     for pattern in patterns:
         match = pattern.search(text)
@@ -151,7 +166,7 @@ def evaluate_condition_eligibility(
                     acute_screen,
                 )
             continue
-        rule_text = text_core_lower if rule_id in {"cancer_oncology", "pathology_other"} else text_full_lower
+        rule_text = text_core_lower if rule_id in {"cancer_oncology", "pathology_other", "pregnancy_related"} else text_full_lower
         hit = _first_pattern_hit(rule_text, _compile(spec.get("patterns", [])))
         if hit:
             return _attach_acute_fields(

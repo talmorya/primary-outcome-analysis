@@ -36,7 +36,7 @@ AND registered Conditions field contains any of (back pain, fibromyalgia, migrai
 | `exclusion_reason` | Rule keys (start of `exclusion_detail`) |
 |---|---|
 | `acute` | `acute_pain`, `acute_and_chronic_in_inclusion` |
-| `condition` | `no_target_match`, `cancer_oncology`, `pathology_other` |
+| `condition` | `no_target_match`, `cancer_oncology`, `pathology_other`, `pregnancy_related` |
 
 Rules are checked in the order of `exclusion_rules` in the YAML (cancer, pathology, acute), then target match, then the migraine-overlap check. The **first** rule that fires is the one recorded.
 
@@ -68,10 +68,11 @@ There is no migraine/headache overlap rule: mentions of migraine in eligibility 
 | `no_target_match` | No target pattern matched the registered conditions. |
 | `cancer_oncology` | Oncology pattern in conditions, keywords, brief title or official title (not eligibility boilerplate). Detail shows the matched word. |
 | `pathology_other` | Non-pain primary pathology pattern (same text scope). Detail shows the matched word. |
+| `pregnancy_related` | Pregnancy, postpartum, childbirth, menstrual or pelvic girdle pain wording in conditions, keywords or titles (same text scope; eligibility text is not searched). A different pain population. Detail shows the matched word. |
 
 Registered comorbid or overlapping conditions (CNS, mood/psychological symptoms, chronic overlapping pain conditions, widespread pain, nociplastic risk factors) are **not** an exclusion rule; a trial with a target pain condition stays in however many other conditions it lists. They are kept in `raw_conditions`.
 
-Descriptive only (never exclude): `condition_feature_flags` (post-traumatic, TBI, visual snow, …).
+Descriptive only (never exclude): `condition_feature_flags` (post-traumatic, TBI, visual snow, …) and `review_flags` (currently `provider_or_system_level`: title mentions clinicians, guidelines, implementation, decision support, referral, health system, … so you can check whether the trial targets clinicians or care systems rather than patients; some hits are patient trials in a care-model setting).
 
 ---
 
