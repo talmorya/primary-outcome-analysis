@@ -1,104 +1,160 @@
-# Cohort filtering rules (condition stage)
+# Cohort filtering rules
 
-**Version:** `simplified_v1` (`cohort_rules_version` in `studies.csv`)
+How the study cohort is built, step by step, and why a trial is kept or dropped.
+Written so that someone who has not seen the code can follow it.
 
-**Config:** `config/condition_patterns_cohort.yaml`
-**Code:** `condition_eligibility.py`, `acute_population_screen.py`, `eligibility_text.py`
-
-Only the **condition stage** excludes studies. Interventions and primary outcomes are **descriptive only** (no exclusion).
+**Rules version:** `simplified_v1` (column `cohort_rules_version` in `studies.csv`)
+**Configuration:** `config/condition_patterns_cohort.yaml` (all patterns live here)
+**Code:** `src/ctgov_pipeline/condition_eligibility.py`, `acute_population_screen.py`, `eligibility_text.py`
+**Column meanings:** [DATA_COLUMNS.md](DATA_COLUMNS.md) · **How to rebuild:** [COHORT_REPRODUCTION_GUIDE.md](COHORT_REPRODUCTION_GUIDE.md)
 
 ---
 
-## 1. API retrieval (master pool)
+## 1. Purpose and big picture
+
+The project studies which **primary outcomes** researchers register for **behavioral interventions in chronic pain**. The data source is the public [ClinicalTrials.gov](https://clinicaltrials.gov) registry (API v2).
+
+Building the cohort has three stages:
 
 ```
-StudyType = INTERVENTIONAL
+ 1. PULL      ask the registry for trials that satisfy ALL of:
+              interventional  AND  behavioral intervention  AND  a target condition
+                      │
+ 2. DE-DUPLICATE   one row per NCT id
+                      │
+ 3. FILTER    local rules remove trials that are not the intended population
+              (wrong condition, cancer, pregnancy-related, acute pain, ...)
+                      │
+              studies.csv  ── every pulled trial, marked included / excluded, with the reason
+```
+
+Two principles run through everything:
+
+- **Nothing is silently dropped.** Every pulled trial stays in `studies.csv`; excluded ones carry the reason.
+- **Only the condition/population stage excludes.** The intervention type and the primary outcomes are described and categorised, but never used to include or exclude a trial.
+
+### Current result (extraction run `full_20261109_104453`)
+
+| Step | Trials |
+|---|---:|
+| Pulled from the registry (unique NCT ids) | 936 |
+| Excluded by the rules below | 53 |
+| **Included in the cohort** | **883** |
+| Registered primary outcomes of included trials | 2,007 |
+
+Exclusions by rule (the first rule that fires is the one recorded):
+
+| Rule key | Reason group | Trials |
+|---|---|---:|
+| `acute_pain` | acute | 19 |
+| `acute_and_chronic_in_inclusion` | acute | 1 |
+| `pregnancy_related` | condition | 15 |
+| `no_target_match` | condition | 9 |
+| `pathology_other` | condition | 6 |
+| `cancer_oncology` | condition | 3 |
+
+---
+
+## 2. Stage 1 – Pulling the pool from the registry
+
+### What is requested
+
+```
+StudyType        = INTERVENTIONAL
 AND InterventionType = BEHAVIORAL
-AND registered Conditions field contains any of (back pain, fibromyalgia, migraine, headache)
+AND the registered Conditions field contains any of: back pain | fibromyalgia | migraine | headache
 ```
 
-- All filters are combined with AND in one `filter.advanced` expression per term: `AREA[StudyType]INTERVENTIONAL AND AREA[InterventionType]BEHAVIORAL AND AREA[Condition]"<term>"`. `AREA[Condition]` searches the registered Conditions field only. (`query.cond` is not used: it also searches titles, keywords and MeSH terms, which pulled trials whose registered condition was unrelated.)
-- One search per term, deduplicated by `nct_id`. Which search(es) returned a trial is recorded in `api_retrieval_queries`.
-- CT.gov matches whole words with synonym expansion, so a few pulled trials do not contain a target as a substring in their conditions (e.g. `Myofascial Pain Syndrome` returned for fibromyalgia, `Low Back Ache` for back pain). The local condition stage excludes them as `no_target_match`.
-- Raw JSON: `data/raw/full/<extraction_run_id>/studies/*.json` (keep one run).
-- Master table: `data/processed/studies.csv` — **every** retrieved trial, with its include/exclude status.
+One request is sent per condition term, with all filters joined by AND in a single expression:
+
+```
+AREA[StudyType]INTERVENTIONAL AND AREA[InterventionType]BEHAVIORAL AND AREA[Condition]"<term>"
+```
+
+- `AREA[Condition]` searches **only** the registered Conditions field. The simpler `query.cond` parameter was deliberately *not* used: it also searches titles, keywords and MeSH terms, which pulled in trials whose registered condition was unrelated (Arthritis, Insomnia, Anesthesia, ...).
+- "Behavioral" is the registry's own intervention-type label. It includes exercise, physiotherapy, education, mind-body practices, and so on. It is used as labelled and is not re-judged.
+- Results of the four searches are merged and **de-duplicated by `nct_id`**; `api_retrieval_queries` records which search(es) found each trial (the key `chronic_back_pain` is the label of the `back pain` search; the key name is historical, from before the pull was widened from "chronic back pain").
+- Raw JSON, one file per trial, is saved unchanged under `data/raw/full/<extraction_run_id>/studies/`. Only one run is kept. Everything below is recomputed from these files with no network access.
+
+### Why some pulled trials still fail the target check
+
+The registry matches **whole words and expands synonyms**, so a few pulled trials do not contain a target as a substring in their conditions. Examples: `Myofascial Pain Syndrome` returned for fibromyalgia, `Low Back Ache` for back pain. The local filter removes them as `no_target_match`.
+
+### De-duplication guarantee
+
+Records are de-duplicated by `nct_id` before any filtering, and the build stops with an error if `nct_id` (or `outcome_id`) is not unique in the output tables.
 
 ---
 
-## 2. What each excluded study records
+## 3. Stage 2 – Filtering rules
 
-| Column | Meaning |
+Each pulled trial is checked against the rules **in this order**. The first rule that fires decides, and its key is recorded at the start of `exclusion_detail`.
+
+| Order | Rule key | `exclusion_reason` | Excludes a trial when… | Text searched |
+|---:|---|---|---|---|
+| 1 | `cancer_oncology` | condition | an oncology word appears (cancer, carcinoma, oncolog-, neoplasm, malignan-, …) | conditions, keywords, brief title, official title |
+| 2 | `pathology_other` | condition | a non-pain primary disease appears (e.g. intracranial hypertension, pseudotumor, meningitis, multiple sclerosis) | same as above |
+| 3 | `pregnancy_related` | condition | pregnancy, postpartum, childbirth, menstrual/dysmenorrhea or pelvic girdle pain wording appears | same as above |
+| 4 | `acute_pain` / `acute_and_chronic_in_inclusion` / `recent_surgery` / `recent_injury` | acute | the enrolled population is acute or recent-onset pain (details in section 4) | eligibility inclusion criteria, conditions, titles, brief summary |
+| 5 | `no_target_match` | condition | none of the four target conditions matches the registered conditions | registered conditions |
+
+Words appearing **only in the eligibility criteria are never used** for rules 1–3 (they are full of boilerplate such as "excluded: pregnancy, cancer").
+
+If no rule fires, the trial is **included**.
+
+### 3.1 The target condition check (rule 5, and the condition flags)
+
+A trial must have at least one target condition **in its registered conditions**. Keywords and titles alone never qualify a trial.
+
+Each registered condition line is tested separately as a substring against the patterns in the YAML. This sets four independent flags in `studies.csv`:
+
+| Flag column | Target | Examples of what matches |
+|---|---|---|
+| `eligible_chronic_back_pain` | back pain | `Low Back Pain`, `Chronic Low Back Pain`, `Back Pain`, `Pain, Back`, `CLBP`, `LBP` |
+| `eligible_fibromyalgia` | fibromyalgia | `Fibromyalgia`, `Fybromyalgia`, `FM` |
+| `eligible_migraine` | migraine | `Migraine`, `Chronic Migraine`, `Vestibular Migraine` |
+| `eligible_headache` | headache (non-migraine) | `Tension-Type Headache`, `Cluster Headache`, `Headache`, `Pain, Head`, `Head Pain` |
+
+- A trial can carry **several flags** (52 included trials have more than one). There is no rule that removes a headache label because migraine is also present, and migraine wording in the eligibility text never affects the flags.
+- Every included trial therefore has at least one flag `True`. `condition_matched` lists the matched targets as text.
+- The flag name `eligible_chronic_back_pain` is historical; the target is **back pain** in general (see known limits).
+
+### 3.2 Comorbid or additional conditions are not a rule
+
+A trial that lists a target plus many other conditions (mood, other pain conditions, CNS conditions, widespread pain, …) stays in however many it lists. An earlier rule excluding trials with three or more non-target conditions was removed after manual review showed most of them were relevant. All listed conditions remain visible in `raw_conditions`.
+
+### 3.3 Descriptive tags (never exclude)
+
+| Column | What it shows |
 |---|---|
-| `cohort_inclusion_status` | `included` or `excluded` |
-| `exclusion_reason` | **General reason**, one of two values: `acute` or `condition` (empty if included) |
-| `exclusion_detail` | **Specific explanation**. Always starts with the rule key, then why this study hit it, e.g. `acute_pain: Acute / recent-onset pain population (found in eligibility_inclusion_1). Matched text: "…"` |
-
-| `exclusion_reason` | Rule keys (start of `exclusion_detail`) |
-|---|---|
-| `acute` | `acute_pain`, `acute_and_chronic_in_inclusion` |
-| `condition` | `no_target_match`, `cancer_oncology`, `pathology_other`, `pregnancy_related` |
-
-Rules are checked in the order of `exclusion_rules` in the YAML (cancer, pathology, pregnancy, acute), then `no_target_match`. The **first** rule that fires is the one recorded.
+| `condition_feature_flags` | Tags such as `post_traumatic`, `tbi_concussion`, `surgical_postoperative`, `medication_overuse_headache`, `secondary_pain`, `visual_snow`, `vestibular_schwannoma`, found in the trial text, for filtering at analysis time |
+| `review_flags` | Currently `provider_or_system_level`: the title mentions clinicians, guidelines, implementation, decision support, referral, a care model or a health system. Meant to help check whether a trial targets clinicians or care systems rather than patients. Some hits are ordinary patient trials delivered in such a setting |
 
 ---
 
-## 3. Condition rules (`exclusion_reason = condition`)
+## 4. The acute-pain screen (rule 4)
 
-### Target conditions (must match at least one)
-
-Patterns in `condition_patterns_cohort.yaml` set these flags:
-
-| Flag column | Target |
-|---|---|
-| `eligible_migraine` | migraine |
-| `eligible_chronic_back_pain` | back pain |
-| `eligible_fibromyalgia` | fibromyalgia |
-| `eligible_headache` | headache (non-migraine) |
-
-**Inclusion and flags** (`eligible_*`, `condition_matched`): a trial is included only if at least one target matches its **registered conditions**; keywords and titles never qualify it. Each condition line is pattern-matched as a substring (so `Pain, Head` → headache, `Pain, Back` → back pain, `Fybromyalgia` → fibromyalgia). A trial can have several flags (e.g. migraine and headache). Every included trial has at least one flag `True`.
-
-There is no migraine/headache overlap rule: mentions of migraine in eligibility text never remove a headache trial.
-
-**Duplicates:** records are de-duplicated by `nct_id` before any filtering, and the build fails if `nct_id` is not unique in `studies.csv`.
-
-### Rules
-
-| Rule key | When it applies |
-|---|---|
-| `no_target_match` | No target pattern matched the registered conditions. |
-| `cancer_oncology` | Oncology pattern in conditions, keywords, brief title or official title (not eligibility boilerplate). Detail shows the matched word. |
-| `pathology_other` | Non-pain primary pathology pattern (same text scope). Detail shows the matched word. |
-| `pregnancy_related` | Pregnancy, postpartum, childbirth, menstrual or pelvic girdle pain wording in conditions, keywords or titles (same text scope; eligibility text is not searched). A different pain population. Detail shows the matched word. |
-
-Registered comorbid or overlapping conditions (CNS, mood/psychological symptoms, chronic overlapping pain conditions, widespread pain, nociplastic risk factors) are **not** an exclusion rule; a trial with a target pain condition stays in however many other conditions it lists. They are kept in `raw_conditions`.
-
-Descriptive only (never exclude): `condition_feature_flags` (post-traumatic, TBI, visual snow, …) and `review_flags` (currently `provider_or_system_level`: title mentions clinicians, guidelines, implementation, decision support, referral, health system, … so you can check whether the trial targets clinicians or care systems rather than patients; some hits are patient trials in a care-model setting).
-
----
-
-## 4. Acute rules (`exclusion_reason = acute`)
-
-Goal: exclude trials whose **enrolled population** is acute pain, or recent-onset (&lt;3 months) pain / recent surgery / recent injury. Do not exclude on educational, drug-related, or laboratory uses of the word "acute".
+**Goal:** exclude trials whose *enrolled population* is acute pain, or pain of recent onset (< 3 months), or patients with a recent surgery or injury. Do not exclude on harmless uses of the word "acute" (educational, drug-related, laboratory).
 
 ### Text used
 
 | Used | Not used |
 |---|---|
-| Eligibility **inclusion** blocks (checked first) | Detailed description |
+| Eligibility **inclusion** criteria (checked first) | Detailed description |
 | Registered **conditions** (each line) | Keywords / MeSH-style terms |
 | Official title, brief title, brief summary | Intervention names |
 
-### Order
+### Order of checks
 
-1. **Inclusion blocks** — acute population, recent surgery/injury in the past 3 months / 12 weeks, or acute **and** chronic population in the same block → exclude.
-2. Inclusion requires a **chronic** population and the **exclusion** section lists acute/recent pain → pass.
-3. **Conditions**, then **official title → brief title → brief summary** — skipped entirely when **every** registered condition contains the word `chronic`.
+1. **Inclusion criteria** – acute population wording, surgery or injury within the past 3 months / 12 weeks / 90 days, or acute **and** chronic populations in the same block → exclude.
+2. If the inclusion criteria describe a **chronic** population and acute pain is only mentioned under the **exclusion** criteria → pass (acute pain is what the trial excludes).
+3. **Conditions**, then **official title → brief title → brief summary** – skipped entirely when **every** registered condition contains the word `chronic`.
 
-Every occurrence of "acute" in a text is checked (not just the first).
+Every occurrence of "acute" in a text is checked, not just the first.
 
-### Uses of "acute" that are *not* a population (ignored)
+### Uses of "acute" that are not a population (ignored)
 
-Only the specific occurrence is ignored; other acute wording in the same text still counts.
+Only that specific occurrence is ignored; other acute wording in the same text still counts.
 
 | Pattern | Example |
 |---|---|
@@ -110,36 +166,86 @@ Only the specific occurrence is ignored; other acute wording in the same text st
 
 ### Pass examples
 
-- Acute only under **exclusion** criteria.
-- `Chronic Pain` + `Acute Pain` co-listed when inclusion supports a chronic cohort.
-- All conditions contain `chronic` (e.g. `Chronic Low Back Pain` only).
+- "Acute" only under the **exclusion** criteria.
+- `Chronic Pain` and `Acute Pain` both listed, with inclusion criteria supporting a chronic cohort.
+- All registered conditions contain `chronic` (e.g. only `Chronic Low Back Pain`).
 
-### Reference NCTs (manual QC, enforced by `tests/test_finalize_cohort.py`)
+### Rule keys written by this screen
 
-| NCT | Expected | Why |
-|---|---|---|
-| NCT03537573 | exclude | acute diagnosis in inclusion |
-| NCT02647658 | exclude | acute LBP in inclusion (prevention study) |
-| NCT04356963 | exclude | `Pain, Acute` in conditions |
-| NCT00796536 | include (rule example) | "acute" only in detailed description (stimuli). Since the Conditions-field pull, no longer retrieved: its registered condition is only `Chronic Pain` |
-| NCT01794988 | include (rule example) | "acute" only in keywords / MeSH. No longer retrieved (registered condition is only `Chronic Pain`) |
-| NCT03483168 | include | educational "acute vs chronic" in summary; condition is chronic only |
-| NCT04636177 | include | "not due to acute trauma" |
-| NCT06971809 | include | chronic in inclusion, acute only in exclusion |
-| NCT04984720 | include | "acute pain relief medications" is drug wording |
-| NCT02419131 | include | "chronic versus acute PTHA" is background; trial enrolls chronic PTH |
-| NCT03157544 | include | chronic neck/LBP patients during an acute flare (**judgment call**) |
-| NCT06114264 | include | `Pain, Chronic` must not count as a non-target condition |
-
-### Known limit (not implemented)
-
-Peri-operative / ambiguous surgery-injury timing (e.g. "scheduled for lumbar surgery", "within 3 months of a head injury") is **not** screened: only ~7 included trials were affected and the decision was to leave them. Auto-exclusion fires only on explicit "past/last/previous 3 months / 12 weeks / 90 days" wording.
+| Key | Meaning |
+|---|---|
+| `acute_pain` | Acute / recent-onset pain population |
+| `acute_and_chronic_in_inclusion` | Inclusion enrolls both acute and chronic populations |
+| `recent_surgery` / `recent_injury` | Inclusion requires surgery/injury within the past ~3 months (explicit "past/last/previous 3 months, 12 weeks, 90 days" wording only; has not fired in the current run) |
 
 ---
 
-## 5. Intervention & outcomes (no filtering)
+## 5. What gets recorded for an excluded trial
 
-- **Interventions:** `intervention_categories` (from active arms), `is_multimodal`, `control_arm_types`; raw arm text in `raw_intervention_names` and `raw_intervention_details`.
-- **Outcomes:** raw text preserved in `primary_outcomes.csv`; `outcome_category` / `outcome_subcategory` are descriptive.
+| Column | Meaning |
+|---|---|
+| `cohort_inclusion_status` | `included` or `excluded` |
+| `exclusion_reason` | **General reason**, one of two values: `acute` or `condition` (empty if included) |
+| `exclusion_detail` | **Specific explanation**. Always starts with the rule key, then the matched text and where it was found, e.g. `acute_pain: Acute / recent-onset pain population (found in eligibility_inclusion_1). Matched text: "…"` |
 
-See [DATA_COLUMNS.md](DATA_COLUMNS.md).
+| `exclusion_reason` | Rule keys |
+|---|---|
+| `acute` | `acute_pain`, `acute_and_chronic_in_inclusion`, `recent_surgery`, `recent_injury` |
+| `condition` | `cancer_oncology`, `pathology_other`, `pregnancy_related`, `no_target_match` |
+
+For manual review, the registered text is kept verbatim in the `raw_*` columns (titles, a 50-word summary, conditions, keywords, eligibility criteria), so any decision can be checked against the source.
+
+---
+
+## 6. What is deliberately not filtered
+
+- **Interventions.** `intervention_categories` (from the active arms), `is_multimodal` and `control_arm_types` describe the intervention but never exclude. Arm text is kept in `raw_intervention_names` and `raw_intervention_details`.
+- **Primary outcomes.** Raw text is preserved in `primary_outcomes.csv`. `outcome_category` / `outcome_subcategory` are rule-based aids for review, not a coding of the outcomes and not used to filter.
+- **Trial status and date.** `raw_overall_status` and `raw_study_first_post_date` are variables to analyse, not filters.
+- **Age group, trial size, design, comorbidities.** Not used.
+
+---
+
+## 7. Known limits and judgment calls
+
+- **Back pain is not restricted to chronic back pain.** The pull uses the term `back pain`, so many trials register plain `Low Back Pain` without stating the duration. Clearly acute ones are removed by the acute screen; trials with no duration information stay in (dozens of included trials have no chronicity wording at all).
+- **Generic registered conditions are not retrieved.** A trial whose only registered condition is generic (e.g. `Chronic Pain`) is not pulled, even if its title names a target (e.g. NCT00796536, NCT01794988, NCT01993355). This follows from requiring the target in the Conditions field.
+- **Peri-operative or ambiguous surgery/injury timing is not screened.** Only explicit "past 3 months / 12 weeks / 90 days" wording excludes. Roughly 15–20 included trials concern post-surgical or peri-operative pain (by title/conditions wording) and are kept.
+- **Other suspected-irrelevant groups reviewed but kept** (November 2026): trials where the target is one of many listed conditions and the title is not about pain (~41, e.g. arthritis, ME/CFS, tinnitus programs); concussion/TBI as the primary population (~10); healthy or non-patient samples (~6); asymptomatic prevention/school groups (~10–15). They remain included; they can be filtered at analysis time using `raw_conditions`, `condition_feature_flags` and `review_flags`.
+- **Judgment call:** NCT03157544 (chronic neck/low back pain patients during an acute flare) is included.
+- **Registry synonym matching** can return trials with no target substring in their conditions; these are excluded as `no_target_match` (see section 2).
+
+---
+
+## 8. Manual QC reference trials
+
+These trials were reviewed by hand and their expected status is enforced by `tests/test_finalize_cohort.py`.
+
+| NCT | Expected | Why |
+|---|---|---|
+| NCT03537573 | exclude | acute diagnosis in inclusion criteria |
+| NCT02647658 | exclude | acute low back pain in inclusion criteria (prevention study) |
+| NCT04356963 | exclude | `Pain, Acute` in registered conditions |
+| NCT00937365 | exclude | pregnancy-related low back pain (`pregnancy_related`) |
+| NCT03483168 | include | educational "acute vs chronic" in the summary; registered condition is chronic only |
+| NCT04636177 | include | "not due to acute trauma" |
+| NCT06971809 | include | chronic in inclusion criteria, acute only under exclusion |
+| NCT04984720 | include | "acute pain relief medications" is drug wording |
+| NCT02419131 | include | "chronic versus acute PTHA" is background; the trial enrolls chronic post-traumatic headache |
+| NCT03157544 | include | chronic neck/low back pain during an acute flare (**judgment call**) |
+| NCT06114264 | include | `Pain, Chronic` is the generic chronic-pain label, not a reason to exclude |
+
+NCT00796536 and NCT01794988 were used earlier as examples of acute-screen behavior ("acute" appearing only in the detailed description / keywords). They are no longer retrieved because their only registered condition is `Chronic Pain`.
+
+---
+
+## 9. Reproducing the cohort
+
+```bash
+source .venv/bin/activate
+PYTHONPATH=src python -m ctgov_pipeline.finalize_cohort   # rebuild tables from raw JSON (no network)
+PYTHONPATH=src python -m ctgov_pipeline.run_full          # NEW registry pull (creates a new raw run)
+PYTHONPATH=src python -m unittest discover -s tests -v    # all tests
+```
+
+Outputs are written to `data/processed/`: `studies.csv`, `primary_outcomes.csv`, `cohort_report.md` (auto-generated statistics) and `manifest.json`.

@@ -71,7 +71,7 @@ Not exported (redundant): `intervention_category_labels`, `intervention_classifi
 | `raw_primary_purpose` | Design primary purpose |
 | `raw_has_results` | Whether results posted |
 | `primary_outcome_mechanistic` | Study-level flag: all primaries mechanistic by lexicon |
-| `api_retrieval_queries` | Which condition search(es) retrieved the trial |
+| `api_retrieval_queries` | Which condition search(es) retrieved the trial: `chronic_back_pain` (the registry term sent is `back pain`; the key name is historical), `fibromyalgia`, `migraine`, `headache` |
 | `extraction_run_id` | Raw JSON folder name under `data/raw/full/` |
 | `cohort_rules_version` | Cohort rule set version string |
 

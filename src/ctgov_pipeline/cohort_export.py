@@ -15,11 +15,15 @@ COHORT_REPORT_MD = "cohort_report.md"
 EXCLUSION_REASON_ACUTE = "acute"
 EXCLUSION_REASON_CONDITION = "condition"
 
-ACUTE_RULES = frozenset({"acute_pain", "acute_and_chronic_in_inclusion"})
+ACUTE_RULES = frozenset(
+    {"acute_pain", "acute_and_chronic_in_inclusion", "recent_surgery", "recent_injury"}
+)
 
 ACUTE_RULE_LABELS: dict[str, str] = {
     "acute_pain": "Acute / recent-onset pain population",
     "acute_and_chronic_in_inclusion": "Inclusion enrolls both acute and chronic pain populations",
+    "recent_surgery": "Inclusion requires surgery within the past ~3 months",
+    "recent_injury": "Inclusion requires injury within the past ~3 months",
 }
 
 STUDY_TABLE_COLUMNS: list[str] = [

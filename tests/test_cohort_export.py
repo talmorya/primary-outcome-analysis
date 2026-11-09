@@ -34,6 +34,18 @@ class CohortExportTests(unittest.TestCase):
         self.assertIn("acute low back pain", detail)
         self.assertEqual(exclusion_rule_from_detail(detail), "acute_pain")
 
+    def test_recent_surgery_rule_counts_as_acute(self) -> None:
+        cond = ConditionEligibility(
+            targets_in_conditions=[],
+            eligibility="excluded",
+            exclusion_rule="recent_surgery",
+            acute_population_source="eligibility_inclusion_1",
+            acute_population_snippet="surgery within the past 3 months",
+        )
+        reason, detail = build_exclusion_fields(cond=cond, rule="recent_surgery")
+        self.assertEqual(reason, "acute")
+        self.assertTrue(detail.startswith("recent_surgery:"))
+
     def test_condition_rule_reports_condition_reason(self) -> None:
         cond = ConditionEligibility(
             targets_in_conditions=[],
