@@ -41,12 +41,12 @@ Manifest: `manifest.json` lists extraction run id and file paths.
 
 | Column | Description |
 |---|---|
-| `condition_matched` | Pipe-separated target keys that matched (`migraine`, `chronic_back_pain`, …) |
+| `condition_matched` | Pipe-separated target keys matched in the **registered conditions section** (`migraine`, `chronic_back_pain`, …); empty if the trial was included only via keywords/titles |
 | `condition_feature_flags` | Pipe-separated non-excluding feature tags (e.g. post-traumatic) |
-| `eligible_migraine` | Boolean target flag |
-| `eligible_chronic_back_pain` | Boolean target flag |
-| `eligible_fibromyalgia` | Boolean target flag |
-| `eligible_headache` | Boolean target flag (non-migraine headache emphasis) |
+| `eligible_migraine` | Target found in registered conditions (flags are not mutually exclusive) |
+| `eligible_chronic_back_pain` | Target found in registered conditions |
+| `eligible_fibromyalgia` | Target found in registered conditions |
+| `eligible_headache` | Target found in registered conditions (headache types other than plain migraine; may co-occur with migraine) |
 
 ### Intervention (descriptive; no exclusion)
 

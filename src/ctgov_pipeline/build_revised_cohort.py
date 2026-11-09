@@ -48,9 +48,25 @@ def _eligibility_criteria(record: dict[str, Any]) -> str | None:
     return elig.get("eligibilityCriteria")
 
 
+def dedupe_records_by_nct_id(records: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], int]:
+    """Keep the first record per NCT id (a trial can be returned by several API queries)."""
+    seen: set[str] = set()
+    unique: list[dict[str, Any]] = []
+    for record in records:
+        nct_id = record["protocolSection"]["identificationModule"]["nctId"]
+        if nct_id in seen:
+            continue
+        seen.add(nct_id)
+        unique.append(record)
+    return unique, len(records) - len(unique)
+
+
 def _load_records(run_id: str) -> list[dict[str, Any]]:
     raw_dir = PROJECT_ROOT / "data" / "raw" / "full" / run_id / "studies"
-    return load_raw_studies(raw_dir)
+    records, n_duplicates = dedupe_records_by_nct_id(load_raw_studies(raw_dir))
+    if n_duplicates:
+        print(f"Removed {n_duplicates} duplicate NCT id record(s) before filtering.")
+    return records
 
 
 def _parse_record(
@@ -94,7 +110,8 @@ def _parse_record(
     exclusion_reason, exclusion_detail = build_exclusion_fields(
         cond=cond, rule=cond.exclusion_rule or ""
     )
-    eligible_targets = cond.targets_eligible
+    # Flags reflect the registered conditions section only (several can be true).
+    eligible_targets = cond.targets_in_conditions
 
     study_row = project_study_row(
         {
@@ -211,6 +228,12 @@ def build_revised_cohort(
 
     studies_df = pd.DataFrame(study_rows)
     outcomes_df = pd.DataFrame(outcome_rows)
+
+    if studies_df["nct_id"].duplicated().any():
+        dupes = studies_df.loc[studies_df["nct_id"].duplicated(), "nct_id"].tolist()
+        raise ValueError(f"Duplicate nct_id in studies table: {dupes}")
+    if outcomes_df["outcome_id"].duplicated().any():
+        raise ValueError("Duplicate outcome_id in primary_outcomes table")
 
     studies_df.to_csv(out_dir / STUDIES_CSV, index=False)
     outcomes_df.to_csv(out_dir / PRIMARY_OUTCOMES_CSV, index=False)

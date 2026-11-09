@@ -34,7 +34,7 @@ AND condition IN (chronic back pain, fibromyalgia, migraine, headache)
 | `exclusion_reason` | Rule keys (start of `exclusion_detail`) |
 |---|---|
 | `acute` | `acute_pain`, `acute_and_chronic_in_inclusion` |
-| `condition` | `no_target_match`, `no_eligible_target_after_migraine_overlap`, `cancer_oncology`, `pathology_other` |
+| `condition` | `no_target_match`, `cancer_oncology`, `pathology_other` |
 
 Rules are checked in the order of `exclusion_rules` in the YAML (cancer, pathology, acute), then target match, then the migraine-overlap check. The **first** rule that fires is the one recorded.
 
@@ -53,14 +53,19 @@ Patterns in `condition_patterns_cohort.yaml` set these flags:
 | `eligible_fibromyalgia` | fibromyalgia |
 | `eligible_headache` | headache (non-migraine) |
 
-Matching text: registered conditions, keywords, brief title, official title. If both migraine and generic headache match and the text mentions migraine, the headache target is dropped.
+**Inclusion** (at least one target matches): registered conditions, keywords, brief title, official title.
+
+**Flags** (`eligible_*`, `condition_matched`): set from the registered **conditions section only**. A trial can have several flags (e.g. migraine and headache). A trial included through its keywords or titles but with no target in its conditions has all four flags `False`.
+
+There is no migraine/headache overlap rule: mentions of migraine in eligibility text never remove a headache trial.
+
+**Duplicates:** records are de-duplicated by `nct_id` before any filtering, and the build fails if `nct_id` is not unique in `studies.csv`.
 
 ### Rules
 
 | Rule key | When it applies |
 |---|---|
 | `no_target_match` | No target pattern matched. |
-| `no_eligible_target_after_migraine_overlap` | Only the headache target matched and it was dropped because of migraine overlap. |
 | `cancer_oncology` | Oncology pattern in conditions, keywords, titles or intervention names (not eligibility boilerplate). Detail shows the matched word. |
 | `pathology_other` | Non-pain primary pathology pattern (same text scope). Detail shows the matched word. |
 

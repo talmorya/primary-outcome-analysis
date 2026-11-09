@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import unittest
 
+from ctgov_pipeline.build_revised_cohort import dedupe_records_by_nct_id
 from ctgov_pipeline.classify_intervention_categories import classify_intervention_categories
 from ctgov_pipeline.config_loader import load_yaml
 from ctgov_pipeline.outcome_category import classify_outcome_category
@@ -123,6 +124,16 @@ class RevisedCohortTests(unittest.TestCase):
         )
         self.assertIn("psychological_cognitive", result.intervention_categories)
         self.assertTrue(result.is_multimodal)
+
+    def test_dedupe_records_by_nct_id_keeps_first(self) -> None:
+        def rec(nct: str, title: str) -> dict:
+            return {"protocolSection": {"identificationModule": {"nctId": nct, "briefTitle": title}}}
+
+        records = [rec("NCT1", "a"), rec("NCT2", "b"), rec("NCT1", "dup")]
+        unique, removed = dedupe_records_by_nct_id(records)
+        self.assertEqual(removed, 1)
+        self.assertEqual([r["protocolSection"]["identificationModule"]["nctId"] for r in unique], ["NCT1", "NCT2"])
+        self.assertEqual(unique[0]["protocolSection"]["identificationModule"]["briefTitle"], "a")
 
 
 if __name__ == "__main__":

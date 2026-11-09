@@ -12,8 +12,8 @@ from .match_conditions import match_conditions
 
 @dataclass
 class ConditionEligibility:
-    targets_detected: list[str]
-    targets_eligible: list[str]
+    targets_detected: list[str]  # inclusion test: conditions, keywords, titles
+    targets_in_conditions: list[str]  # drives the eligible_* flags: conditions section only
     eligibility: str  # eligible | excluded
     exclusion_rule: str | None = None
     exclusion_detail: str | None = None  # why this specific study hit a non-acute rule
@@ -105,6 +105,19 @@ def _detect_targets(
     return matched
 
 
+def _detect_targets_in_conditions(
+    conditions: list[str] | None, config: dict[str, Any]
+) -> list[str]:
+    """Targets matched by the registered conditions section alone (each line separately)."""
+    lines = [c.strip() for c in (conditions or []) if c and str(c).strip()]
+    matched: list[str] = []
+    for target, spec in config.get("targets", {}).items():
+        patterns = _compile(spec.get("patterns", []))
+        if any(_matches_any(line, patterns) for line in lines):
+            matched.append(target)
+    return matched
+
+
 def _first_pattern_hit(text: str, patterns: list[re.Pattern[str]]) -> str | None:
     for pattern in patterns:
         match = pattern.search(text)
@@ -164,6 +177,7 @@ def evaluate_condition_eligibility(
         brief_title=brief_title,
         official_title=official_title,
     )
+    targets_in_conditions = _detect_targets_in_conditions(conditions, config)
     match = match_conditions(conditions, keywords, config)
     review_flag = match.review_flag
     if not targets_detected and (brief_title or official_title):
@@ -188,7 +202,7 @@ def evaluate_condition_eligibility(
                 return _attach_acute_fields(
                     ConditionEligibility(
                         targets_detected=targets_detected,
-                        targets_eligible=[],
+                        targets_in_conditions=targets_in_conditions,
                         eligibility="excluded",
                         exclusion_rule=acute_screen.rule or "acute_pain",
                         condition_feature_flags=feature_flags,
@@ -203,7 +217,7 @@ def evaluate_condition_eligibility(
             return _attach_acute_fields(
                 ConditionEligibility(
                     targets_detected=targets_detected,
-                    targets_eligible=[],
+                    targets_in_conditions=targets_in_conditions,
                     eligibility="excluded",
                     exclusion_rule=rule_id,
                     exclusion_detail=(
@@ -220,7 +234,7 @@ def evaluate_condition_eligibility(
         return _attach_acute_fields(
             ConditionEligibility(
                 targets_detected=[],
-                targets_eligible=[],
+                targets_in_conditions=targets_in_conditions,
                 eligibility="excluded",
                 exclusion_rule="no_target_match",
                 exclusion_detail=(
@@ -233,31 +247,10 @@ def evaluate_condition_eligibility(
             acute_screen,
         )
 
-    eligible = list(targets_detected)
-    if "headache" in eligible and re.search(r"migraine", text_full_lower):
-        eligible = [t for t in eligible if t != "headache"]
-
-    if not eligible:
-        return _attach_acute_fields(
-            ConditionEligibility(
-                targets_detected=targets_detected,
-                targets_eligible=[],
-                eligibility="excluded",
-                exclusion_rule="no_eligible_target_after_migraine_overlap",
-                exclusion_detail=(
-                    "Only the generic headache target matched and the text mentions migraine, "
-                    "so the headache label was dropped and no target remained."
-                ),
-                condition_feature_flags=feature_flags,
-                review_flag=True,
-            ),
-            acute_screen,
-        )
-
     return _attach_acute_fields(
         ConditionEligibility(
             targets_detected=targets_detected,
-            targets_eligible=eligible,
+            targets_in_conditions=targets_in_conditions,
             eligibility="eligible",
             condition_feature_flags=feature_flags,
             review_flag=review_flag,

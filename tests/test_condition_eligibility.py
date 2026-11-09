@@ -39,17 +39,38 @@ class ConditionEligibilityTests(unittest.TestCase):
             config=self.config,
         )
         self.assertEqual(result.eligibility, "eligible")
-        self.assertIn("headache", result.targets_eligible)
+        self.assertIn("headache", result.targets_in_conditions)
 
-    def test_migraine_not_counted_as_headache(self) -> None:
+    def test_migraine_and_headache_can_both_be_flagged(self) -> None:
         result = evaluate_condition_eligibility(
-            conditions=["Migraine"],
+            conditions=["Migraine", "Tension-Type Headache"],
             keywords=[],
             config=self.config,
         )
         self.assertEqual(result.eligibility, "eligible")
-        self.assertIn("migraine", result.targets_eligible)
-        self.assertNotIn("headache", result.targets_eligible)
+        self.assertIn("migraine", result.targets_in_conditions)
+        self.assertIn("headache", result.targets_in_conditions)
+
+    def test_migraine_in_eligibility_text_does_not_drop_headache(self) -> None:
+        result = evaluate_condition_eligibility(
+            conditions=["Tension-Type Headache"],
+            keywords=[],
+            config=self.config,
+            eligibility_criteria="Inclusion Criteria: TTH. Exclusion Criteria: Diagnosis of migraine",
+        )
+        self.assertEqual(result.eligibility, "eligible")
+        self.assertEqual(result.targets_in_conditions, ["headache"])
+
+    def test_flags_use_conditions_section_only(self) -> None:
+        result = evaluate_condition_eligibility(
+            conditions=["Pain"],
+            keywords=[],
+            config=self.config,
+            brief_title="Yoga for Fibromyalgia",
+        )
+        self.assertEqual(result.eligibility, "eligible")
+        self.assertEqual(result.targets_detected, ["fibromyalgia"])
+        self.assertEqual(result.targets_in_conditions, [])
 
     def test_many_non_target_conditions_not_excluded(self) -> None:
         """Registered comorbidities / overlapping conditions are not an exclusion rule."""
@@ -60,7 +81,7 @@ class ConditionEligibilityTests(unittest.TestCase):
             brief_title="Swimming for individuals with ME/CFS",
         )
         self.assertEqual(result.eligibility, "eligible")
-        self.assertIn("fibromyalgia", result.targets_eligible)
+        self.assertIn("fibromyalgia", result.targets_in_conditions)
 
     def test_acute_back_pain_excluded(self) -> None:
         result = evaluate_condition_eligibility(
@@ -119,7 +140,7 @@ class ConditionEligibilityTests(unittest.TestCase):
             brief_title="Stress Management for Chronic Headaches",
         )
         self.assertEqual(result.eligibility, "eligible")
-        self.assertIn("headache", result.targets_eligible)
+        self.assertIn("headache", result.targets_in_conditions)
 
     def test_generic_chronic_pain_with_comorbid_conditions_eligible(self) -> None:
         result = evaluate_condition_eligibility(

@@ -16,13 +16,13 @@ from ctgov_pipeline.condition_eligibility import ConditionEligibility
 
 class CohortExportTests(unittest.TestCase):
     def test_included_study_has_empty_exclusion_fields(self) -> None:
-        cond = ConditionEligibility(targets_detected=["migraine"], targets_eligible=["migraine"], eligibility="eligible")
+        cond = ConditionEligibility(targets_detected=["migraine"], targets_in_conditions=["migraine"], eligibility="eligible")
         self.assertEqual(build_exclusion_fields(cond=cond, rule=""), ("", ""))
 
     def test_acute_rule_reports_general_reason_source_and_snippet(self) -> None:
         cond = ConditionEligibility(
             targets_detected=["chronic_back_pain"],
-            targets_eligible=[],
+            targets_in_conditions=[],
             eligibility="excluded",
             exclusion_rule="acute_pain",
             acute_population_source="eligibility_inclusion_1",
@@ -38,7 +38,7 @@ class CohortExportTests(unittest.TestCase):
     def test_condition_rule_reports_condition_reason(self) -> None:
         cond = ConditionEligibility(
             targets_detected=[],
-            targets_eligible=[],
+            targets_in_conditions=[],
             eligibility="excluded",
             exclusion_rule="no_target_match",
             exclusion_detail="No target pattern matched.",
