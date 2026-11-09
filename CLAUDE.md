@@ -15,15 +15,15 @@ Reproducible ClinicalTrials.gov API v2 pipeline for studying **registered primar
 ```
 StudyType = INTERVENTIONAL
 AND InterventionType = BEHAVIORAL
-AND condition IN (chronic back pain, fibromyalgia, migraine, headache)
+AND registered Conditions field contains any of (back pain, fibromyalgia, migraine, headache)
 ```
 
 - **IBS excluded** at condition-matching stage
 - All trial statuses retained (`raw_overall_status` is a variable, not a filter)
 - Local condition validation post-API (`config/condition_patterns_cohort.yaml`)
-- **Inclusion:** condition stage only (`docs/COHORT_FILTERING_RULES.md`); acute population rules in `acute_population_screen.py`
+- **Inclusion:** the registered conditions must match a target pattern (keywords/titles never qualify a trial); condition stage only (`docs/COHORT_FILTERING_RULES.md`); acute population rules in `acute_population_screen.py`
 
-Latest extraction run: `full_20261019_125300`. Analytic tables: `data/processed/studies.csv` (see `manifest.json` for counts).
+Latest extraction run: `full_20261109_104453`. Analytic tables: `data/processed/studies.csv` (see `manifest.json` for counts).
 
 ---
 
@@ -84,6 +84,7 @@ PYTHONPATH=src python -m ctgov_pipeline.run_full          # NEW CT.gov pull (cre
 
 ## Known limits (as of the current run)
 
+- **Conditions-field pull:** trials whose registered condition is only generic (e.g. `Chronic Pain`) are not retrieved, even if the title names a target (e.g. NCT00796536, NCT01794988, NCT01993355). Intended (AND of all filters).
 - **Judgment call:** NCT03157544 (chronic neck/LBP during an acute flare) is included.
 - **Not screened:** peri-operative / ambiguous surgery-injury timing (~7 included trials); decided not worth a rule.
 - **Classification QC targets:** ~20% of included outcome rows are `outcome_category = other` (many flagged by `outcome_category_review_flag`); ~25% of studies sit in `other_behavioral_treatment`.

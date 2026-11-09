@@ -46,7 +46,7 @@ class FinalizeCohortTests(unittest.TestCase):
         status = pd.read_csv(studies_csv).set_index("nct_id")["cohort_inclusion_status"]
         expected_excluded = ["NCT03537573", "NCT02647658", "NCT04356963"]
         expected_included = [
-            "NCT00796536", "NCT01794988", "NCT03483168", "NCT04636177", "NCT06971809",
+            "NCT03483168", "NCT04636177", "NCT06971809",
             "NCT04984720", "NCT02419131", "NCT03157544", "NCT06114264",
         ]
         for nct in expected_excluded:

@@ -41,7 +41,7 @@ Manifest: `manifest.json` lists extraction run id and file paths.
 
 | Column | Description |
 |---|---|
-| `condition_matched` | Pipe-separated target keys matched in the **registered conditions section** (`migraine`, `chronic_back_pain`, …); empty if the trial was included only via keywords/titles |
+| `condition_matched` | Pipe-separated target keys matched in the **registered conditions section** (`migraine`, `chronic_back_pain`, …) |
 | `condition_feature_flags` | Pipe-separated non-excluding feature tags (e.g. post-traumatic) |
 | `eligible_migraine` | Target found in registered conditions (flags are not mutually exclusive) |
 | `eligible_chronic_back_pain` | Target found in registered conditions |

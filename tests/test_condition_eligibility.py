@@ -72,16 +72,15 @@ class ConditionEligibilityTests(unittest.TestCase):
             )
             self.assertIn(target, result.targets_in_conditions, condition)
 
-    def test_flags_use_conditions_section_only(self) -> None:
+    def test_target_only_in_title_or_keywords_is_excluded(self) -> None:
         result = evaluate_condition_eligibility(
             conditions=["Pain"],
-            keywords=[],
+            keywords=["Fibromyalgia"],
             config=self.config,
             brief_title="Yoga for Fibromyalgia",
         )
-        self.assertEqual(result.eligibility, "eligible")
-        self.assertEqual(result.targets_detected, ["fibromyalgia"])
-        self.assertEqual(result.targets_in_conditions, [])
+        self.assertEqual(result.eligibility, "excluded")
+        self.assertEqual(result.exclusion_rule, "no_target_match")
 
     def test_many_non_target_conditions_not_excluded(self) -> None:
         """Registered comorbidities / overlapping conditions are not an exclusion rule."""

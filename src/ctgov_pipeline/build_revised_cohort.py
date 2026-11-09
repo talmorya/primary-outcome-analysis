@@ -32,7 +32,7 @@ PROCESSED_DIR = PROJECT_ROOT / "data" / "processed"
 
 QUERY_SOURCE = (
     "StudyType=INTERVENTIONAL AND InterventionType=BEHAVIORAL "
-    "AND condition IN (chronic back pain, fibromyalgia, migraine, headache)"
+    "AND registered Condition field contains (back pain, fibromyalgia, migraine, headache)"
 )
 
 

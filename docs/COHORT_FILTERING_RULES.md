@@ -14,11 +14,12 @@ Only the **condition stage** excludes studies. Interventions and primary outcome
 ```
 StudyType = INTERVENTIONAL
 AND InterventionType = BEHAVIORAL
-AND condition IN (chronic back pain, fibromyalgia, migraine, headache)
+AND registered Conditions field contains any of (back pain, fibromyalgia, migraine, headache)
 ```
 
-- One CT.gov search per term (`query.cond=<term>`, `filter.advanced` for interventional + behavioral), deduplicated by `nct_id`. Which search(es) returned a trial is recorded in `api_retrieval_queries`.
-- **Why a trial can have no target in its registered conditions:** CT.gov's `cond` search area is not limited to the Conditions field. It also searches the brief title, official title, condition MeSH terms and their ancestors, keywords and NCT id, with synonym expansion. A trial is therefore pulled if the term appears in its title or keywords, even when its registered condition is something else (e.g. `Arthritis`, `Chronic Pain`). The local condition stage below decides whether it stays in the cohort.
+- All filters are combined with AND in one `filter.advanced` expression per term: `AREA[StudyType]INTERVENTIONAL AND AREA[InterventionType]BEHAVIORAL AND AREA[Condition]"<term>"`. `AREA[Condition]` searches the registered Conditions field only. (`query.cond` is not used: it also searches titles, keywords and MeSH terms, which pulled trials whose registered condition was unrelated.)
+- One search per term, deduplicated by `nct_id`. Which search(es) returned a trial is recorded in `api_retrieval_queries`.
+- CT.gov matches whole words with synonym expansion, so a few pulled trials do not contain a target as a substring in their conditions (e.g. `Myofascial Pain Syndrome` returned for fibromyalgia, `Low Back Ache` for back pain). The local condition stage excludes them as `no_target_match`.
 - Raw JSON: `data/raw/full/<extraction_run_id>/studies/*.json` (keep one run).
 - Master table: `data/processed/studies.csv` — **every** retrieved trial, with its include/exclude status.
 
@@ -50,13 +51,11 @@ Patterns in `condition_patterns_cohort.yaml` set these flags:
 | Flag column | Target |
 |---|---|
 | `eligible_migraine` | migraine |
-| `eligible_chronic_back_pain` | chronic back pain |
+| `eligible_chronic_back_pain` | back pain |
 | `eligible_fibromyalgia` | fibromyalgia |
 | `eligible_headache` | headache (non-migraine) |
 
-**Inclusion** (at least one target matches): registered conditions, keywords, brief title, official title.
-
-**Flags** (`eligible_*`, `condition_matched`): set from the registered **conditions section only**, by pattern-matching each condition line as a substring (so `Pain, Head` → headache, `Pain, Back` → back pain, `Fybromyalgia` → fibromyalgia). A trial can have several flags (e.g. migraine and headache). A trial included through its keywords or titles but with no target in its conditions has all four flags `False`.
+**Inclusion and flags** (`eligible_*`, `condition_matched`): a trial is included only if at least one target matches its **registered conditions**; keywords and titles never qualify it. Each condition line is pattern-matched as a substring (so `Pain, Head` → headache, `Pain, Back` → back pain, `Fybromyalgia` → fibromyalgia). A trial can have several flags (e.g. migraine and headache). Every included trial has at least one flag `True`.
 
 There is no migraine/headache overlap rule: mentions of migraine in eligibility text never remove a headache trial.
 
@@ -66,8 +65,8 @@ There is no migraine/headache overlap rule: mentions of migraine in eligibility 
 
 | Rule key | When it applies |
 |---|---|
-| `no_target_match` | No target pattern matched. |
-| `cancer_oncology` | Oncology pattern in conditions, keywords, titles or intervention names (not eligibility boilerplate). Detail shows the matched word. |
+| `no_target_match` | No target pattern matched the registered conditions. |
+| `cancer_oncology` | Oncology pattern in conditions, keywords, brief title or official title (not eligibility boilerplate). Detail shows the matched word. |
 | `pathology_other` | Non-pain primary pathology pattern (same text scope). Detail shows the matched word. |
 
 Registered comorbid or overlapping conditions (CNS, mood/psychological symptoms, chronic overlapping pain conditions, widespread pain, nociplastic risk factors) are **not** an exclusion rule; a trial with a target pain condition stays in however many other conditions it lists. They are kept in `raw_conditions`.
@@ -121,8 +120,8 @@ Only the specific occurrence is ignored; other acute wording in the same text st
 | NCT03537573 | exclude | acute diagnosis in inclusion |
 | NCT02647658 | exclude | acute LBP in inclusion (prevention study) |
 | NCT04356963 | exclude | `Pain, Acute` in conditions |
-| NCT00796536 | include | "acute" only in detailed description (stimuli) |
-| NCT01794988 | include | "acute" only in keywords / MeSH |
+| NCT00796536 | include (rule example) | "acute" only in detailed description (stimuli). Since the Conditions-field pull, no longer retrieved: its registered condition is only `Chronic Pain` |
+| NCT01794988 | include (rule example) | "acute" only in keywords / MeSH. No longer retrieved (registered condition is only `Chronic Pain`) |
 | NCT03483168 | include | educational "acute vs chronic" in summary; condition is chronic only |
 | NCT04636177 | include | "not due to acute trauma" |
 | NCT06971809 | include | chronic in inclusion, acute only in exclusion |

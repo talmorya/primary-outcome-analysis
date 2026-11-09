@@ -13,7 +13,7 @@ from .fetch import get_api_version, save_json, search_all_studies
 from .parse import build_tables
 
 CONDITIONS = {
-    "chronic_back_pain": "chronic back pain",
+    "chronic_back_pain": "back pain",
     "fibromyalgia": "fibromyalgia",
     "migraine": "migraine",
     "headache": "headache",
@@ -22,14 +22,15 @@ CONDITIONS = {
 ADVANCED_FILTER = "AREA[StudyType]INTERVENTIONAL AND AREA[InterventionType]BEHAVIORAL"
 QUERY_SOURCE = (
     "StudyType=INTERVENTIONAL AND InterventionType=BEHAVIORAL "
-    "AND condition IN (chronic back pain, fibromyalgia, migraine, headache)"
+    "AND registered Condition field contains (back pain, fibromyalgia, migraine, headache)"
 )
 
 
 def _fetch_all_pages(condition_key: str, condition_term: str) -> tuple[list[dict], int]:
+    # AND of all filters; AREA[Condition] searches the registered Conditions field only
+    # (query.cond would also search titles, keywords and MeSH terms).
     params = {
-        "query.cond": condition_term,
-        "filter.advanced": ADVANCED_FILTER,
+        "filter.advanced": f'{ADVANCED_FILTER} AND AREA[Condition]"{condition_term}"',
         "pageSize": 1000,
         "countTotal": "true",
         "format": "json",
