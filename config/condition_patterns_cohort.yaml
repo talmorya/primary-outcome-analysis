@@ -85,13 +85,16 @@ exclusion_rules:
   pregnancy_related:
     patterns:
       - "pregnan"
-      - "postpartum"
-      - "post-partum"
+      - "post\\s*-?\\s*partum"
       - "childbirth"
       - "menstrual"
       - "dysmenorr"
       - "pelvic\\s+girdle"
 
+  # Acute = the word "acute" describing the enrolled population.
+  # Duration windows ("pain for less than 3 months", recent surgery/injury) are NOT
+  # automatic exclusions: phrasing varies too much. See pain_duration_inclusion and
+  # condition_feature_flags (subacute / perioperative / surgical_postoperative).
   acute_pain:
     patterns:
       - "\\bacute\\s+(low\\s+)?back\\s+pain\\b"
@@ -105,12 +108,6 @@ exclusion_rules:
       - "(?:neck|back|musculoskeletal|headache)(?:\\s+pain)?[\\s,:(\\-]{0,4}\\bacute\\b"
       - '"acute"'
       - "\\bacute\\b.{0,80}(?:diagnosis|icd)"
-      - "pain\\s+onset\\s+(within|less than|<)\\s*(3\\s*months|12\\s*weeks|ninety\\s*days)"
-      - "onset\\s+(within|less than|<)\\s*(3\\s*months|12\\s*weeks)\\s+.*pain"
-      - "pain\\s+for\\s+less\\s+than\\s+(3\\s*months|12\\s*weeks)"
-      - "duration\\s+of\\s+pain\\s+.*(less than|<)\\s*(3\\s*months|12\\s*weeks)"
-      - "within\\s+(the\\s+)?(past|previous|last)\\s+3\\s+months.*pain"
-      - "within\\s+(the\\s+)?(past|previous|last)\\s+12\\s+weeks.*pain"
 
 # Descriptive flags only — do not exclude on match alone.
 condition_features:
@@ -132,6 +129,23 @@ condition_features:
       - "concussion, brain"
       - "mild traumatic brain"
       - "post[- ]?concussion syndrome"
+
+  subacute:
+    patterns:
+      - "\\bsub[- ]?acute\\b"
+      - "subacute pain"
+      - "sub[- ]acute low back"
+      - "subacute (?:low )?back"
+
+  perioperative:
+    patterns:
+      - "peri[- ]?operative"
+      - "perioperative"
+      - "pre[- ]?operative"
+      - "preoperative"
+      - "before (?:spine |spinal |lumbar )?surgery"
+      - "undergoing (?:spine |spinal |lumbar )?surgery"
+      - "scheduled for .{0,40}surgery"
 
   surgical_postoperative:
     patterns:

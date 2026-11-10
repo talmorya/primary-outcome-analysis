@@ -110,6 +110,16 @@ class ConditionEligibilityTests(unittest.TestCase):
             detect_review_flags(brief_title="Yoga for Back Pain", official_title=None, config=self.config), []
         )
 
+    def test_subacute_and_perioperative_feature_flags(self) -> None:
+        result = evaluate_condition_eligibility(
+            conditions=["Subacute Low Back Pain"],
+            keywords=[],
+            config=self.config,
+            brief_title="Perioperative education before spine surgery",
+        )
+        self.assertIn("subacute", result.condition_feature_flags)
+        self.assertIn("perioperative", result.condition_feature_flags)
+
     def test_target_only_in_title_or_keywords_is_excluded(self) -> None:
         result = evaluate_condition_eligibility(
             conditions=["Pain"],

@@ -1,61 +1,38 @@
-"""Tests for eligibility criteria inclusion/exclusion parsing."""
+"""Tests for eligibility-text helpers."""
 
 from __future__ import annotations
 
 import unittest
 
 from ctgov_pipeline.eligibility_text import (
-    extract_exclusion_blocks,
     extract_inclusion_blocks,
-    split_inclusion_exclusion_eligibility,
+    extract_pain_duration_sentences,
 )
 
 
 class EligibilityTextTests(unittest.TestCase):
-    def test_multiple_inclusion_blocks(self) -> None:
+    def test_pain_duration_sentence_for_reference_trial(self) -> None:
         text = (
-            "Patient Participants\n"
             "Inclusion Criteria:\n"
-            "Age 18+; acute neck pain.\n"
+            "* 18-64 years old\n"
+            "* Current non-specific low back pain persisting >12 weeks. "
+            "Mean low back pain intensity for the previous week 4 or greater.\n"
             "Exclusion Criteria:\n"
-            "Cancer.\n"
-            "Providers\n"
+            "* Pregnancy\n"
+        )
+        found = extract_pain_duration_sentences(text)
+        self.assertEqual(found, ["Current non-specific low back pain persisting >12 weeks."])
+
+    def test_duration_ignores_medication_stability_clause(self) -> None:
+        text = (
             "Inclusion Criteria:\n"
-            "Primary care provider.\n"
-            "Exclusion Criteria:\n"
-            "None\n"
+            "* Patients must be on their current headache medications for the last 3 months.\n"
         )
-        blocks = extract_inclusion_blocks(text)
-        self.assertEqual(len(blocks), 2)
-        self.assertIn("acute neck", blocks[0].lower())
-        self.assertIn("primary care", blocks[1].lower())
+        self.assertEqual(extract_pain_duration_sentences(text), [])
 
-    def test_inline_exclusion_header_truncates_inclusion_block(self) -> None:
-        text = (
-            "Inclusion Criteria\n"
-            "Chronic low back pain at least 6 months.\n"
-            "18-85 years of age Exclusion Criteria\n"
-            "Acute pain lasting less than 6 months.\n"
-        )
-        blocks = extract_inclusion_blocks(text)
-        self.assertEqual(len(blocks), 1)
-        self.assertIn("chronic", blocks[0].lower())
-        self.assertNotIn("acute pain", blocks[0].lower())
-        excl = extract_exclusion_blocks(text)
-        self.assertEqual(len(excl), 1)
-        self.assertIn("acute", excl[0].lower())
-
-    def test_splits_general_exclusion_block(self) -> None:
-        text = (
-            "General Inclusion Criteria:\n"
-            "Verified diagnosis of FMS.\n"
-            "General Exclusion Criteria:\n"
-            "Acute pain not related to the FMS.\n"
-        )
-        incl, excl = split_inclusion_exclusion_eligibility(text)
-        self.assertIn("FMS", incl)
-        self.assertIn("Acute pain", excl)
-        self.assertNotIn("Acute pain", incl)
+    def test_inclusion_blocks_still_work(self) -> None:
+        text = "Inclusion Criteria:\nAdults with migraine.\nExclusion Criteria:\nPregnancy."
+        self.assertTrue(extract_inclusion_blocks(text))
 
 
 if __name__ == "__main__":

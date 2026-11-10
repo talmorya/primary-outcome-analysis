@@ -36,6 +36,7 @@ Manifest: `manifest.json` lists extraction run id and file paths.
 | `raw_conditions` | Pipe-separated registered conditions |
 | `raw_keywords` | Pipe-separated CT.gov keywords (not used for acute exclusion) |
 | `raw_eligibility_criteria` | Full eligibility criteria text |
+| `pain_duration_inclusion` | Verbatim inclusion-criteria sentence(s) that state how long the pain/condition lasts (heuristic; empty if none found). Never used to include/exclude. |
 
 ### Condition assignment (descriptive)
 
@@ -43,7 +44,7 @@ Manifest: `manifest.json` lists extraction run id and file paths.
 |---|---|
 | `condition_matched` | Pipe-separated target keys matched in the **registered conditions section** (`migraine`, `chronic_back_pain`, …) |
 | `review_flags` | Pipe-separated descriptive review tags from the titles, never used to exclude. Currently `provider_or_system_level` (clinician / guideline / implementation / decision-support / care-model wording); expect some false positives. Patterns: `review_flags` in `config/condition_patterns_cohort.yaml` |
-| `condition_feature_flags` | Pipe-separated non-excluding feature tags (e.g. post-traumatic) |
+| `condition_feature_flags` | Pipe-separated non-excluding feature tags (`post_traumatic`, `tbi_concussion`, `subacute`, `perioperative`, `surgical_postoperative`, …) |
 | `eligible_migraine` | Target found in registered conditions (flags are not mutually exclusive) |
 | `eligible_chronic_back_pain` | Target found in registered conditions |
 | `eligible_fibromyalgia` | Target found in registered conditions |

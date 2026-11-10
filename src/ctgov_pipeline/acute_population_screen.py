@@ -64,23 +64,6 @@ _ACUTE_POPULATION_PHRASE = re.compile(
     re.IGNORECASE,
 )
 
-_RECENT_SURGERY = re.compile(
-    r"(?:surgery|surgical|operation|operated|post[- ]?operative)"
-    r".{0,60}(?:within|in the|during the)\s+(?:the\s+)?(?:past|previous|last)\s*"
-    r"(?:3\s*months|12\s*weeks|90\s*days)"
-    r"|(?:within|in the|during the)\s+(?:the\s+)?(?:past|previous|last)\s*"
-    r"(?:3\s*months|12\s*weeks|90\s*days).{0,60}(?:surgery|surgical|operation|operated)",
-    re.IGNORECASE,
-)
-
-_RECENT_INJURY = re.compile(
-    r"(?:injury|injuries|trauma|sprain|fracture)"
-    r".{0,60}(?:within|in the|during the)\s+(?:the\s+)?(?:past|previous|last)\s*"
-    r"(?:3\s*months|12\s*weeks|90\s*days)"
-    r"|(?:within|in the|during the)\s+(?:the\s+)?(?:past|previous|last)\s*"
-    r"(?:3\s*months|12\s*weeks|90\s*days).{0,60}(?:injury|injuries|trauma)",
-    re.IGNORECASE,
-)
 
 
 def _compile_acute_patterns(config: dict[str, Any]) -> list[re.Pattern[str]]:
@@ -141,17 +124,9 @@ def _screen_inclusion_block(
     if not block.strip():
         return None
 
-    chronic = _chronic_population_in_text(block)
+    # If inclusion mentions both chronic and acute, do NOT special-case exclude:
+    # too few trials and too ambiguous. Fall through to the ordinary acute-population check.
     acute_match = _acute_population_in_text(block, acute_patterns=acute_patterns)
-
-    if chronic and acute_match:
-        return AcutePopulationScreenResult(
-            decision="exclude",
-            rule="acute_and_chronic_in_inclusion",
-            source=source,
-            detail="Inclusion enrolls/requires both chronic and acute pain populations.",
-            snippet=_snippet(block, acute_match),
-        )
 
     if acute_match:
         return AcutePopulationScreenResult(
@@ -162,17 +137,9 @@ def _screen_inclusion_block(
             snippet=_snippet(block, acute_match),
         )
 
-    for label, recent_pat in (("recent_surgery", _RECENT_SURGERY), ("recent_injury", _RECENT_INJURY)):
-        match = recent_pat.search(block)
-        if match:
-            return AcutePopulationScreenResult(
-                decision="exclude",
-                rule=label,
-                source=source,
-                detail=f"Inclusion indicates {label.replace('_', ' ')} within ~3 months.",
-                snippet=_snippet(block, match),
-            )
-
+    # Recent surgery / injury within a time window is NOT an automatic exclusion:
+    # phrasing and windows vary too much. Use condition_feature_flags
+    # (perioperative / surgical_postoperative / subacute) at analysis time instead.
     return None
 
 

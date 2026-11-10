@@ -1,7 +1,7 @@
 # Analytic cohort statistics
 
-**Run ID:** `cohort_simplified_v1`
-**Generated:** 2026-11-09 15:18 UTC
+**Run ID:** `cohort_conditions_field_v2`
+**Generated:** 2026-11-10 09:54 UTC
 
 Auto-generated from `data/processed/studies.csv` on each `finalize_cohort` run.
 Inclusion rules: `docs/COHORT_FILTERING_RULES.md`. Column definitions: `docs/DATA_COLUMNS.md`.
@@ -13,29 +13,28 @@ Inclusion rules: `docs/COHORT_FILTERING_RULES.md`. Column definitions: `docs/DAT
 | Metric | Count |
 |---|---:|
 | Master pool (API retrieval) | 936 |
-| Included | **883** |
-| Excluded | 53 |
-| Primary outcome rows (included studies) | 2007 |
-| Studies with ≥1 primary outcome | 870 |
+| Included | **882** |
+| Excluded | 54 |
+| Primary outcome rows (included studies) | 2005 |
+| Studies with ≥1 primary outcome | 869 |
 | Mean primary outcomes per study | 2.3 |
 
 ## Condition exclusions
 
-- **Excluded at condition stage:** 53
+- **Excluded at condition stage:** 54
 
 ### By general reason (`exclusion_reason`)
 
-- `condition`: 33
+- `condition`: 34
 - `acute`: 20
 
 ### By specific rule (start of `exclusion_detail`)
 
-- `acute_pain`: 19
-- `pregnancy_related`: 15
+- `acute_pain`: 20
+- `pregnancy_related`: 16
 - `no_target_match`: 9
 - `pathology_other`: 6
 - `cancer_oncology`: 3
-- `acute_and_chronic_in_inclusion`: 1
 
 ## Studies by condition
 
@@ -43,7 +42,7 @@ Flags are non-mutually-exclusive.
 
 | Condition flag | Studies |
 |---|---:|
-| Chronic back pain | 468 |
+| Chronic back pain | 467 |
 | Fibromyalgia | 214 |
 | Migraine | 144 |
 | Primary headache (non-migraine) | 111 |
@@ -54,7 +53,7 @@ Pipe-joined; study counts may sum to > cohort size.
 
 | Category | Studies |
 |---|---:|
-| `physical_rehabilitation` | 433 |
+| `physical_rehabilitation` | 432 |
 | `mind_body_integrative` | 310 |
 | `education_self_management` | 258 |
 | `other_behavioral_treatment` | 242 |
@@ -68,15 +67,15 @@ Pipe-joined; study counts may sum to > cohort size.
 
 | Type | Studies |
 |---|---:|
-| Not multimodal | 767 |
+| Not multimodal | 766 |
 | Multimodal | 116 |
 
 ## Primary outcome categories
 
 | `outcome_category` | Outcome rows |
 |---|---:|
-| `pain_recovery` | 534 |
-| `pain_interference` | 482 |
+| `pain_recovery` | 533 |
+| `pain_interference` | 481 |
 | `other` | 437 |
 | `feasibility_acceptability` | 301 |
 | `mood` | 131 |
@@ -87,8 +86,8 @@ Pipe-joined; study counts may sum to > cohort size.
 | Category → subcategory | Outcome rows |
 |---|---:|
 | `other` → `other` | 435 |
-| `pain_interference` → `disability` | 346 |
-| `pain_recovery` → `pain_intensity` | 291 |
+| `pain_interference` → `disability` | 345 |
+| `pain_recovery` → `pain_intensity` | 290 |
 | `feasibility_acceptability` → `feasibility_recruitment` | 182 |
 | `pain_recovery` → `general_pain` | 181 |
 | `pain_interference` → `quality_of_life` | 68 |
@@ -107,7 +106,7 @@ Pipe-joined; study counts may sum to > cohort size.
 | Flag | Studies |
 |---|---:|
 | `primary_outcome_mechanistic = TRUE` | 25 |
-| `primary_outcome_mechanistic = FALSE` | 858 |
+| `primary_outcome_mechanistic = FALSE` | 857 |
 
 ## Trial status and phase
 
@@ -115,7 +114,7 @@ Pipe-joined; study counts may sum to > cohort size.
 
 | Status | Studies |
 |---|---:|
-| COMPLETED | 528 |
+| COMPLETED | 527 |
 | RECRUITING | 112 |
 | UNKNOWN | 87 |
 | NOT_YET_RECRUITING | 66 |
@@ -153,5 +152,5 @@ Pipe-joined; study counts may sum to > cohort size.
 | 2022 | 53 |
 | 2023 | 62 |
 | 2024 | 51 |
-| 2025 | 102 |
+| 2025 | 101 |
 | 2026 | 124 |

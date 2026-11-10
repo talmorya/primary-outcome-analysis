@@ -20,13 +20,14 @@ from .cohort_export import (
 )
 from .condition_eligibility import detect_review_flags, evaluate_condition_eligibility
 from .config_loader import PROJECT_ROOT, load_yaml
+from .eligibility_text import extract_pain_duration_sentences
 from .extract_outcome_features import extract_outcome_features
 from .extraction_runs import latest_full_extraction_run_id
 from .outcome_category import classify_outcome_category
 from .outcome_mechanism import assess_primary_outcome_mechanistic, is_mechanistic_outcome
 from .parse import load_raw_studies
 
-COHORT_RULES_VERSION = "simplified_v1"
+COHORT_RULES_VERSION = "conditions_field_v2"
 
 PROCESSED_DIR = PROJECT_ROOT / "data" / "processed"
 
@@ -125,6 +126,7 @@ def _parse_record(
             "raw_conditions": _join(conditions),
             "raw_keywords": _join(keywords),
             "raw_eligibility_criteria": eligibility_criteria,
+            "pain_duration_inclusion": _join(extract_pain_duration_sentences(eligibility_criteria)),
             "condition_matched": _join(eligible_targets),
             "condition_feature_flags": _join(cond.condition_feature_flags),
             "review_flags": _join(

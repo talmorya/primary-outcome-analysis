@@ -31,7 +31,7 @@ Among behavioral interventions for chronic pain, what primary outcomes do resear
 
 Analysis subset: `studies.csv` where `cohort_inclusion_status == "included"`, joined to `primary_outcomes.csv` on `nct_id`.
 
-Current run `full_20261109_104453`: 936 trials retrieved → **883 included**, 53 excluded (20 `acute`, 33 `condition`).
+Current run `full_20261109_104453`: 936 trials retrieved → **882 included**, 54 excluded (20 `acute`, 34 `condition`).
 
 ---
 

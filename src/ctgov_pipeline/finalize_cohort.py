@@ -22,7 +22,7 @@ from .config_loader import PROJECT_ROOT
 from .extraction_runs import latest_full_extraction_run_id
 
 PROCESSED_DIR = PROJECT_ROOT / "data" / "processed"
-FINAL_RUN_ID = "cohort_simplified_v1"
+FINAL_RUN_ID = "cohort_conditions_field_v2"
 
 
 def _write_manifest(
