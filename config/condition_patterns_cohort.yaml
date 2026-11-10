@@ -186,6 +186,41 @@ condition_features:
       - "rebound headache"
       - "analgesic overuse"
 
+# Acute back-pain pharmaceutical symptom-relief trials (Cluster-3 noise).
+# Requires: eligible back pain + short duration cue + NSAID/muscle-relaxant arm,
+# and no chronic-duration keep cue. Sets is_acute_bp_symptom_relief and excludes.
+acute_bp_symptom_relief:
+  drug_patterns:
+    - "\\bibuprofen\\b"
+    - "\\bnaproxen\\b"
+    - "\\bketorolac\\b"
+    - "\\bdiclofenac\\b"
+    - "\\bacetaminophen\\b"
+    - "\\bparacetamol\\b"
+    - "\\bmetaxalone\\b"
+    - "\\bmetaxolone\\b"
+    - "\\btizanidine\\b"
+    - "\\bbaclofen\\b"
+    - "\\bcyclobenzaprine\\b"
+    - "\\bmethocarbamol\\b"
+    - "\\bcarisoprodol\\b"
+    - "\\borphenadrine\\b"
+    - "\\bnsaid\\b"
+    - "muscle\\s+relax(?:ant|er)s?"
+  short_duration_patterns:
+    - "pain\\s+duration\\s*<\\s*2\\s*weeks?"
+    - "pain\\s+duration\\s*<\\s*2\\s*week\\b"
+    - "<\\s*2\\s*weeks?\\s*\\(?\\s*336\\s*hours"
+    - "336\\s*hours"
+    - "(?:pain|symptoms?|episode).{0,40}(?:less than|<\\s*|≤\\s*)2\\s*weeks?"
+    - "(?:pain|symptoms?|episode).{0,40}(?:less than|<\\s*|≤\\s*)14\\s*days?"
+    - "present for (?:less than |<\\s*)?(?:1|2)\\s*weeks?"
+  chronic_keep_patterns:
+    - "(?:≥|>|>=|at least|more than|greater than|lasting|persisting|for)\\s*(?:3|4|5|6|12)\\s*(?:months?|weeks?)"
+    - "chronic\\s+(?:low\\s+)?back\\s+pain"
+    - "most days.{0,20}(?:3|6)\\s*months"
+    - "half the days.{0,30}(?:3|6)\\s*months"
+
 # Descriptive review flags (never exclude). Matched against brief + official title.
 review_flags:
   provider_or_system_level:

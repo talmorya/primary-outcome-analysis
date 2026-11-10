@@ -38,9 +38,9 @@ Two principles run through everything:
 | Step | Trials |
 |---|---:|
 | Pulled from the registry (unique NCT ids) | 936 |
-| Excluded by the rules below | 54 |
-| **Included in the cohort** | **882** |
-| Registered primary outcomes of included trials | 2,005 |
+| Excluded by the rules below | 56 |
+| **Included in the cohort** | **880** |
+| Registered primary outcomes of included trials | ~2,000 |
 
 Exclusions by rule (the first rule that fires is the one recorded):
 
@@ -51,6 +51,7 @@ Exclusions by rule (the first rule that fires is the one recorded):
 | `no_target_match` | condition | 9 |
 | `pathology_other` | condition | 6 |
 | `cancer_oncology` | condition | 3 |
+| `acute_bp_symptom_relief` | acute | 2 |
 
 ---
 
@@ -112,7 +113,8 @@ Each pulled trial is checked against the rules **in this order**. The first rule
 | 2 | `pathology_other` | condition | a non-pain primary disease appears (e.g. intracranial hypertension, pseudotumor, meningitis, multiple sclerosis) | same as above |
 | 3 | `pregnancy_related` | condition | pregnancy, postpartum, childbirth, menstrual/dysmenorrhea or pelvic girdle pain wording appears | same as above |
 | 4 | `acute_pain` | acute | the enrolled population is described with the word **acute** (details in section 4) | eligibility inclusion criteria, conditions, titles, brief summary |
-| 5 | `no_target_match` | condition | none of the four target conditions matches the registered conditions | registered conditions |
+| 5 | `acute_bp_symptom_relief` | acute | back-pain trial with a short episode (<~2 weeks) **and** an NSAID/muscle-relaxant arm (Cluster-3 pharmaceutical acute relief; often an educational “behavioral” control). Also stored as `is_acute_bp_symptom_relief` | interventions + duration cues in eligibility / titles / summary |
+| 6 | `no_target_match` | condition | none of the four target conditions matches the registered conditions | registered conditions |
 
 If no rule fires, the trial is **included**.
 
@@ -197,6 +199,7 @@ Only that specific occurrence is ignored; other acute wording in the same text s
 | Key | Meaning |
 |---|---|
 | `acute_pain` | Acute pain population (word "acute" describing who is enrolled) |
+| `acute_bp_symptom_relief` | Short back-pain episode (<~2 weeks) treated with NSAID/muscle-relaxant arms (often plus a light educational control). Cluster-3 pharmaceutical acute relief; also recorded in `is_acute_bp_symptom_relief`. |
 
 An earlier special case that excluded trials whose inclusion criteria mentioned both acute and chronic populations (`acute_and_chronic_in_inclusion`) was removed: only one trial hit it, which is not enough to justify a separate rule. That trial is still excluded when the ordinary acute-population check fires.
 
@@ -212,7 +215,7 @@ An earlier special case that excluded trials whose inclusion criteria mentioned 
 
 | `exclusion_reason` | Rule keys |
 |---|---|
-| `acute` | `acute_pain` |
+| `acute` | `acute_pain`, `acute_bp_symptom_relief` |
 | `condition` | `cancer_oncology`, `pathology_other`, `pregnancy_related`, `no_target_match` |
 
 For manual review, the registered text is kept verbatim in the `raw_*` columns (titles, a 50-word summary, conditions, keywords, eligibility criteria), so any decision can be checked against the source.

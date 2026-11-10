@@ -20,6 +20,7 @@ from .cohort_export import (
 )
 from .condition_eligibility import detect_review_flags, evaluate_condition_eligibility
 from .config_loader import PROJECT_ROOT, load_yaml
+from .acute_bp_symptom_relief import is_acute_bp_symptom_relief
 from .eligibility_text import extract_pain_duration_sentences
 from .extract_outcome_features import extract_outcome_features
 from .extraction_runs import latest_full_extraction_run_id
@@ -106,13 +107,32 @@ def _parse_record(
 
     intervention_cls = classify_intervention_categories(interventions, intervention_config)
 
+    # Flags reflect the registered conditions section only (several can be true).
+    eligible_targets = cond.targets_in_conditions
+    pain_duration = _join(extract_pain_duration_sentences(eligibility_criteria))
+    acute_bp_relief = is_acute_bp_symptom_relief(
+        eligible_back_pain="back_pain" in eligible_targets,
+        interventions=interventions,
+        eligibility_criteria=eligibility_criteria,
+        brief_title=id_mod.get("briefTitle"),
+        brief_summary=brief_summary,
+        pain_duration_inclusion=pain_duration,
+        config=condition_config,
+    )
+
+    if cond.eligibility == "eligible" and acute_bp_relief:
+        cond.eligibility = "excluded"
+        cond.exclusion_rule = "acute_bp_symptom_relief"
+        cond.exclusion_detail = (
+            "Short-duration back pain treated with NSAID/muscle-relaxant symptom relief "
+            "(not chronification prevention or chronic back pain)."
+        )
+
     included = cond.eligibility == "eligible"
     cohort_inclusion_status = "included" if included else "excluded"
     exclusion_reason, exclusion_detail = build_exclusion_fields(
         cond=cond, rule=cond.exclusion_rule or ""
     )
-    # Flags reflect the registered conditions section only (several can be true).
-    eligible_targets = cond.targets_in_conditions
 
     study_row = project_study_row(
         {
@@ -126,7 +146,7 @@ def _parse_record(
             "raw_conditions": _join(conditions),
             "raw_keywords": _join(keywords),
             "raw_eligibility_criteria": eligibility_criteria,
-            "pain_duration_inclusion": _join(extract_pain_duration_sentences(eligibility_criteria)),
+            "pain_duration_inclusion": pain_duration,
             "condition_matched": _join(eligible_targets),
             "condition_feature_flags": _join(cond.condition_feature_flags),
             "review_flags": _join(
@@ -140,6 +160,7 @@ def _parse_record(
             "eligible_back_pain": "back_pain" in eligible_targets,
             "eligible_fibromyalgia": "fibromyalgia" in eligible_targets,
             "eligible_headache": "headache" in eligible_targets,
+            "is_acute_bp_symptom_relief": acute_bp_relief,
             "intervention_categories": _join(intervention_cls.intervention_categories),
             "is_multimodal": intervention_cls.is_multimodal,
             "control_arm_types": _join(intervention_cls.control_arm_types),

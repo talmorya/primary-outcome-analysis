@@ -15,10 +15,14 @@ COHORT_REPORT_MD = "cohort_report.md"
 EXCLUSION_REASON_ACUTE = "acute"
 EXCLUSION_REASON_CONDITION = "condition"
 
-ACUTE_RULES = frozenset({"acute_pain"})
+ACUTE_RULES = frozenset({"acute_pain", "acute_bp_symptom_relief"})
 
 ACUTE_RULE_LABELS: dict[str, str] = {
     "acute_pain": "Acute pain population",
+    "acute_bp_symptom_relief": (
+        "Acute back-pain pharmaceutical symptom relief "
+        "(short episode + NSAID/muscle-relaxant arm)"
+    ),
 }
 
 STUDY_TABLE_COLUMNS: list[str] = [
@@ -40,6 +44,7 @@ STUDY_TABLE_COLUMNS: list[str] = [
     "eligible_back_pain",
     "eligible_fibromyalgia",
     "eligible_headache",
+    "is_acute_bp_symptom_relief",
     "intervention_categories",
     "is_multimodal",
     "control_arm_types",

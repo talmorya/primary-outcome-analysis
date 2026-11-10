@@ -49,6 +49,7 @@ Manifest: `manifest.json` lists extraction run id and file paths.
 | `eligible_back_pain` | Target found in registered conditions |
 | `eligible_fibromyalgia` | Target found in registered conditions |
 | `eligible_headache` | Target found in registered conditions (headache types other than plain migraine; may co-occur with migraine) |
+| `is_acute_bp_symptom_relief` | `True` when a back-pain trial has a short episode (<~2 weeks) and an NSAID/muscle-relaxant arm (Cluster-3 acute pharmaceutical relief). These are also excluded as `acute_bp_symptom_relief`. |
 
 ### Intervention (descriptive; no exclusion)
 
