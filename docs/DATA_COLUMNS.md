@@ -42,11 +42,11 @@ Manifest: `manifest.json` lists extraction run id and file paths.
 
 | Column | Description |
 |---|---|
-| `condition_matched` | Pipe-separated target keys matched in the **registered conditions section** (`migraine`, `chronic_back_pain`, …) |
+| `condition_matched` | Pipe-separated target keys matched in the **registered conditions section** (`migraine`, `back_pain`, …) |
 | `review_flags` | Pipe-separated descriptive review tags from the titles, never used to exclude. Currently `provider_or_system_level` (clinician / guideline / implementation / decision-support / care-model wording); expect some false positives. Patterns: `review_flags` in `config/condition_patterns_cohort.yaml` |
 | `condition_feature_flags` | Pipe-separated non-excluding feature tags (`post_traumatic`, `tbi_concussion`, `subacute`, `perioperative`, `surgical_postoperative`, …) |
 | `eligible_migraine` | Target found in registered conditions (flags are not mutually exclusive) |
-| `eligible_chronic_back_pain` | Target found in registered conditions |
+| `eligible_back_pain` | Target found in registered conditions |
 | `eligible_fibromyalgia` | Target found in registered conditions |
 | `eligible_headache` | Target found in registered conditions (headache types other than plain migraine; may co-occur with migraine) |
 
@@ -72,7 +72,7 @@ Not exported (redundant): `intervention_category_labels`, `intervention_classifi
 | `raw_primary_purpose` | Design primary purpose |
 | `raw_has_results` | Whether results posted |
 | `primary_outcome_mechanistic` | Study-level flag: all primaries mechanistic by lexicon |
-| `api_retrieval_queries` | Which condition search(es) retrieved the trial: `chronic_back_pain` (the registry term sent is `back pain`; the key name is historical), `fibromyalgia`, `migraine`, `headache` |
+| `api_retrieval_queries` | Which condition search(es) retrieved the trial: `back_pain`, `fibromyalgia`, `migraine`, `headache` |
 | `extraction_run_id` | Raw JSON folder name under `data/raw/full/` |
 | `cohort_rules_version` | Cohort rule set version string |
 

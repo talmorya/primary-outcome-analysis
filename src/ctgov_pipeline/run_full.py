@@ -13,7 +13,7 @@ from .fetch import get_api_version, save_json, search_all_studies
 from .parse import build_tables
 
 CONDITIONS = {
-    "chronic_back_pain": "back pain",
+    "back_pain": "back pain",
     "fibromyalgia": "fibromyalgia",
     "migraine": "migraine",
     "headache": "headache",

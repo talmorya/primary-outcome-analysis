@@ -15,7 +15,7 @@ from .fetch import fetch_and_save_studies, get_api_version, save_json
 from .parse import build_tables, parse_study_record
 
 CONDITIONS = {
-    "chronic_back_pain": "chronic back pain",
+    "back_pain": "back pain",
     "fibromyalgia": "fibromyalgia",
     "migraine": "migraine",
 }

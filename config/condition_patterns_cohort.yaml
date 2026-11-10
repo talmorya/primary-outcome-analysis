@@ -11,8 +11,8 @@ targets:
       - "chronic\\s+migraine"
       - "vestibular\\s+migraine"
 
-  chronic_back_pain:
-    label: "Chronic back pain"
+  back_pain:
+    label: "Back pain"
     patterns:
       - "chronic\\s+.*back"
       - "low\\s+back\\s+pain"

@@ -74,7 +74,7 @@ def write_final_cohort_report(
         ]
     )
     for col, label in [
-        ("eligible_chronic_back_pain", "Chronic back pain"),
+        ("eligible_back_pain", "Back pain"),
         ("eligible_fibromyalgia", "Fibromyalgia"),
         ("eligible_migraine", "Migraine"),
         ("eligible_headache", "Primary headache (non-migraine)"),

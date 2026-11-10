@@ -1,7 +1,7 @@
 # Analytic cohort statistics
 
 **Run ID:** `cohort_conditions_field_v2`
-**Generated:** 2026-11-10 09:54 UTC
+**Generated:** 2026-11-10 12:01 UTC
 
 Auto-generated from `data/processed/studies.csv` on each `finalize_cohort` run.
 Inclusion rules: `docs/COHORT_FILTERING_RULES.md`. Column definitions: `docs/DATA_COLUMNS.md`.
@@ -42,7 +42,7 @@ Flags are non-mutually-exclusive.
 
 | Condition flag | Studies |
 |---|---:|
-| Chronic back pain | 467 |
+| Back pain | 467 |
 | Fibromyalgia | 214 |
 | Migraine | 144 |
 | Primary headache (non-migraine) | 111 |

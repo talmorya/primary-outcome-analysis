@@ -137,7 +137,7 @@ def _parse_record(
                 )
             ),
             "eligible_migraine": "migraine" in eligible_targets,
-            "eligible_chronic_back_pain": "chronic_back_pain" in eligible_targets,
+            "eligible_back_pain": "back_pain" in eligible_targets,
             "eligible_fibromyalgia": "fibromyalgia" in eligible_targets,
             "eligible_headache": "headache" in eligible_targets,
             "intervention_categories": _join(intervention_cls.intervention_categories),

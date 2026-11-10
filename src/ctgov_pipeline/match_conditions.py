@@ -35,6 +35,6 @@ def match_conditions(
             matched.append(target)
 
     review_flag = not matched and bool(text.strip())
-    if matched == ["chronic_back_pain"] and re.search(r"\bchronic pain\b", text, re.I):
+    if matched == ["back_pain"] and re.search(r"\bchronic pain\b", text, re.I):
         review_flag = True
     return ConditionMatch(matched_targets=matched, review_flag=review_flag)

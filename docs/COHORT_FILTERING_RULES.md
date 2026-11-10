@@ -85,7 +85,7 @@ ClinicalTrials.gov offers two different ways to search by condition. They do **n
 ### Other pull details
 
 - "Behavioral" is the registry's own intervention-type label (exercise, physiotherapy, education, mind-body practices, …). It is used as labelled and is not re-judged.
-- Results of the four searches are merged and **de-duplicated by `nct_id`**. The de-duplication **does** remove overlapping hits: the four searches returned 994 records in total, of which 58 were the same trial returned by more than one search, leaving **936 unique NCT ids**. `api_retrieval_queries` records which search(es) found each trial. (The key `chronic_back_pain` is the historical label of the `back pain` search; the term sent to the API is `back pain`.)
+- Results of the four searches are merged and **de-duplicated by `nct_id`**. The de-duplication **does** remove overlapping hits: the four searches returned 994 records in total, of which 58 were the same trial returned by more than one search, leaving **936 unique NCT ids**. `api_retrieval_queries` records which search(es) found each trial (keys: `back_pain`, `fibromyalgia`, `migraine`, `headache`).
 - Raw JSON, one file per trial, is saved unchanged under `data/raw/full/<extraction_run_id>/studies/`. Only one run is kept. Everything below is recomputed from these files with no network access.
 - The registry matches **whole words and expands synonyms**, so a few pulled trials do not contain a target as a substring in their conditions (e.g. `Myofascial Pain Syndrome` returned for fibromyalgia, `Low Back Ache` for back pain). The local filter removes them as `no_target_match`.
 - The build stops with an error if `nct_id` (or `outcome_id`) is not unique in the output tables.
@@ -130,14 +130,13 @@ Each registered condition line is tested separately as a substring against the p
 
 | Flag column | Target | Examples of what matches |
 |---|---|---|
-| `eligible_chronic_back_pain` | back pain | `Low Back Pain`, `Chronic Low Back Pain`, `Back Pain`, `Pain, Back`, `CLBP`, `LBP` |
+| `eligible_back_pain` | back pain | `Low Back Pain`, `Chronic Low Back Pain`, `Back Pain`, `Pain, Back`, `CLBP`, `LBP` |
 | `eligible_fibromyalgia` | fibromyalgia | `Fibromyalgia`, `Fybromyalgia`, `FM` |
 | `eligible_migraine` | migraine | `Migraine`, `Chronic Migraine`, `Vestibular Migraine` |
 | `eligible_headache` | headache (non-migraine) | `Tension-Type Headache`, `Cluster Headache`, `Headache`, `Pain, Head`, `Head Pain` |
 
 - A trial can carry **several flags** (about 50 included trials have more than one). There is no rule that removes a headache label because migraine is also present, and migraine wording in the eligibility text never affects the flags.
-- Every included trial therefore has at least one flag `True`. `condition_matched` lists the matched targets as text.
-- The flag name `eligible_chronic_back_pain` is historical; the target is **back pain** in general.
+- Every included trial therefore has at least one flag `True`. `condition_matched` lists the matched targets as text (`back_pain`, not "chronic back pain", even when the registered wording includes "chronic").
 
 ### 3.2 Comorbid or additional conditions are not a rule
 

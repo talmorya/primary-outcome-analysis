@@ -1,8 +1,8 @@
 version: "0.1.0"
 
 targets:
-  chronic_back_pain:
-    label: "Chronic back pain"
+  back_pain:
+    label: "Back pain"
     patterns:
       - "chronic\\s+.*back"
       - "low\\s+back\\s+pain"

@@ -64,7 +64,7 @@ class ConditionEligibilityTests(unittest.TestCase):
     def test_pain_comma_body_part_conditions_flag_targets(self) -> None:
         for condition, target in [
             ("Pain, Head", "headache"),
-            ("Pain, Back", "chronic_back_pain"),
+            ("Pain, Back", "back_pain"),
             ("Fybromyalgia", "fibromyalgia"),
         ]:
             result = evaluate_condition_eligibility(
@@ -150,7 +150,7 @@ class ConditionEligibilityTests(unittest.TestCase):
         self.assertEqual(result.eligibility, "excluded")
         self.assertEqual(result.exclusion_rule, "acute_pain")
 
-    def test_chronic_back_pain_not_excluded_as_acute(self) -> None:
+    def test_back_pain_not_excluded_as_acute(self) -> None:
         result = evaluate_condition_eligibility(
             conditions=["Chronic Low Back Pain"],
             keywords=[],
