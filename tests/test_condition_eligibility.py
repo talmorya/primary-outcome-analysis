@@ -139,6 +139,45 @@ class ConditionEligibilityTests(unittest.TestCase):
                 self.assertEqual(result.exclusion_rule, "subacute_perioperative")
                 self.assertIn(flag, result.exclusion_detail)
 
+    def test_postoperative_kept_when_chronic_in_inclusion(self) -> None:
+        for criteria in (
+            "Inclusion Criteria:\n* Chronic low back pain\nExclusion Criteria:\n* Pregnancy",
+            "Inclusion Criteria:\n* Back pain for at least 3 months\nExclusion Criteria:\n* Pregnancy",
+        ):
+            with self.subTest(criteria=criteria):
+                result = evaluate_condition_eligibility(
+                    conditions=["Back Pain"],
+                    keywords=[],
+                    config=self.config,
+                    brief_title="Rehabilitation after spinal fusion",
+                    eligibility_criteria=criteria,
+                )
+                self.assertIn("surgical_postoperative", result.condition_feature_flags)
+                self.assertEqual(result.eligibility, "eligible")
+
+    def test_postoperative_without_chronic_cue_still_excluded(self) -> None:
+        result = evaluate_condition_eligibility(
+            conditions=["Back Pain"],
+            keywords=[],
+            config=self.config,
+            brief_title="Rehabilitation after spinal fusion",
+            eligibility_criteria="Inclusion Criteria:\n* Scheduled for fusion\nExclusion Criteria:\n* None",
+        )
+        self.assertEqual(result.eligibility, "excluded")
+        self.assertEqual(result.exclusion_rule, "subacute_perioperative")
+
+    def test_chronic_cue_does_not_override_subacute_or_perioperative(self) -> None:
+        result = evaluate_condition_eligibility(
+            conditions=["Subacute Low Back Pain"],
+            keywords=[],
+            config=self.config,
+            brief_title="Rehabilitation after spinal fusion",
+            eligibility_criteria="Inclusion Criteria:\n* Chronic low back pain\nExclusion Criteria:\n* None",
+        )
+        self.assertEqual(result.eligibility, "excluded")
+        self.assertIn("subacute", result.exclusion_detail)
+        self.assertNotIn("surgical_postoperative", result.exclusion_detail)
+
     def test_other_feature_flags_do_not_exclude(self) -> None:
         result = evaluate_condition_eligibility(
             conditions=["Post-concussive headache"],

@@ -156,6 +156,36 @@ def _trim_to_duration_clause(cleaned: str) -> str:
     return cleaned
 
 
+def find_chronic_inclusion_cue(
+    eligibility_criteria: str | None,
+    *,
+    word_patterns: list[str],
+    duration_patterns: list[str],
+) -> str:
+    """First chronic cue in the INCLUSION criteria, or "" when none.
+
+    - `word_patterns` (e.g. the word "chronic") are searched in the whole inclusion text.
+    - `duration_patterns` (e.g. "at least 3 months") must sit in an inclusion sentence that
+      also mentions pain/symptoms, so "surgery at least 3 months ago" alone does not count.
+    """
+    words = [re.compile(p, re.IGNORECASE) for p in word_patterns]
+    durations = [re.compile(p, re.IGNORECASE) for p in duration_patterns]
+    for block in extract_inclusion_blocks(eligibility_criteria):
+        cleaned_block = _clean_sentence(block)
+        for pattern in words:
+            match = pattern.search(cleaned_block)
+            if match:
+                return match.group(0)
+        for chunk in _candidate_chunks(block):
+            if not _PAIN_CONTEXT.search(chunk):
+                continue
+            for pattern in durations:
+                match = pattern.search(chunk)
+                if match:
+                    return match.group(0)
+    return ""
+
+
 def extract_pain_duration_sentences(eligibility_criteria: str | None, *, max_sentences: int = 2) -> list[str]:
     """Verbatim inclusion-criteria sentences that state how long the pain/condition lasts."""
     found: list[str] = []

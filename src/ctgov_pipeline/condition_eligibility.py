@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from .acute_population_screen import AcutePopulationScreenResult, screen_acute_population
+from .eligibility_text import find_chronic_inclusion_cue
 
 
 @dataclass
@@ -184,6 +185,16 @@ def evaluate_condition_eligibility(
 
     flag_spec = config.get("flag_exclusion", {})
     excluding_flags = [f for f in flag_spec.get("flags", []) if f in feature_flags]
+    keep_spec = flag_spec.get("keep_when_chronic_in_inclusion", {})
+    overridable = [f for f in excluding_flags if f in keep_spec.get("flags", [])]
+    if overridable:
+        chronic_cue = find_chronic_inclusion_cue(
+            eligibility_criteria,
+            word_patterns=keep_spec.get("word_patterns", []),
+            duration_patterns=keep_spec.get("duration_patterns", []),
+        )
+        if chronic_cue:
+            excluding_flags = [f for f in excluding_flags if f not in overridable]
     if excluding_flags:
         return _attach_acute_fields(
             ConditionEligibility(

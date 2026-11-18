@@ -195,6 +195,21 @@ flag_exclusion:
     - subacute
     - perioperative
     - surgical_postoperative
+  # A trial whose only excluding flag is `surgical_postoperative` is KEPT when its
+  # INCLUSION criteria show established chronic pain: the word "chronic", or a duration
+  # of "<>= / > / more than / at least> <3 or 6 months, 1 year, 12 weeks>" (other words
+  # may sit in between, e.g. "at least 3 consecutive months", "more than 12 weeks"; a
+  # trailing "or more" is irrelevant; "3+ months" counts as "at least 3 months").
+  # Duration phrases must be in a sentence that also mentions pain/symptoms.
+  # `subacute` / `perioperative` flags are never overridden.
+  keep_when_chronic_in_inclusion:
+    flags:
+      - surgical_postoperative
+    word_patterns:
+      - "\\bchronic\\b"
+    duration_patterns:
+      - "\\b(?:3|6|12)\\s*\\+\\s*(?:months?|mos?|weeks?|wks?)\\b"
+      - "(?:>=|≥|>|more\\s+than|at\\s+least)\\s*(?:[a-z-]+\\s+){0,3}(?:(?:3|three|6|six|12|twelve)[\\s-]*(?:[a-z-]+\\s+){0,2}(?:months?|mos?)\\b|(?:1|one)[\\s-]*(?:[a-z-]+\\s+){0,2}(?:years?|yrs?)\\b|(?:12|twelve)[\\s-]*(?:[a-z-]+\\s+){0,2}(?:weeks?|wks?)\\b)"
 
 # Acute back-pain pharmaceutical symptom-relief trials (Cluster-3 noise).
 # Requires: eligible back pain + short duration cue + NSAID/muscle-relaxant arm,
