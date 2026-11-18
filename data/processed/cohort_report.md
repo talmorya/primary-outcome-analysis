@@ -1,7 +1,7 @@
 # Analytic cohort statistics
 
 **Run ID:** `cohort_conditions_field_v2`
-**Generated:** 2026-11-18 13:36 UTC
+**Generated:** 2026-11-18 13:57 UTC
 
 Auto-generated from `data/processed/studies.csv` on each `finalize_cohort` run.
 Inclusion rules: `docs/COHORT_FILTERING_RULES.md`. Column definitions: `docs/DATA_COLUMNS.md`.
@@ -54,23 +54,23 @@ Pipe-joined; study counts may sum to > cohort size.
 
 | Category | Studies |
 |---|---:|
-| `physical_rehabilitation` | 432 |
-| `mind_body_integrative` | 334 |
-| `education_self_management` | 282 |
-| `other_behavioral_treatment` | 201 |
+| `physical_rehabilitation` | 427 |
+| `mind_body_integrative` | 333 |
+| `education_self_management` | 276 |
+| `other_behavioral_treatment` | 190 |
 | `psychological_cognitive` | 181 |
 | `digital_health_delivery` | 85 |
 | `multidisciplinary_interdisciplinary` | 38 |
-| `neuroplastic_recovery_therapy` | 37 |
-| `occupational_ergonomics_rtw` | 32 |
+| `neuroplastic_recovery_therapy` | 36 |
+| `occupational_ergonomics_rtw` | 31 |
 | `experimental_research_paradigm` | 19 |
 
 ### Multimodal vs not multimodal
 
 | Type | Studies |
 |---|---:|
-| Not multimodal | 766 |
-| Multimodal | 114 |
+| Not multimodal | 768 |
+| Multimodal | 112 |
 
 ## Primary outcome categories
 

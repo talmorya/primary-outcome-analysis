@@ -68,6 +68,14 @@ class InterventionCategoryValidationTests(unittest.TestCase):
         self.assertIn("psychological_cognitive", result.intervention_categories)
         self.assertFalse(result.has_control_arm)
 
+    def test_stimulus_control_therapy_not_comparator(self) -> None:
+        result = classify_intervention_categories(
+            [{"type": "BEHAVIORAL", "name": "Stimulus Control and Sleep Restriction"}],
+            self.config,
+        )
+        self.assertFalse(result.has_control_arm)
+        self.assertIn("other_behavioral_treatment", result.intervention_categories)
+
     @unittest.skipUnless(FINAL_COHORT_STUDIES.is_file(), "final cohort not built")
     def test_final_cohort_reclassification_matches_stored_categories(self) -> None:
         mismatches: list[str] = []

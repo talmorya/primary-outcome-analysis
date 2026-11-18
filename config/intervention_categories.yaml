@@ -1,9 +1,12 @@
-version: "2.2.0"
+version: "2.2.1"
 
 # Treatment-oriented intervention categories (active arms only; comparators excluded).
 # Comparator arms: matched against intervention arm NAME only (not description).
+# Pure control labels must not contribute categories (including other_behavioral_treatment).
 
 control_arm:
+  # Match pure comparator labels in the arm NAME only. Prefer anchored / trailing
+  # "control" forms so active names like "Museum therapy ... control condition ..." stay active.
   patterns:
     - "placebo"
     - "\\bsham\\b"
@@ -11,11 +14,46 @@ control_arm:
     - "waiting list"
     - "usual care"
     - "standard care"
+    - "standard of care"
     - "standard medical"
+    - "typical care"
+    - "business as usual"
+    - "minimally enhanced usual care"
+    - "treatment as usual"
+    - "(?<![A-Za-z])TAU(?![A-Za-z])"
     - "no intervention"
+    - "no additional intervention"
+    - "screening and outcome evaluation only"
     - "attention control"
-    - "control group"
-    - "control arm"
+    - "^controls?$"
+    - "^control\\s*:"
+    - "^control\\s+group$"
+    - "^control\\s+arm$"
+    - "^control\\s+condition$"
+    - "^control\\s+intervention$"
+    - "^(?:passive|active)\\s+control(?:\\s+intervention)?$"
+    - "control\\s+group$"
+    - "control\\s+arm$"
+    - "control\\s+condition$"
+    - "control\\s+intervention$"
+    - "(?:education|website|activity)\\s+control(?:\\s+intervention)?$"
+    - "[-\\s]control$"
+  # Keep active therapies whose names happen to contain control/TAU vocabulary.
+  exclude_patterns:
+    - "motor\\s+control"
+    - "stimulus\\s+control"
+    - "movement\\s+control"
+    - "postural\\s+control"
+    - "pain\\s+control"
+    - "self[- ]?control"
+    - "impulse\\s+control"
+    - "bladder\\s+control"
+    - "birth\\s+control"
+    - "quality\\s+control"
+    - "breath(?:ing)?\\s+control"
+    - "additional to"
+    - "\\+"
+    - "improved treatment as usual"
 
 mechanism_arm:
   patterns:

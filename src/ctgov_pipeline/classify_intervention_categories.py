@@ -74,21 +74,37 @@ def classify_control_type(arm_name: str) -> str:
         return "placebo_control"
     if re.search(r"attention control", name):
         return "attention_control"
-    if re.search(r"usual care|standard care|standard medical", name):
+    if re.search(
+        r"usual care|standard care|standard of care|standard medical|"
+        r"typical care|business as usual|minimally enhanced usual care|"
+        r"treatment as usual|(?<![a-z])tau(?![a-z])",
+        name,
+    ):
         return "usual_care"
-    if re.search(r"no intervention", name):
+    if re.search(
+        r"no intervention|no additional intervention|screening and outcome evaluation only",
+        name,
+    ):
         return "no_intervention_control"
-    if re.search(r"control group|control arm|\bcontrol\b", name):
+    if re.search(r"control group|control arm|control condition|control intervention|\bcontrol\b", name):
         return "other_control"
     return "other_control"
 
 
-def is_comparator_arm(arm_name: str, control_patterns: list[str]) -> bool:
-    """Comparator detection from arm name only."""
+def is_comparator_arm(
+    arm_name: str,
+    control_patterns: list[str],
+    exclude_patterns: list[str] | None = None,
+) -> bool:
+    """Comparator detection from arm name only (pure control labels)."""
     name = arm_name.strip()
     if not name:
         return False
-    return _matches(name, control_patterns)
+    if not _matches(name, control_patterns):
+        return False
+    if exclude_patterns and _matches(name, exclude_patterns):
+        return False
+    return True
 
 
 def classify_intervention_categories(
@@ -102,7 +118,9 @@ def classify_intervention_categories(
             review_flag=True,
         )
 
-    control_patterns = config.get("control_arm", {}).get("patterns", [])
+    control_cfg = config.get("control_arm", {})
+    control_patterns = control_cfg.get("patterns", [])
+    control_exclude_patterns = control_cfg.get("exclude_patterns", [])
 
     categories: set[str] = set()
     rules: list[str] = []
@@ -125,7 +143,7 @@ def classify_intervention_categories(
         text = _active_arm_text(item)
         item_type = str(item.get("type", "")).upper()
 
-        if is_comparator_arm(name, control_patterns):
+        if is_comparator_arm(name, control_patterns, control_exclude_patterns):
             has_control = True
             rules.append("ARM_CONTROL")
             ctrl_type = classify_control_type(name)
@@ -138,6 +156,7 @@ def classify_intervention_categories(
                     "description": str(item.get("description") or "").strip(),
                 }
             )
+            # Control/comparator arms never contribute intervention categories.
             continue
 
         if item_type == "BEHAVIORAL" or _is_behavioral_item(item):

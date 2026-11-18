@@ -138,6 +138,91 @@ class RevisedCohortTests(unittest.TestCase):
         self.assertEqual(result.intervention_categories, [])
         self.assertTrue(result.has_control_arm)
 
+    def test_pure_control_names_do_not_trigger_other(self) -> None:
+        for name in (
+            "Control",
+            "Usual care",
+            "Standard Care",
+            "Standard of care",
+            "Treatment as Usual",
+            "Treatment as Usual (TAU)",
+            "Typical care",
+            "Business as usual",
+        ):
+            with self.subTest(name=name):
+                result = classify_intervention_categories(
+                    [{"type": "BEHAVIORAL", "name": name}],
+                    self.intervention_config,
+                )
+                self.assertEqual(result.intervention_categories, [])
+                self.assertTrue(result.has_control_arm)
+                self.assertNotIn("other_behavioral_treatment", result.intervention_categories)
+
+    def test_control_arm_ignored_while_active_arm_categorized(self) -> None:
+        result = classify_intervention_categories(
+            [
+                {"type": "BEHAVIORAL", "name": "ABM"},
+                {"type": "BEHAVIORAL", "name": "Control"},
+            ],
+            self.intervention_config,
+        )
+        self.assertEqual(result.intervention_categories, ["other_behavioral_treatment"])
+        self.assertTrue(result.has_control_arm)
+        self.assertIn("other_control", result.control_arm_types)
+
+    def test_motor_control_not_treated_as_comparator(self) -> None:
+        result = classify_intervention_categories(
+            [{"type": "BEHAVIORAL", "name": "Motor control exercises"}],
+            self.intervention_config,
+        )
+        self.assertFalse(result.has_control_arm)
+        self.assertIn("physical_rehabilitation", result.intervention_categories)
+
+    def test_tau_plus_active_treatment_not_comparator(self) -> None:
+        result = classify_intervention_categories(
+            [
+                {"type": "BEHAVIORAL", "name": "TAU + FIBRO-On"},
+                {"type": "OTHER", "name": "Treatment as Usual (TAU)"},
+            ],
+            self.intervention_config,
+        )
+        self.assertTrue(result.has_control_arm)
+        self.assertIn("usual_care", result.control_arm_types)
+        self.assertIn("other_behavioral_treatment", result.intervention_categories)
+
+    def test_embedded_control_word_with_active_therapy_stays_active(self) -> None:
+        result = classify_intervention_categories(
+            [
+                {
+                    "type": "OTHER",
+                    "name": "Experimental and control condition: Museum therapy",
+                }
+            ],
+            self.intervention_config,
+        )
+        self.assertFalse(result.has_control_arm)
+        self.assertIn("other_behavioral_treatment", result.intervention_categories)
+
+    def test_standard_of_care_arm_does_not_leak_categories(self) -> None:
+        result = classify_intervention_categories(
+            [
+                {
+                    "type": "BEHAVIORAL",
+                    "name": "Standard of care treatment for Fibromyalgia",
+                    "description": "Exercise, CBT, education, and occupational therapy as usual.",
+                },
+                {
+                    "type": "BEHAVIORAL",
+                    "name": "Longitudinal Behavioral Health Techniques",
+                },
+            ],
+            self.intervention_config,
+        )
+        self.assertTrue(result.has_control_arm)
+        self.assertEqual(result.intervention_categories, ["other_behavioral_treatment"])
+        self.assertNotIn("psychological_cognitive", result.intervention_categories)
+        self.assertNotIn("education_self_management", result.intervention_categories)
+
     def test_cbt_on_other_arm_type(self) -> None:
         result = classify_intervention_categories(
             [

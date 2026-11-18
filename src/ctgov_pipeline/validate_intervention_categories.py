@@ -42,9 +42,11 @@ def parse_pipe_field(value: str | None) -> list[str]:
 
 
 def _is_comparator_arm(item: dict[str, Any], config: dict[str, Any]) -> bool:
+    control_cfg = config.get("control_arm", {})
     return is_comparator_arm(
         _arm_name(item),
-        config.get("control_arm", {}).get("patterns", []),
+        control_cfg.get("patterns", []),
+        control_cfg.get("exclude_patterns", []),
     )
 
 
