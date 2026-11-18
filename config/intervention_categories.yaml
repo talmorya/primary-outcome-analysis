@@ -1,4 +1,4 @@
-version: "2.1.0"
+version: "2.2.0"
 
 # Treatment-oriented intervention categories (active arms only; comparators excluded).
 # Comparator arms: matched against intervention arm NAME only (not description).
@@ -52,11 +52,13 @@ categories:
     label: "Psychological & cognitive therapy"
     description: >
       Changing thoughts, cognitive distortions, and behavioral coping (not brain-retraining
-      or exposure-based unlearning of pain loops).
+      or exposure-based unlearning of pain loops). Behavioral activation stays here;
+      graded activity/exposure belong under neuroplastic_recovery_therapy.
     patterns:
       - "cognitive\\s+behav"
       - "cognitive-behavioral"
       - "\\bcbt\\b"
+      - "\\bcbgt\\b"
       - "acceptance\\s+and\\s+commitment"
       - "\\bact\\b"
       - "psychotherapy"
@@ -65,6 +67,8 @@ categories:
       - "behavioral\\s+therapy"
       - "behavioural\\s+therapy"
       - "emdr"
+      - "eye[- ]movement[- ]desensitization"
+      - "eye\\s+movement\\s+desensitization"
       - "dialectical\\s+behavior"
       - "\\bdbt\\b"
       - "motivational\\s+interview"
@@ -73,12 +77,18 @@ categories:
       - "\\bpbre\\b"
       - "cognitive\\s+functional"
       - "\\bcft\\b"
+      - "problem[- ]solving\\s+therapy"
+      - "problem\\s+solving\\s+therapy"
+      - "\\bpst\\b"
+      - "behavioral\\s+activation"
+      - "behavioural\\s+activation"
 
   neuroplastic_recovery_therapy:
     label: "Neuroplastic recovery therapy"
     description: >
       Brain-retraining approaches aimed at unlearning maladaptive neural pain loops
-      (distinct from general cognitive coping).
+      (PRT, EAET, graded exposure/activity, amygdala retraining, sensory discrimination),
+      distinct from general cognitive coping.
     patterns:
       - "pain\\s+reprocess"
       - "pain\\s+re-processing"
@@ -87,6 +97,13 @@ categories:
       - "\\beaet\\b"
       - "exposure\\s+therapy"
       - "graded\\s+exposure"
+      - "graded\\s+activity"
+      - "amygdala\\s+retrain"
+      - "amygdala\\s+and\\s+insula\\s+retrain"
+      - "\\barp\\b"
+      - "two[- ]point\\s+discrimination"
+      - "sensory\\s+discrimination"
+      - "tactile\\s+discrimination"
 
   mind_body_integrative:
     label: "Mind-body & integrative practice"
@@ -118,12 +135,24 @@ categories:
       - "music\\s+therapy"
       - "music\\s+listening"
       - "art\\s+therapy"
+      - "pranayama"
+      - "diaphragmatic"
+      - "breathing\\s+techniques?"
+      - "breath\\s+work"
+      - "breathwork"
+      - "\\bbreathing\\b"
+      - "emotional\\s+freedom\\s+technique"
+      - "\\beft\\b"
+      - "\\btapping\\b"
+      - "basic\\s+body\\s+awareness"
+      - "\\bbbat\\b"
+      - "grinberg\\s+method"
 
   education_self_management:
     label: "Education & self-management"
     description: >
       Educational and habit-focused tools to conceptualize pain and alter daily
-      routines (includes pain education and lifestyle-oriented behavioral content).
+      routines (includes pain education, booklets/decision aids, and lifestyle content).
     patterns:
       - "pain\\s+education"
       - "pain\\s+neuroscience\\s+education"
@@ -150,6 +179,18 @@ categories:
       - "light\\s+exposure"
       - "light\\s+deprivation"
       - "wellness"
+      - "the\\s+back\\s+book"
+      - "back\\s+book"
+      - "back\\s+guide"
+      - "comic[- ]?book"
+      - "booklet"
+      - "educational\\s+video"
+      - "decision\\s+aid"
+      - "shared\\s+decision[- ]making"
+      - "shared\\s+decision\\s+making"
+      - "energy\\s+conservation"
+      - "pain\\s+neurobiology"
+      - "neurobiology\\s+of\\s+pain"
 
   physical_rehabilitation:
     label: "Physical rehabilitation"
@@ -171,17 +212,34 @@ categories:
       - "rehabilitation"
       - "manual\\s+therapy"
 
+  occupational_ergonomics_rtw:
+    label: "Occupational ergonomics & return-to-work"
+    description: >
+      Workplace, occupational therapy, ergonomics, and return-to-work / work-hardening
+      protocols (may co-occur with physical or educational content).
+    patterns:
+      - "ergonomic"
+      - "ergonomics"
+      - "occupational\\s+therapy"
+      - "occupational\\s+ergonomic"
+      - "return[- ]to[- ]work"
+      - "return\\s+to\\s+work"
+      - "\\brtw\\b"
+      - "work[- ]hardening"
+      - "work\\s+hardening"
+      - "goldilocks\\s+work"
+
   multidisciplinary_interdisciplinary:
     label: "Multidisciplinary / interdisciplinary program"
     description: >
       Formal multi-provider programs (e.g. intensive pain clinics combining disciplines).
+      Work-hardening lives under occupational_ergonomics_rtw.
     patterns:
       - "multidisciplinary"
       - "interdisciplinary"
       - "back\\s+school"
       - "fibrowalk"
       - "functional\\s+restoration"
-      - "work[- ]hardening"
       - "headache\\s+management\\s+program"
 
   experimental_research_paradigm:
@@ -219,6 +277,7 @@ categories:
       categories (e.g. app-based CBT → psychological_cognitive + digital_health_delivery).
     patterns:
       - "internet-delivered"
+      - "internet[- ]mediated"
       - "web-based"
       - "mobile\\s+app"
       - "smartphone"
@@ -229,6 +288,9 @@ categories:
       - "RELAXaHEAD"
       - "PainGuide"
       - "Migraine\\s+Manager"
+      - "selfback"
+      - "relevis"
+      - "online\\s+bbat"
 
 multimodal_modalities:
   pharmacological:

@@ -29,6 +29,34 @@ class RevisedCohortTests(unittest.TestCase):
         )
         self.assertIn("psychological_cognitive", result.intervention_categories)
 
+    def test_amygdala_retraining_is_neuroplastic(self) -> None:
+        result = classify_intervention_categories(
+            [{"type": "BEHAVIORAL", "name": "Amygdala Retraining Program"}],
+            self.intervention_config,
+        )
+        self.assertIn("neuroplastic_recovery_therapy", result.intervention_categories)
+
+    def test_ergonomics_maps_to_occupational_rtw(self) -> None:
+        result = classify_intervention_categories(
+            [{"type": "BEHAVIORAL", "name": "Occupational ergonomic training"}],
+            self.intervention_config,
+        )
+        self.assertIn("occupational_ergonomics_rtw", result.intervention_categories)
+
+    def test_back_book_is_education(self) -> None:
+        result = classify_intervention_categories(
+            [{"type": "BEHAVIORAL", "name": "The Back Book"}],
+            self.intervention_config,
+        )
+        self.assertIn("education_self_management", result.intervention_categories)
+
+    def test_hyphenated_emdr_is_psychological(self) -> None:
+        result = classify_intervention_categories(
+            [{"type": "BEHAVIORAL", "name": "Eye-Movement-Desensitization-Reprocessing"}],
+            self.intervention_config,
+        )
+        self.assertIn("psychological_cognitive", result.intervention_categories)
+
     def test_psychophysical_maps_to_experimental_category(self) -> None:
         result = classify_intervention_categories(
             [{"type": "BEHAVIORAL", "name": "psychophysical tasks"}],
