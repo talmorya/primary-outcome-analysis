@@ -47,6 +47,8 @@ class FinalizeCohortTests(unittest.TestCase):
         expected_excluded = [
             "NCT03537573", "NCT02647658", "NCT04356963", "NCT00937365",
             "NCT03068897", "NCT05721027",
+            "NCT06750874",  # perioperative flag (ACT to prevent CPSP)
+            "NCT03502187",  # subacute flag (subacute LBP only)
         ]
         expected_included = [
             "NCT03483168", "NCT04636177", "NCT06971809",

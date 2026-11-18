@@ -182,6 +182,24 @@ def evaluate_condition_eligibility(
                 acute_screen,
             )
 
+    flag_spec = config.get("flag_exclusion", {})
+    excluding_flags = [f for f in flag_spec.get("flags", []) if f in feature_flags]
+    if excluding_flags:
+        return _attach_acute_fields(
+            ConditionEligibility(
+                targets_in_conditions=targets_in_conditions,
+                eligibility="excluded",
+                exclusion_rule=flag_spec.get("rule", "subacute_perioperative"),
+                exclusion_detail=(
+                    "Subacute or peri/pre/post-operative population "
+                    f"(condition_feature_flags: {', '.join(excluding_flags)}); "
+                    "chronification prevention is out of scope."
+                ),
+                condition_feature_flags=feature_flags,
+            ),
+            acute_screen,
+        )
+
     if not targets_in_conditions:
         return _attach_acute_fields(
             ConditionEligibility(

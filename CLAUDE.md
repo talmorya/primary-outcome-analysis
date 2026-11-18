@@ -23,7 +23,7 @@ AND registered Conditions field contains any of (back pain, fibromyalgia, migrai
 - Local condition validation post-API (`config/condition_patterns_cohort.yaml`)
 - **Inclusion:** the registered conditions must match a target pattern (keywords/titles never qualify a trial); condition stage only (`docs/COHORT_FILTERING_RULES.md`); acute population rules in `acute_population_screen.py`
 
-Latest extraction run: `full_20261109_104453`. Rules version: `conditions_field_v2`. Analytic tables: `data/processed/studies.csv` (see `manifest.json` for counts).
+Latest extraction run: `full_20261109_104453`. Rules version: `conditions_field_v3`. Analytic tables: `data/processed/studies.csv` (see `manifest.json` for counts).
 
 ---
 
@@ -87,7 +87,7 @@ PYTHONPATH=src python -m ctgov_pipeline.run_full          # NEW CT.gov pull (cre
 
 - **Conditions-field pull:** trials whose registered condition is only generic (e.g. `Chronic Pain`) are not retrieved, even if the title names a target (e.g. NCT00796536, NCT01794988, NCT01993355). Intended (AND of all filters).
 - **Judgment call:** NCT03157544 (chronic neck/LBP during an acute flare) is included.
-- **Relevance review (Nov 2026):** `pregnancy_related` is an exclusion rule; `provider_or_system_level` is a `review_flags` tag; `subacute` / `perioperative` / `surgical_postoperative` are feature flags; `pain_duration_inclusion` holds the inclusion-criteria duration sentence when found. Duration windows and recent surgery/injury are **not** automatic exclusions. Reviewed but kept: target is one of many conditions and the title is not about pain (~41), concussion/TBI as the primary population (~10), healthy samples, prevention/school groups. Open judgment call: whether `back pain` (vs `chronic back pain`) is too broad (~128 included back-pain trials with no chronicity cue).
+- **Relevance review (Nov 2026):** `pregnancy_related` and `subacute_perioperative` are exclusion rules (`subacute_perioperative`: any trial with a `subacute`, `perioperative` or `surgical_postoperative` feature flag; prevention of chronic-pain development is conceptually distinct); `provider_or_system_level` is a `review_flags` tag; `pain_duration_inclusion` holds the inclusion-criteria duration sentence when found. Free-text duration windows are still not automatic exclusions. Reviewed but kept: target is one of many conditions and the title is not about pain (~41), concussion/TBI as the primary population (~10), healthy samples, prevention/school groups. Open judgment call: whether `back pain` (vs `chronic back pain`) is too broad.
 - **Classification QC targets:** ~20% of included outcome rows are `outcome_category = other` (many flagged by `outcome_category_review_flag`); ~25% of studies sit in `other_behavioral_treatment`.
 - `run_full` still writes a legacy extraction layer to `data/processed/full/` (gitignored, unused by the cohort).
 

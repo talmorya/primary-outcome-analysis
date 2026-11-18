@@ -93,8 +93,9 @@ exclusion_rules:
 
   # Acute = the word "acute" describing the enrolled population.
   # Duration windows ("pain for less than 3 months", recent surgery/injury) are NOT
-  # automatic exclusions: phrasing varies too much. See pain_duration_inclusion and
-  # condition_feature_flags (subacute / perioperative / surgical_postoperative).
+  # automatic exclusions: phrasing varies too much. See pain_duration_inclusion.
+  # Subacute / peri-operative / post-surgical populations are excluded through the
+  # condition_feature_flags (see flag_exclusion below).
   acute_pain:
     patterns:
       - "\\bacute\\s+(low\\s+)?back\\s+pain\\b"
@@ -109,7 +110,8 @@ exclusion_rules:
       - '"acute"'
       - "\\bacute\\b.{0,80}(?:diagnosis|icd)"
 
-# Descriptive flags only — do not exclude on match alone.
+# Tags recorded in condition_feature_flags. Only the flags listed under flag_exclusion
+# exclude a trial; the others are descriptive.
 condition_features:
   post_traumatic:
     patterns:
@@ -139,10 +141,8 @@ condition_features:
 
   perioperative:
     patterns:
-      - "peri[- ]?operative"
-      - "perioperative"
-      - "pre[- ]?operative"
-      - "preoperative"
+      - "peri[- ]?operative(?!ly)"
+      - "\\bpre[- ]?operative(?!ly)\\b"
       - "before (?:spine |spinal |lumbar )?surgery"
       - "undergoing (?:spine |spinal |lumbar )?surgery"
       - "scheduled for .{0,40}surgery"
@@ -153,8 +153,7 @@ condition_features:
       - "total disc replacement"
       - "lumbar disc prosthesis"
       - "spinal fusion"
-      - "postoperative"
-      - "post[- ]?operative"
+      - "post[- ]?operative(?!ly)"
       - "postsurgical"
       - "after lumbar spine surgery"
       - "failed back surgery"
@@ -185,6 +184,17 @@ condition_features:
       - "\\bmoh\\b"
       - "rebound headache"
       - "analgesic overuse"
+
+# Trials carrying any of these condition_feature_flags are excluded (rule key below).
+# Rationale: subacute-only and peri/pre/post-operative populations are transitional /
+# chronification-prevention settings; preventing development of chronic pain is
+# conceptually distinct from registered primary outcomes in established chronic pain.
+flag_exclusion:
+  rule: subacute_perioperative
+  flags:
+    - subacute
+    - perioperative
+    - surgical_postoperative
 
 # Acute back-pain pharmaceutical symptom-relief trials (Cluster-3 noise).
 # Requires: eligible back pain + short duration cue + NSAID/muscle-relaxant arm,

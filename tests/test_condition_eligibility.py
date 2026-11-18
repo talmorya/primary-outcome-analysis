@@ -120,6 +120,48 @@ class ConditionEligibilityTests(unittest.TestCase):
         self.assertIn("subacute", result.condition_feature_flags)
         self.assertIn("perioperative", result.condition_feature_flags)
 
+    def test_flagged_trials_are_excluded(self) -> None:
+        cases = {
+            "subacute": ("Subacute Low Back Pain", "Exercise for low back pain"),
+            "perioperative": ("Low Back Pain", "Perioperative education before spine surgery"),
+            "surgical_postoperative": ("Back Pain", "Rehabilitation after spinal fusion"),
+        }
+        for flag, (condition, title) in cases.items():
+            with self.subTest(flag=flag):
+                result = evaluate_condition_eligibility(
+                    conditions=[condition],
+                    keywords=[],
+                    config=self.config,
+                    brief_title=title,
+                )
+                self.assertIn(flag, result.condition_feature_flags)
+                self.assertEqual(result.eligibility, "excluded")
+                self.assertEqual(result.exclusion_rule, "subacute_perioperative")
+                self.assertIn(flag, result.exclusion_detail)
+
+    def test_other_feature_flags_do_not_exclude(self) -> None:
+        result = evaluate_condition_eligibility(
+            conditions=["Post-concussive headache"],
+            keywords=[],
+            config=self.config,
+            brief_title="Behavioral treatment for post-concussive headache",
+        )
+        self.assertIn("post_traumatic", result.condition_feature_flags)
+        self.assertEqual(result.eligibility, "eligible")
+
+    def test_preoperatively_adverb_not_perioperative_flag(self) -> None:
+        result = evaluate_condition_eligibility(
+            conditions=["Fibromyalgia"],
+            keywords=[],
+            config=self.config,
+            brief_title="Music listening in fibromyalgia",
+            eligibility_criteria=(
+                "Exclusion: opioid dosing of >15 mg oral morphine equivalents "
+                "preoperatively."
+            ),
+        )
+        self.assertNotIn("perioperative", result.condition_feature_flags)
+
     def test_target_only_in_title_or_keywords_is_excluded(self) -> None:
         result = evaluate_condition_eligibility(
             conditions=["Pain"],

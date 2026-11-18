@@ -3,7 +3,7 @@
 How the study cohort is built, step by step, and why a trial is kept or dropped.
 Written so that someone who has not seen the code can follow it.
 
-**Rules version:** `conditions_field_v2` (column `cohort_rules_version` in `studies.csv`)
+**Rules version:** `conditions_field_v3` (column `cohort_rules_version` in `studies.csv`)
 **Configuration:** `config/condition_patterns_cohort.yaml` (all patterns live here)
 **Code:** `src/ctgov_pipeline/condition_eligibility.py`, `acute_population_screen.py`, `eligibility_text.py`
 **Column meanings:** [DATA_COLUMNS.md](DATA_COLUMNS.md) · **How to rebuild:** [COHORT_REPRODUCTION_GUIDE.md](COHORT_REPRODUCTION_GUIDE.md)
@@ -114,7 +114,8 @@ Each pulled trial is checked against the rules **in this order**. The first rule
 | 3 | `pregnancy_related` | condition | pregnancy, postpartum, childbirth, menstrual/dysmenorrhea or pelvic girdle pain wording appears | same as above |
 | 4 | `acute_pain` | acute | the enrolled population is described with the word **acute** (details in section 4) | eligibility inclusion criteria, conditions, titles, brief summary |
 | 5 | `acute_bp_symptom_relief` | acute | back-pain trial with a short episode (<~2 weeks) **and** an NSAID/muscle-relaxant arm (Cluster-3 pharmaceutical acute relief; often an educational “behavioral” control). Also stored as `is_acute_bp_symptom_relief` | interventions + duration cues in eligibility / titles / summary |
-| 6 | `no_target_match` | condition | none of the four target conditions matches the registered conditions | registered conditions |
+| 6 | `subacute_perioperative` | condition | the trial carries any of the feature flags `subacute`, `perioperative` or `surgical_postoperative` (subacute pain, or pre/peri/post-operative populations). Prevention of chronic-pain development is conceptually distinct from primary outcomes in established chronic pain, so these trials are set aside | `condition_feature_flags` (registered conditions, keywords, titles, eligibility criteria) |
+| 7 | `no_target_match` | condition | none of the four target conditions matches the registered conditions | registered conditions |
 
 If no rule fires, the trial is **included**.
 
@@ -148,7 +149,7 @@ A trial that lists a target plus many other conditions (mood, other pain conditi
 
 | Column | What it shows |
 |---|---|
-| `condition_feature_flags` | Tags found in the trial text, for filtering at analysis time. Includes `post_traumatic`, `tbi_concussion`, `subacute`, `perioperative`, `surgical_postoperative`, `medication_overuse_headache`, `secondary_pain`, `visual_snow`, `vestibular_schwannoma`. Use `subacute` / `perioperative` / `surgical_postoperative` when you want to set aside recent-onset or surgical cases without an automatic exclusion rule. |
+| `condition_feature_flags` | Tags found in the trial text. Includes `post_traumatic`, `tbi_concussion`, `subacute`, `perioperative`, `surgical_postoperative`, `medication_overuse_headache`, `secondary_pain`, `visual_snow`, `vestibular_schwannoma`. Only `subacute`, `perioperative` and `surgical_postoperative` exclude a trial (rule `subacute_perioperative`); the rest are descriptive. Excluded trials keep their flags, so the exclusion can be audited. |
 | `review_flags` | Currently `provider_or_system_level`: the title mentions clinicians, guidelines, implementation, decision support, referral, a care model or a health system. Meant to help check whether a trial targets clinicians or care systems rather than patients. Some hits are ordinary patient trials delivered in such a setting. |
 | `pain_duration_inclusion` | Verbatim sentence(s) from the **inclusion** criteria that state how long the pain/condition lasts (e.g. for NCT01761617: `Current non-specific low back pain persisting >12 weeks.`). Empty when no such sentence is found. Heuristic; never used to include or exclude. |
 
@@ -158,7 +159,7 @@ A trial that lists a target plus many other conditions (mood, other pain conditi
 
 **Goal:** exclude trials whose *enrolled population* is described as **acute** pain.
 
-This screen looks for the word **acute** (and a small set of close phrases such as `Pain, Acute`) in the places listed below. It does **not** try to parse free-text duration windows such as "pain for less than 3 months", "within the past 12 weeks", or "recent surgery/injury". Those phrasings vary too much (inclusion vs exclusion, negation, different time windows), so they are left for analysis via `pain_duration_inclusion` and the `subacute` / `perioperative` / `surgical_postoperative` feature flags.
+This screen looks for the word **acute** (and a small set of close phrases such as `Pain, Acute`) in the places listed below. It does **not** try to parse free-text duration windows such as "pain for less than 3 months", "within the past 12 weeks", or "recent surgery/injury". Those phrasings vary too much (inclusion vs exclusion, negation, different time windows), so they are left for analysis via `pain_duration_inclusion`. (Trials flagged `subacute`, `perioperative` or `surgical_postoperative` are excluded separately by rule 6, `subacute_perioperative`.)
 
 ### Text used
 
@@ -216,7 +217,7 @@ An earlier special case that excluded trials whose inclusion criteria mentioned 
 | `exclusion_reason` | Rule keys |
 |---|---|
 | `acute` | `acute_pain`, `acute_bp_symptom_relief` |
-| `condition` | `cancer_oncology`, `pathology_other`, `pregnancy_related`, `no_target_match` |
+| `condition` | `cancer_oncology`, `pathology_other`, `pregnancy_related`, `subacute_perioperative`, `no_target_match` |
 
 For manual review, the registered text is kept verbatim in the `raw_*` columns (titles, a 50-word summary, conditions, keywords, eligibility criteria), so any decision can be checked against the source.
 
@@ -228,7 +229,7 @@ For manual review, the registered text is kept verbatim in the `raw_*` columns (
 - **Primary outcomes.** Raw text is preserved in `primary_outcomes.csv`. `outcome_category` / `outcome_subcategory` are rule-based aids for review, not a coding of the outcomes and not used to filter.
 - **Trial status and date.** `raw_overall_status` and `raw_study_first_post_date` are variables to analyse, not filters.
 - **Age group, trial size, design, comorbidities.** Not used.
-- **Pain-duration windows, recent surgery/injury, peri-operative timing.** Not automatic exclusions (see section 4 and the feature flags / `pain_duration_inclusion` column).
+- **Free-text pain-duration windows.** Still not automatic exclusions (see section 4 and `pain_duration_inclusion`). Subacute and peri/pre/post-operative populations are excluded only through the feature flags (`subacute_perioperative`).
 
 ---
 

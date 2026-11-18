@@ -28,7 +28,7 @@ from .outcome_category import classify_outcome_category
 from .outcome_mechanism import assess_primary_outcome_mechanistic, is_mechanistic_outcome
 from .parse import load_raw_studies
 
-COHORT_RULES_VERSION = "conditions_field_v2"
+COHORT_RULES_VERSION = "conditions_field_v3"
 
 PROCESSED_DIR = PROJECT_ROOT / "data" / "processed"
 

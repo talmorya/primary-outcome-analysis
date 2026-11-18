@@ -44,7 +44,7 @@ Manifest: `manifest.json` lists extraction run id and file paths.
 |---|---|
 | `condition_matched` | Pipe-separated target keys matched in the **registered conditions section** (`migraine`, `back_pain`, …) |
 | `review_flags` | Pipe-separated descriptive review tags from the titles, never used to exclude. Currently `provider_or_system_level` (clinician / guideline / implementation / decision-support / care-model wording); expect some false positives. Patterns: `review_flags` in `config/condition_patterns_cohort.yaml` |
-| `condition_feature_flags` | Pipe-separated non-excluding feature tags (`post_traumatic`, `tbi_concussion`, `subacute`, `perioperative`, `surgical_postoperative`, …) |
+| `condition_feature_flags` | Pipe-separated feature tags (`post_traumatic`, `tbi_concussion`, `subacute`, `perioperative`, `surgical_postoperative`, …). `subacute`, `perioperative` and `surgical_postoperative` exclude the trial (`subacute_perioperative`); the rest are descriptive. |
 | `eligible_migraine` | Target found in registered conditions (flags are not mutually exclusive) |
 | `eligible_back_pain` | Target found in registered conditions |
 | `eligible_fibromyalgia` | Target found in registered conditions |
