@@ -186,6 +186,58 @@ def find_chronic_inclusion_cue(
     return ""
 
 
+_NUMBER_WORDS = {
+    "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6,
+    "seven": 7, "eight": 8, "nine": 9, "ten": 10, "eleven": 11, "twelve": 12,
+}
+_WEEK_NUM = r"(\d+(?:\.\d+)?|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)"
+_WEEK_PHRASE = re.compile(
+    rf"\b{_WEEK_NUM}\s*(?:(?:-|–|to|or|and)\s*{_WEEK_NUM}\s*)?(?:weeks?|wks?)\b",
+    re.IGNORECASE,
+)
+
+
+def _week_value(token: str) -> float:
+    lowered = token.lower()
+    return float(_NUMBER_WORDS[lowered]) if lowered in _NUMBER_WORDS else float(lowered)
+
+
+def find_short_pain_window(
+    eligibility_criteria: str | None,
+    *,
+    max_weeks: float,
+    pain_pattern: str,
+    skip_patterns: list[str],
+    rating_pattern: str,
+    lookback_before: str,
+    lookback_after: str,
+) -> str:
+    """First inclusion sentence stating a pain/symptom window of <= `max_weeks` weeks, or "".
+
+    The sentence must mention pain/symptoms and a number of weeks (ranges use every bound).
+    Sentences about medication stability, surgery, injections etc. are skipped, and so are
+    rating look-backs ("pain score >= 4 over the past 2 weeks").
+    """
+    pain = re.compile(pain_pattern, re.IGNORECASE)
+    skip = [re.compile(p, re.IGNORECASE) for p in skip_patterns]
+    rating = re.compile(rating_pattern, re.IGNORECASE)
+    before = re.compile(lookback_before, re.IGNORECASE)
+    after = re.compile(lookback_after, re.IGNORECASE)
+    for block in extract_inclusion_blocks(eligibility_criteria):
+        for chunk in _candidate_chunks(block):
+            if not pain.search(chunk) or any(p.search(chunk) for p in skip):
+                continue
+            for match in _WEEK_PHRASE.finditer(chunk):
+                if rating.search(chunk) and (
+                    before.search(chunk[max(0, match.start() - 12) : match.start()])
+                    or after.match(chunk[match.end() :])
+                ):
+                    continue
+                if any(_week_value(g) <= max_weeks for g in match.groups() if g):
+                    return chunk
+    return ""
+
+
 def extract_pain_duration_sentences(eligibility_criteria: str | None, *, max_sentences: int = 2) -> list[str]:
     """Verbatim inclusion-criteria sentences that state how long the pain/condition lasts."""
     found: list[str] = []

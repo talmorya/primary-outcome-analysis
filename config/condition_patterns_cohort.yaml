@@ -211,6 +211,47 @@ flag_exclusion:
       - "\\b(?:3|6|12)\\s*\\+\\s*(?:months?|mos?|weeks?|wks?)\\b"
       - "(?:>=|≥|>|more\\s+than|at\\s+least)\\s*(?:[a-z-]+\\s+){0,3}(?:(?:3|three|6|six|12|twelve)[\\s-]*(?:[a-z-]+\\s+){0,2}(?:months?|mos?)\\b|(?:1|one)[\\s-]*(?:[a-z-]+\\s+){0,2}(?:years?|yrs?)\\b|(?:12|twelve)[\\s-]*(?:[a-z-]+\\s+){0,2}(?:weeks?|wks?)\\b)"
 
+# Explicit short pain window: an INCLUSION sentence mentioning pain/symptoms with a number of
+# weeks <= max_weeks (11 = under 12 weeks; ranges use every bound, so "6 to 12 weeks" counts)
+# marks an acute/subacute population. Guards: sentences about medication stability, surgery,
+# injections etc. are skipped; pain-rating look-backs ("score >= 4 over the past 2 weeks")
+# are skipped. Exceptions (trial kept): the chronic cue above is present in the inclusion
+# criteria, or the registered conditions / titles say "chronic" (registrant labelled it chronic).
+short_pain_window:
+  rule: short_pain_window
+  max_weeks: 11
+  pain_pattern: '\b(?:pain|symptoms?)\b'
+  skip_patterns:
+    - 'medications?|\bdoses?\b|stable|regimen|\bdrugs?\b|analgesic|injection|surg|physio|physical therapy'
+    - '\bno\b|\bnot\b|without|planned|\bfree of\b'
+  rating_pattern: 'intensity|rating|\bscores?\b|\bscale\b|\bVAS\b|\bNRS\b|\bPCSS\b|\bLikert\b'
+  lookback_before: '(?:past|last|previous|preceding)\s*$'
+  lookback_after: '\s*(?:preceding|before (?:the )?(?:clinical trial|screening|baseline))'
+  keep_if_chronic_in_inclusion: true
+  keep_if_chronic_in_title_or_conditions:
+    - '\bchronic\b'
+
+# Samples that are not pain patients. Applied last, only to otherwise-eligible trials.
+non_patient_sample:
+  # Inclusion criteria select a group (all students / employees / staff / children ...) and
+  # never mention pain, symptoms or a diagnosis.
+  general_population:
+    rule: general_population_sample
+    pain_wording_patterns:
+      - 'pain|\bache\b|\baches\b|headache|migraine|fibromyalg|\bfms?\b|\blbp\b|\bclbp\b|sciatic|analges|discomfort'
+      - 'symptom|complaint|spine|spinal|lumbar|\bback\b|\bneck\b|musculoskeletal|\bdisc\b|herniat|whiplash|oswestry|disabilit'
+      - '\bcdh\b|cluster|tension|\bVAS\b|\bFIQ\b|\bACR\b|rheumatolog|\bMOH\b|medication overuse|diagnos'
+    membership_patterns:
+      - '\bstudents?\b|undergraduate|schoolchild|\bschool|pupils?|\bchildren\b|adolescents?'
+      - '\bemployees?\b|\bemployed\b|\bworkers?\b|\bworking\b|\bstaff\b|\bnurses?\b|\bacademic|\bdrivers?\b|\bmedics?\b'
+      - '\bmilitary\b|\bcadets?\b|\browers?\b|\bathletes?\b|retirees?|municipality|residents of|\bmedicaid\b'
+      - 'any person|\ball (?:the )?(?:subjects|participants|persons|individuals|people|adults)\b'
+  # No pain word at all in titles + inclusion criteria + primary outcomes.
+  not_about_pain:
+    rule: not_about_pain
+    pain_wording_patterns:
+      - 'pain|\bache\b|\baches\b|headache|migraine|fibromyalg|\blbp\b|\bclbp\b|sciatic|analges|discomfort|\bfms?\b'
+
 # Acute back-pain pharmaceutical symptom-relief trials (Cluster-3 noise).
 # Requires: eligible back pain + short duration cue + NSAID/muscle-relaxant arm,
 # and no chronic-duration keep cue. Sets is_acute_bp_symptom_relief and excludes.

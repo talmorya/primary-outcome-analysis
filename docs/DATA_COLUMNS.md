@@ -23,7 +23,7 @@ Manifest: `manifest.json` lists extraction run id and file paths.
 |---|---|---|
 | `nct_id` | string | ClinicalTrials.gov identifier |
 | `cohort_inclusion_status` | `included` \| `excluded` | Analytic cohort membership after condition stage only |
-| `exclusion_reason` | `acute` \| `condition` | **General** reason for exclusion; empty when included |
+| `exclusion_reason` | `acute` \| `condition` | **General** reason for exclusion; empty when included. Rules `acute_pain`, `acute_bp_symptom_relief`, `short_pain_window` → `acute`; all others (incl. `general_population_sample`, `not_about_pain`) → `condition` |
 | `exclusion_detail` | string | **Specific** explanation. Starts with the rule key (`acute_pain`, `no_target_match`, `cancer_oncology`, …), then why this study hit it (matched text / source). Rules: `docs/COHORT_FILTERING_RULES.md` |
 
 ### Text for manual review (verbatim from registration)

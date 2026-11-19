@@ -15,10 +15,11 @@ COHORT_REPORT_MD = "cohort_report.md"
 EXCLUSION_REASON_ACUTE = "acute"
 EXCLUSION_REASON_CONDITION = "condition"
 
-ACUTE_RULES = frozenset({"acute_pain", "acute_bp_symptom_relief"})
+ACUTE_RULES = frozenset({"acute_pain", "acute_bp_symptom_relief", "short_pain_window"})
 
 ACUTE_RULE_LABELS: dict[str, str] = {
     "acute_pain": "Acute pain population",
+    "short_pain_window": "Explicit pain/symptom window under 12 weeks in the inclusion criteria",
     "acute_bp_symptom_relief": (
         "Acute back-pain pharmaceutical symptom relief "
         "(short episode + NSAID/muscle-relaxant arm)"

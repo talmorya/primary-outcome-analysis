@@ -479,6 +479,79 @@ class ConditionEligibilityTests(unittest.TestCase):
         self.assertEqual(result.eligibility, "eligible")
         self.assertEqual(result.acute_population_rule, "chronic_inclusion_acute_excluded")
 
+    def _eval(self, *, conditions=("Low Back Pain",), title="Exercise for back pain", **kw):
+        return evaluate_condition_eligibility(
+            conditions=list(conditions), keywords=[], config=self.config, brief_title=title, **kw
+        )
+
+    def test_short_pain_window_excluded(self) -> None:
+        for sentence in (
+            "Low back pain for 4 to 12 weeks",
+            "Pain lasting less than 6 weeks",
+            "Symptoms for at least 2 weeks",
+        ):
+            with self.subTest(sentence=sentence):
+                result = self._eval(eligibility_criteria=f"Inclusion Criteria:\n* {sentence}\nExclusion Criteria:\n* None")
+                self.assertEqual(result.eligibility, "excluded")
+                self.assertEqual(result.exclusion_rule, "short_pain_window")
+                self.assertIn(sentence, result.acute_population_snippet)
+
+    def test_short_pain_window_guards(self) -> None:
+        for sentence in (
+            "Pain score >= 4 in the two weeks preceding the clinical trial",  # rating look-back
+            "Stable pain medication for at least 4 weeks",  # medication stability
+            "Chronic pain for at least 3 months",
+            "Back pain for more than 12 weeks",
+        ):
+            with self.subTest(sentence=sentence):
+                result = self._eval(eligibility_criteria=f"Inclusion Criteria:\n* {sentence}\nExclusion Criteria:\n* None")
+                self.assertEqual(result.eligibility, "eligible")
+
+    def test_short_pain_window_kept_with_chronic_cue_or_chronic_label(self) -> None:
+        cue = self._eval(
+            eligibility_criteria="Inclusion Criteria:\n* Chronic pain\n* Pain flare of 6 weeks\nExclusion Criteria:\n* None"
+        )
+        self.assertEqual(cue.eligibility, "eligible")
+        titled = self._eval(
+            title="Chronic low back pain program",
+            eligibility_criteria="Inclusion Criteria:\n* Back pain for 6 weeks or more\nExclusion Criteria:\n* None",
+        )
+        self.assertEqual(titled.eligibility, "eligible")
+
+    def test_general_population_sample_excluded(self) -> None:
+        result = self._eval(
+            eligibility_criteria="Inclusion Criteria:\n* All students enrolled in the nursing program\nExclusion Criteria:\n* Cancer"
+        )
+        self.assertEqual(result.eligibility, "excluded")
+        self.assertEqual(result.exclusion_rule, "general_population_sample")
+
+    def test_group_with_pain_or_diagnosis_wording_kept(self) -> None:
+        for text in (
+            "* All employees with low back pain",
+            "* Employees with a diagnosis of fibromyalgia (ACR criteria)",
+        ):
+            with self.subTest(text=text):
+                result = self._eval(eligibility_criteria=f"Inclusion Criteria:\n{text}\nExclusion Criteria:\n* None")
+                self.assertEqual(result.eligibility, "eligible")
+
+    def test_not_about_pain_needs_no_pain_word_in_titles_criteria_and_outcomes(self) -> None:
+        criteria = "Inclusion Criteria:\n* Adults 30-64 years\nExclusion Criteria:\n* None"
+        no_pain = self._eval(
+            title="Nutrition and exercise study",
+            eligibility_criteria=criteria,
+            primary_outcome_text="Body weight | kg",
+        )
+        self.assertEqual(no_pain.exclusion_rule, "not_about_pain")
+        with_pain = self._eval(
+            title="Nutrition and exercise study",
+            eligibility_criteria=criteria,
+            primary_outcome_text="Back pain intensity | VAS",
+        )
+        self.assertEqual(with_pain.eligibility, "eligible")
+        # Not evaluated without outcomes or without inclusion criteria.
+        self.assertEqual(self._eval(eligibility_criteria=criteria).eligibility, "eligible")
+        self.assertEqual(self._eval(primary_outcome_text="Body weight | kg").eligibility, "eligible")
+
 
 if __name__ == "__main__":
     unittest.main()

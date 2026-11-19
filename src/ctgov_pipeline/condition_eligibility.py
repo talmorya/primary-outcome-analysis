@@ -7,7 +7,8 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from .acute_population_screen import AcutePopulationScreenResult, screen_acute_population
-from .eligibility_text import find_chronic_inclusion_cue
+from .eligibility_text import find_chronic_inclusion_cue, find_short_pain_window
+from .non_patient_screen import screen_non_patient_sample
 
 
 @dataclass
@@ -124,6 +125,7 @@ def evaluate_condition_eligibility(
     official_title: str | None = None,
     brief_summary: str | None = None,
     eligibility_criteria: str | None = None,
+    primary_outcome_text: str | None = None,
 ) -> ConditionEligibility:
     text_core = _study_text(
         conditions=conditions,
@@ -211,6 +213,43 @@ def evaluate_condition_eligibility(
             acute_screen,
         )
 
+    window_spec = config.get("short_pain_window", {})
+    if window_spec:
+        sentence = find_short_pain_window(
+            eligibility_criteria,
+            max_weeks=window_spec["max_weeks"],
+            pain_pattern=window_spec["pain_pattern"],
+            skip_patterns=window_spec.get("skip_patterns", []),
+            rating_pattern=window_spec["rating_pattern"],
+            lookback_before=window_spec["lookback_before"],
+            lookback_after=window_spec["lookback_after"],
+        )
+        if sentence and window_spec.get("keep_if_chronic_in_inclusion"):
+            if find_chronic_inclusion_cue(
+                eligibility_criteria,
+                word_patterns=keep_spec.get("word_patterns", []),
+                duration_patterns=keep_spec.get("duration_patterns", []),
+            ):
+                sentence = ""
+        if sentence and _matches_any(
+            " | ".join(list(conditions or []) + [_clean(brief_title), _clean(official_title)]),
+            _compile(window_spec.get("keep_if_chronic_in_title_or_conditions", [])),
+        ):
+            sentence = ""
+        if sentence:
+            result = _attach_acute_fields(
+                ConditionEligibility(
+                    targets_in_conditions=targets_in_conditions,
+                    eligibility="excluded",
+                    exclusion_rule=window_spec.get("rule", "short_pain_window"),
+                    condition_feature_flags=feature_flags,
+                ),
+                acute_screen,
+            )
+            result.acute_population_source = "inclusion criteria"
+            result.acute_population_snippet = sentence[:300]
+            return result
+
     if not targets_in_conditions:
         return _attach_acute_fields(
             ConditionEligibility(
@@ -221,6 +260,25 @@ def evaluate_condition_eligibility(
                     "No target pattern (migraine, back pain, fibromyalgia, headache) "
                     "matched the registered conditions."
                 ),
+                condition_feature_flags=feature_flags,
+            ),
+            acute_screen,
+        )
+
+    non_patient = screen_non_patient_sample(
+        eligibility_criteria=eligibility_criteria,
+        titles=" ".join(x for x in (_clean(brief_title), _clean(official_title)) if x),
+        primary_outcome_text=primary_outcome_text,
+        config=config,
+    )
+    if non_patient:
+        rule, detail = non_patient
+        return _attach_acute_fields(
+            ConditionEligibility(
+                targets_in_conditions=targets_in_conditions,
+                eligibility="excluded",
+                exclusion_rule=rule,
+                exclusion_detail=detail,
                 condition_feature_flags=feature_flags,
             ),
             acute_screen,

@@ -103,6 +103,10 @@ def _parse_record(
         official_title=id_mod.get("officialTitle"),
         brief_summary=brief_summary,
         eligibility_criteria=eligibility_criteria,
+        primary_outcome_text=" ".join(
+            f"{o.get('measure') or ''} {o.get('description') or ''}"
+            for o in (outcomes_mod.get("primaryOutcomes", []) or [])
+        ),
     )
 
     intervention_cls = classify_intervention_categories(interventions, intervention_config)
