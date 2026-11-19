@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from .acute_population_screen import AcutePopulationScreenResult, screen_acute_population
-from .eligibility_text import find_chronic_inclusion_cue, find_short_pain_window
+from .eligibility_text import extract_inclusion_blocks, find_chronic_inclusion_cue, find_short_pain_window
 from .non_patient_screen import screen_non_patient_sample
 
 
@@ -187,6 +187,7 @@ def evaluate_condition_eligibility(
 
     flag_spec = config.get("flag_exclusion", {})
     excluding_flags = [f for f in flag_spec.get("flags", []) if f in feature_flags]
+    acute_override_note = ""
     keep_spec = flag_spec.get("keep_when_chronic_in_inclusion", {})
     overridable = [f for f in excluding_flags if f in keep_spec.get("flags", [])]
     if overridable:
@@ -195,8 +196,16 @@ def evaluate_condition_eligibility(
             word_patterns=keep_spec.get("word_patterns", []),
             duration_patterns=keep_spec.get("duration_patterns", []),
         )
-        if chronic_cue:
+        inclusion_text = " ".join(extract_inclusion_blocks(eligibility_criteria))
+        acute_wording = _first_pattern_hit(
+            inclusion_text, _compile(keep_spec.get("unless_inclusion_mentions", []))
+        )
+        if chronic_cue and not acute_wording:
             excluding_flags = [f for f in excluding_flags if f not in overridable]
+        elif chronic_cue and acute_wording:
+            acute_override_note = (
+                f" Chronic cue ignored: the inclusion criteria also say '{acute_wording}'."
+            )
     if excluding_flags:
         return _attach_acute_fields(
             ConditionEligibility(
@@ -206,7 +215,7 @@ def evaluate_condition_eligibility(
                 exclusion_detail=(
                     "Subacute or peri/pre/post-operative population "
                     f"(condition_feature_flags: {', '.join(excluding_flags)}); "
-                    "chronification prevention is out of scope."
+                    "chronification prevention is out of scope." + acute_override_note
                 ),
                 condition_feature_flags=feature_flags,
             ),
@@ -224,16 +233,10 @@ def evaluate_condition_eligibility(
             lookback_before=window_spec["lookback_before"],
             lookback_after=window_spec["lookback_after"],
         )
-        if sentence and window_spec.get("keep_if_chronic_in_inclusion"):
-            if find_chronic_inclusion_cue(
-                eligibility_criteria,
-                word_patterns=keep_spec.get("word_patterns", []),
-                duration_patterns=keep_spec.get("duration_patterns", []),
-            ):
-                sentence = ""
-        if sentence and _matches_any(
-            " | ".join(list(conditions or []) + [_clean(brief_title), _clean(official_title)]),
-            _compile(window_spec.get("keep_if_chronic_in_title_or_conditions", [])),
+        all_chronic = window_spec.get("keep_if_all_conditions_match")
+        lines = [c for c in (conditions or []) if c and str(c).strip()]
+        if sentence and all_chronic and lines and all(
+            re.search(all_chronic, line, re.IGNORECASE) for line in lines
         ):
             sentence = ""
         if sentence:

@@ -507,16 +507,32 @@ class ConditionEligibilityTests(unittest.TestCase):
                 result = self._eval(eligibility_criteria=f"Inclusion Criteria:\n* {sentence}\nExclusion Criteria:\n* None")
                 self.assertEqual(result.eligibility, "eligible")
 
-    def test_short_pain_window_kept_with_chronic_cue_or_chronic_label(self) -> None:
-        cue = self._eval(
-            eligibility_criteria="Inclusion Criteria:\n* Chronic pain\n* Pain flare of 6 weeks\nExclusion Criteria:\n* None"
-        )
-        self.assertEqual(cue.eligibility, "eligible")
-        titled = self._eval(
-            title="Chronic low back pain program",
-            eligibility_criteria="Inclusion Criteria:\n* Back pain for 6 weeks or more\nExclusion Criteria:\n* None",
-        )
-        self.assertEqual(titled.eligibility, "eligible")
+    def test_short_pain_window_is_hard_unless_all_conditions_chronic(self) -> None:
+        criteria = "Inclusion Criteria:\n* Chronic pain\n* Pain flare of 6 weeks\nExclusion Criteria:\n* None"
+        # A chronic cue in the inclusion criteria or the title does not rescue the trial.
+        cue = self._eval(eligibility_criteria=criteria)
+        self.assertEqual(cue.exclusion_rule, "short_pain_window")
+        titled = self._eval(title="Chronic low back pain program", eligibility_criteria=criteria)
+        self.assertEqual(titled.exclusion_rule, "short_pain_window")
+        mixed = self._eval(conditions=("Chronic Pain", "Low Back Pain"), eligibility_criteria=criteria)
+        self.assertEqual(mixed.exclusion_rule, "short_pain_window")
+        # Every registered condition names chronic pain -> kept.
+        all_chronic = self._eval(conditions=("Chronic Low-back Pain",), eligibility_criteria=criteria)
+        self.assertEqual(all_chronic.eligibility, "eligible")
+
+    def test_postoperative_chronic_cue_ignored_when_inclusion_says_acute(self) -> None:
+        for wording in ("acute", "subacute", "sub-acute"):
+            with self.subTest(wording=wording):
+                result = self._eval(
+                    title="Pain after spinal fusion",
+                    eligibility_criteria=(
+                        f"Inclusion Criteria:\n* Chronic low back pain\n* {wording} postoperative pain\n"
+                        "Exclusion Criteria:\n* None"
+                    ),
+                )
+                self.assertEqual(result.eligibility, "excluded")
+                self.assertEqual(result.exclusion_rule, "subacute_perioperative")
+                self.assertIn("Chronic cue ignored", result.exclusion_detail)
 
     def test_general_population_sample_excluded(self) -> None:
         result = self._eval(
