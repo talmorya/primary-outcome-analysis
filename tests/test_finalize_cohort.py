@@ -49,10 +49,11 @@ class FinalizeCohortTests(unittest.TestCase):
             "NCT03068897", "NCT05721027",
             "NCT06750874",  # perioperative flag (ACT to prevent CPSP)
             "NCT03502187",  # subacute flag (subacute LBP only)
+            "NCT03157544",  # short_pain_window (hard rule, even though titled chronic)
         ]
         expected_included = [
             "NCT03483168", "NCT04636177", "NCT06971809",
-            "NCT04984720", "NCT02419131", "NCT03157544", "NCT06114264",
+            "NCT04984720", "NCT02419131", "NCT06114264",
             "NCT00108381",
         ]
         for nct in expected_excluded:
