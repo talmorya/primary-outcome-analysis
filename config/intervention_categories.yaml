@@ -55,36 +55,6 @@ control_arm:
     - "\\+"
     - "improved treatment as usual"
 
-mechanism_arm:
-  patterns:
-    - "psychophysical"
-    - "experimental\\s+heat\\s+pain"
-    - "cover\\s+story"
-    - "nocebo"
-    - "PASAT"
-    - "quantitative\\s+sensory"
-    - "\\bqst\\b"
-    - "resting\\s+state\\s+eeg"
-    - "picture\\s+viewing\\s+eeg"
-    - "cognitive\\s+assessment\\s+mapping"
-    - "affective\\s+touch"
-    - "walk\\s+test"
-    - "thermal\\s+stimuli"
-    - "pressure\\s+pain\\s+threshold"
-    - "pain\\s+threshold\\s+test"
-    - "functional\\s+magnetic\\s+resonance"
-    - "\\bfmri\\b"
-    - "neuroimaging\\s+paradigm"
-    - "experimental\\s+pain"
-    - "pain\\s+modulation\\s+efficiency"
-    - "conditioned\\s+pain\\s+modulation"
-  exclude:
-    - "emotional\\s+regulation"
-    - "emotional\\s+(positive|negative)"
-    - "\\bpbre\\b"
-    - "consecutive\\s+days"
-    - "administered\\s+for\\s+one\\s+hour"
-
 categories:
   psychological_cognitive:
     label: "Psychological & cognitive therapy"
