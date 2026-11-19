@@ -98,17 +98,27 @@ exclusion_rules:
   # condition_feature_flags (see flag_exclusion below).
   acute_pain:
     patterns:
-      - "\\bacute\\s+(low\\s+)?back\\s+pain\\b"
-      - "\\bacute\\s+back\\s+pain\\b"
-      - "\\bpain\\s*,\\s*acute\\b"
-      - "\\bacute\\s+pain\\b"
-      - "\\bacute\\s+brain\\b"
-      - "\\bacute\\s+injur"
-      - "\\bacute\\s+non[- ]cancer"
-      - "\\bacute\\s+(neck|back|musculoskeletal|headache)"
-      - "(?:neck|back|musculoskeletal|headache)(?:\\s+pain)?[\\s,:(\\-]{0,4}\\bacute\\b"
+      - '\bacute\s+(low\s+)?back\s+pain\b'
+      - '\bacute\s+back\s+pain\b'
+      - '\bpain\s*,\s*acute\b'
+      - '\bacute\s+pain\b'
+      - '\bacute\s+brain\b'
+      - '\bacute\s+injur'
+      - '\bacute\s+non[- ]cancer'
+      - '\bacute\s+(neck|back|musculoskeletal|headache)'
+      - '(?:neck|back|musculoskeletal|headache)(?:\s+pain)?[\s,:(\-]{0,4}\bacute\b'
       - '"acute"'
-      - "\\bacute\\b.{0,80}(?:diagnosis|icd)"
+      - '\bacute\b.{0,80}(?:diagnosis|icd)'
+    # Text that denies acute enrolment ("no acute pain", "non-acute", "acute pain excluded"):
+    # when it appears in a text, that text is not treated as describing an acute population.
+    negation: '\b(not|no|without|non[-\s]|exclude[d]?|excluding)\b[^.;\n]{0,50}\bacute\b|\bacute\b[^.;\n]{0,30}\b(exclud|not eligible|not due)'
+    # Uses of "acute" that do not describe the enrolled population (a match is ignored only when
+    # its own "acute" sits inside one of these phrases).
+    ignore_phrases:
+      - '\bacute\s+(?:noxious|physical)\s+stimul|\bresponse\s+to\s+acute\s+noxious'      # lab stimulus
+      - '\bacute\s+(?:pain\s+)?(?:relief|medications?|treatments?|therapy|therapies|drugs?|analgesics?|attacks?)\b'  # drug wording
+      - '\bacute\s+(?:pain\s+)?(?:episodes?|flares?|flare-ups?|exacerbations?)\s+of\s+(?:\w+\s+){0,2}chronic\b'  # chronic patients with a flare
+      - '\bchronic\s+(?:\w+\s+){0,2}(?:versus|vs\.?|rather\s+than|compared\s+(?:to|with))\s+(?:\w+\s+)?acute\b|\bacute\s+(?:\w+\s+){0,2}(?:versus|vs\.?)\s+chronic\b'  # background contrast
 
 # Tags recorded in condition_feature_flags. Only the flags listed under flag_exclusion
 # exclude a trial; the others are descriptive.
@@ -233,63 +243,14 @@ short_pain_window:
   rating_pattern: 'intensity|rating|\bscores?\b|\bscale\b|\bVAS\b|\bNRS\b|\bPCSS\b|\bLikert\b'
   lookback_before: '(?:past|last|previous|preceding)\s*$'
   lookback_after: '\s*(?:preceding|before (?:the )?(?:clinical trial|screening|baseline))'
-  keep_if_all_conditions_match: '\bchronic\b'
 
-# Samples that are not pain patients. Applied last, only to otherwise-eligible trials.
-non_patient_sample:
-  # Inclusion criteria select a group (all students / employees / staff / children ...) and
-  # never mention pain, symptoms or a diagnosis.
-  general_population:
-    rule: general_population_sample
-    pain_wording_patterns:
-      - 'pain|\bache\b|\baches\b|headache|migraine|fibromyalg|\bfms?\b|\blbp\b|\bclbp\b|sciatic|analges|discomfort'
-      - 'symptom|complaint|spine|spinal|lumbar|\bback\b|\bneck\b|musculoskeletal|\bdisc\b|herniat|whiplash|oswestry|disabilit'
-      - '\bcdh\b|cluster|tension|\bVAS\b|\bFIQ\b|\bACR\b|rheumatolog|\bMOH\b|medication overuse|diagnos'
-    membership_patterns:
-      - '\bstudents?\b|undergraduate|schoolchild|\bschool|pupils?|\bchildren\b|adolescents?'
-      - '\bemployees?\b|\bemployed\b|\bworkers?\b|\bworking\b|\bstaff\b|\bnurses?\b|\bacademic|\bdrivers?\b|\bmedics?\b'
-      - '\bmilitary\b|\bcadets?\b|\browers?\b|\bathletes?\b|retirees?|municipality|residents of|\bmedicaid\b'
-      - 'any person|\ball (?:the )?(?:subjects|participants|persons|individuals|people|adults)\b'
-  # No pain word at all in titles + inclusion criteria + primary outcomes.
-  not_about_pain:
-    rule: not_about_pain
-    pain_wording_patterns:
-      - 'pain|\bache\b|\baches\b|headache|migraine|fibromyalg|\blbp\b|\bclbp\b|sciatic|analges|discomfort|\bfms?\b'
-
-# Acute back-pain pharmaceutical symptom-relief trials (Cluster-3 noise).
-# Requires: eligible back pain + short duration cue + NSAID/muscle-relaxant arm,
-# and no chronic-duration keep cue. Sets is_acute_bp_symptom_relief and excludes.
-acute_bp_symptom_relief:
-  drug_patterns:
-    - "\\bibuprofen\\b"
-    - "\\bnaproxen\\b"
-    - "\\bketorolac\\b"
-    - "\\bdiclofenac\\b"
-    - "\\bacetaminophen\\b"
-    - "\\bparacetamol\\b"
-    - "\\bmetaxalone\\b"
-    - "\\bmetaxolone\\b"
-    - "\\btizanidine\\b"
-    - "\\bbaclofen\\b"
-    - "\\bcyclobenzaprine\\b"
-    - "\\bmethocarbamol\\b"
-    - "\\bcarisoprodol\\b"
-    - "\\borphenadrine\\b"
-    - "\\bnsaid\\b"
-    - "muscle\\s+relax(?:ant|er)s?"
-  short_duration_patterns:
-    - "pain\\s+duration\\s*<\\s*2\\s*weeks?"
-    - "pain\\s+duration\\s*<\\s*2\\s*week\\b"
-    - "<\\s*2\\s*weeks?\\s*\\(?\\s*336\\s*hours"
-    - "336\\s*hours"
-    - "(?:pain|symptoms?|episode).{0,40}(?:less than|<\\s*|≤\\s*)2\\s*weeks?"
-    - "(?:pain|symptoms?|episode).{0,40}(?:less than|<\\s*|≤\\s*)14\\s*days?"
-    - "present for (?:less than |<\\s*)?(?:1|2)\\s*weeks?"
-  chronic_keep_patterns:
-    - "(?:≥|>|>=|at least|more than|greater than|lasting|persisting|for)\\s*(?:3|4|5|6|12)\\s*(?:months?|weeks?)"
-    - "chronic\\s+(?:low\\s+)?back\\s+pain"
-    - "most days.{0,20}(?:3|6)\\s*months"
-    - "half the days.{0,30}(?:3|6)\\s*months"
+# Not about pain at all: no pain word in titles + inclusion criteria + primary outcomes.
+# Such trials (concussion, tinnitus, healthy adults ...) have outcomes unrelated to pain recovery
+# or interference, so they would pollute the outcomes this study focuses on.
+not_about_pain:
+  rule: not_about_pain
+  pain_wording_patterns:
+    - 'pain|\bache\b|\baches\b|headache|migraine|fibromyalg|\blbp\b|\bclbp\b|sciatic|analges|discomfort|\bfms?\b'
 
 # Descriptive review flags (never exclude). Matched against brief + official title.
 review_flags:

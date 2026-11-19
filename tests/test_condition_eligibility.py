@@ -344,20 +344,16 @@ class ConditionEligibilityTests(unittest.TestCase):
         )
         self.assertEqual(result.eligibility, "eligible")
 
-    def test_chronic_and_acute_conditions_eligible_when_inclusion_is_chronic(self) -> None:
+    def test_acute_registered_condition_excludes_even_with_chronic_inclusion(self) -> None:
+        # Simple rule: "acute" in the registered conditions excludes, unless every condition is chronic.
         result = evaluate_condition_eligibility(
             conditions=["Chronic Pain", "Acute Pain", "Low Back Pain"],
             keywords=[],
             config=self.config,
             brief_title="CBT for chronic low back pain",
-            eligibility_criteria=(
-                "Inclusion Criteria:\n"
-                "Chronic low back pain for at least 3 months.\n"
-                "Exclusion Criteria:\n"
-                "Acute injury within the past month.\n"
-            ),
+            eligibility_criteria="Inclusion Criteria:\nChronic low back pain for at least 3 months.\n",
         )
-        self.assertEqual(result.eligibility, "eligible")
+        self.assertEqual(result.exclusion_rule, "acute_pain")
 
     def test_acute_inclusion_excludes_before_title(self) -> None:
         result = evaluate_condition_eligibility(
@@ -385,7 +381,6 @@ class ConditionEligibilityTests(unittest.TestCase):
             ),
         )
         self.assertEqual(result.eligibility, "eligible")
-        self.assertEqual(result.acute_population_rule, "chronic_conditions_skip_descriptor_acute")
 
     def test_acute_in_brief_summary_still_excludes_when_condition_not_chronic(self) -> None:
         result = evaluate_condition_eligibility(
@@ -477,7 +472,6 @@ class ConditionEligibilityTests(unittest.TestCase):
             ),
         )
         self.assertEqual(result.eligibility, "eligible")
-        self.assertEqual(result.acute_population_rule, "chronic_inclusion_acute_excluded")
 
     def _eval(self, *, conditions=("Low Back Pain",), title="Exercise for back pain", **kw):
         return evaluate_condition_eligibility(
@@ -494,7 +488,7 @@ class ConditionEligibilityTests(unittest.TestCase):
                 result = self._eval(eligibility_criteria=f"Inclusion Criteria:\n* {sentence}\nExclusion Criteria:\n* None")
                 self.assertEqual(result.eligibility, "excluded")
                 self.assertEqual(result.exclusion_rule, "short_pain_window")
-                self.assertIn(sentence, result.acute_population_snippet)
+                self.assertIn(sentence, result.exclusion_snippet)
 
     def test_short_pain_window_guards(self) -> None:
         for sentence in (
@@ -521,6 +515,7 @@ class ConditionEligibilityTests(unittest.TestCase):
         self.assertEqual(all_chronic.eligibility, "eligible")
 
     def test_postoperative_chronic_cue_ignored_when_inclusion_says_acute(self) -> None:
+        # "subacute" also carries the subacute flag itself, so it is excluded without the override.
         for wording in ("acute", "subacute", "sub-acute"):
             with self.subTest(wording=wording):
                 result = self._eval(
@@ -532,23 +527,11 @@ class ConditionEligibilityTests(unittest.TestCase):
                 )
                 self.assertEqual(result.eligibility, "excluded")
                 self.assertEqual(result.exclusion_rule, "subacute_perioperative")
-                self.assertIn("Chronic cue ignored", result.exclusion_detail)
-
-    def test_general_population_sample_excluded(self) -> None:
-        result = self._eval(
-            eligibility_criteria="Inclusion Criteria:\n* All students enrolled in the nursing program\nExclusion Criteria:\n* Cancer"
+        acute = self._eval(
+            title="Pain after spinal fusion",
+            eligibility_criteria="Inclusion Criteria:\n* Chronic low back pain\n* acute postoperative pain\nExclusion Criteria:\n* None",
         )
-        self.assertEqual(result.eligibility, "excluded")
-        self.assertEqual(result.exclusion_rule, "general_population_sample")
-
-    def test_group_with_pain_or_diagnosis_wording_kept(self) -> None:
-        for text in (
-            "* All employees with low back pain",
-            "* Employees with a diagnosis of fibromyalgia (ACR criteria)",
-        ):
-            with self.subTest(text=text):
-                result = self._eval(eligibility_criteria=f"Inclusion Criteria:\n{text}\nExclusion Criteria:\n* None")
-                self.assertEqual(result.eligibility, "eligible")
+        self.assertIn("Chronic cue ignored", acute.exclusion_detail)
 
     def test_not_about_pain_needs_no_pain_word_in_titles_criteria_and_outcomes(self) -> None:
         criteria = "Inclusion Criteria:\n* Adults 30-64 years\nExclusion Criteria:\n* None"

@@ -15,16 +15,7 @@ COHORT_REPORT_MD = "cohort_report.md"
 EXCLUSION_REASON_ACUTE = "acute"
 EXCLUSION_REASON_CONDITION = "condition"
 
-ACUTE_RULES = frozenset({"acute_pain", "acute_bp_symptom_relief", "short_pain_window"})
-
-ACUTE_RULE_LABELS: dict[str, str] = {
-    "acute_pain": "Acute pain population",
-    "short_pain_window": "Explicit pain/symptom window under 12 weeks in the inclusion criteria",
-    "acute_bp_symptom_relief": (
-        "Acute back-pain pharmaceutical symptom relief "
-        "(short episode + NSAID/muscle-relaxant arm)"
-    ),
-}
+ACUTE_RULES = frozenset({"acute_pain", "short_pain_window"})
 
 STUDY_TABLE_COLUMNS: list[str] = [
     "nct_id",
@@ -45,7 +36,6 @@ STUDY_TABLE_COLUMNS: list[str] = [
     "eligible_back_pain",
     "eligible_fibromyalgia",
     "eligible_headache",
-    "is_acute_bp_symptom_relief",
     "intervention_categories",
     "is_multimodal",
     "control_arm_types",
@@ -88,15 +78,11 @@ def build_exclusion_fields(*, cond: ConditionEligibility, rule: str) -> tuple[st
     """(exclusion_reason, exclusion_detail); both empty strings for included studies."""
     if cond.eligibility == "eligible":
         return "", ""
-    if rule in ACUTE_RULES:
-        pieces = [ACUTE_RULE_LABELS.get(rule, rule)]
-        if cond.acute_population_source:
-            pieces[0] += f" (found in {cond.acute_population_source})"
-        if cond.acute_population_snippet:
-            pieces.append(f"Matched text: \"{cond.acute_population_snippet}\"")
-        return EXCLUSION_REASON_ACUTE, f"{rule}: " + ". ".join(pieces)
+    reason = EXCLUSION_REASON_ACUTE if rule in ACUTE_RULES else EXCLUSION_REASON_CONDITION
     explanation = cond.exclusion_detail or "Condition-stage rule applied."
-    return EXCLUSION_REASON_CONDITION, f"{rule}: {explanation}"
+    if cond.exclusion_snippet:
+        explanation += f" (found in {cond.exclusion_source}). Matched text: \"{cond.exclusion_snippet}\""
+    return reason, f"{rule}: {explanation}"
 
 
 def exclusion_rule_from_detail(detail: object) -> str:

@@ -24,8 +24,9 @@ class CohortExportTests(unittest.TestCase):
             targets_in_conditions=[],
             eligibility="excluded",
             exclusion_rule="acute_pain",
-            acute_population_source="eligibility_inclusion_1",
-            acute_population_snippet="Receiving care for acute low back pain",
+            exclusion_detail="Acute pain population",
+            exclusion_source="eligibility_inclusion_1",
+            exclusion_snippet="Receiving care for acute low back pain",
         )
         reason, detail = build_exclusion_fields(cond=cond, rule="acute_pain")
         self.assertEqual(reason, "acute")

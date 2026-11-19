@@ -1,14 +1,18 @@
-"""Cohort condition eligibility: chronic pain targets and minimal exclusions."""
+"""Cohort condition eligibility: one ordered list of simple exclusion rules.
+
+Each rule is a small function returning a `_Hit` (rule key + reason) or None. The first rule
+that fires decides; see `evaluate_condition_eligibility` for the order and
+`docs/COHORT_FILTERING_RULES.md` for the rationale of each rule.
+"""
 
 from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, NamedTuple
 
-from .acute_population_screen import AcutePopulationScreenResult, screen_acute_population
+from .acute_population_screen import find_acute_population
 from .eligibility_text import extract_inclusion_blocks, find_chronic_inclusion_cue, find_short_pain_window
-from .non_patient_screen import screen_non_patient_sample
 
 
 @dataclass
@@ -16,13 +20,17 @@ class ConditionEligibility:
     targets_in_conditions: list[str]  # target pain conditions found in the registered conditions
     eligibility: str  # eligible | excluded
     exclusion_rule: str | None = None
-    exclusion_detail: str | None = None  # why this specific study hit a non-acute rule
+    exclusion_detail: str | None = None  # why this specific study hit the rule
     condition_feature_flags: list[str] = field(default_factory=list)
-    acute_population_decision: str | None = None
-    acute_population_rule: str | None = None
-    acute_population_detail: str | None = None
-    acute_population_source: str | None = None
-    acute_population_snippet: str | None = None
+    exclusion_source: str | None = None  # where the matched text was found (text-based rules)
+    exclusion_snippet: str | None = None  # the matched text
+
+
+class _Hit(NamedTuple):
+    rule: str
+    detail: str
+    source: str | None = None
+    snippet: str | None = None
 
 
 def _compile(patterns: list[str]) -> list[re.Pattern[str]]:
@@ -107,13 +115,126 @@ def _detect_feature_flags(text_lower: str, config: dict[str, Any]) -> list[str]:
     return sorted(flags)
 
 
-def _attach_acute_fields(result: ConditionEligibility, acute: AcutePopulationScreenResult) -> ConditionEligibility:
-    result.acute_population_decision = acute.decision
-    result.acute_population_rule = acute.rule
-    result.acute_population_detail = acute.detail
-    result.acute_population_source = acute.source
-    result.acute_population_snippet = acute.snippet
-    return result
+def _all_conditions_chronic(conditions: list[str] | None) -> bool:
+    """True when every registered condition line contains the word 'chronic'."""
+    lines = [str(c).strip() for c in (conditions or []) if str(c).strip()]
+    return bool(lines) and all(re.search(r"\bchronic\b", line, re.IGNORECASE) for line in lines)
+
+
+# --- Rules (each returns a _Hit or None) ---------------------------------------------------------
+
+
+def _keyword_rule(rule_id: str, text_lower: str, config: dict[str, Any]) -> _Hit | None:
+    """cancer_oncology / pathology_other / pregnancy_related: pattern in conditions, keywords, titles."""
+    patterns = _compile(config["exclusion_rules"][rule_id]["patterns"])
+    hit = _first_pattern_hit(text_lower, patterns)
+    if hit:
+        return _Hit(rule_id, f"Matched '{hit}' in registered conditions, keywords or titles.")
+    return None
+
+
+def _acute_pain_rule(*, conditions, brief_title, official_title, brief_summary, eligibility_criteria, config) -> _Hit | None:
+    """The word 'acute' describes the enrolled population (details: acute_population_screen)."""
+    found = find_acute_population(
+        conditions=conditions,
+        brief_title=brief_title,
+        official_title=official_title,
+        brief_summary=brief_summary,
+        eligibility_criteria=eligibility_criteria,
+        # Titles/summary/conditions are ignored when every registered condition says "chronic".
+        check_descriptors=not _all_conditions_chronic(conditions),
+        config=config,
+    )
+    if found:
+        source, snippet = found
+        return _Hit("acute_pain", "Acute pain population", source, snippet)
+    return None
+
+
+def _subacute_perioperative_rule(
+    *, feature_flags: list[str], eligibility_criteria: str | None, config: dict[str, Any]
+) -> _Hit | None:
+    """Subacute / perioperative / postoperative feature flag.
+
+    Only `surgical_postoperative` can be overridden: it is kept when the inclusion criteria show
+    established chronic pain, unless they also say "acute"/"subacute".
+    """
+    spec = config["flag_exclusion"]
+    flags = [f for f in spec["flags"] if f in feature_flags]
+    if not flags:
+        return None
+    keep = spec["keep_when_chronic_in_inclusion"]
+    blocking = [f for f in flags if f not in keep["flags"]]  # flags that can never be overridden
+    note = ""
+    if not blocking:
+        chronic_cue = find_chronic_inclusion_cue(
+            eligibility_criteria,
+            word_patterns=keep["word_patterns"],
+            duration_patterns=keep["duration_patterns"],
+        )
+        acute_wording = _first_pattern_hit(
+            " ".join(extract_inclusion_blocks(eligibility_criteria)),
+            _compile(keep["unless_inclusion_mentions"]),
+        )
+        if chronic_cue and not acute_wording:
+            return None
+        if chronic_cue:
+            note = f" Chronic cue ignored: the inclusion criteria also say '{acute_wording}'."
+    blocking = blocking or flags
+    return _Hit(
+        spec["rule"],
+        "Subacute or peri/pre/post-operative population "
+        f"(condition_feature_flags: {', '.join(blocking)}); chronification prevention is out of scope." + note,
+    )
+
+
+def _short_pain_window_rule(
+    *, conditions: list[str] | None, eligibility_criteria: str | None, config: dict[str, Any]
+) -> _Hit | None:
+    """An inclusion sentence about pain/symptoms states a window under 12 weeks."""
+    spec = config["short_pain_window"]
+    sentence = find_short_pain_window(eligibility_criteria, spec)
+    if not sentence or _all_conditions_chronic(conditions):
+        return None
+    return _Hit(
+        spec["rule"],
+        "Explicit pain/symptom window under 12 weeks in the inclusion criteria",
+        "inclusion criteria",
+        sentence[:300],
+    )
+
+
+def _no_target_rule(targets_in_conditions: list[str]) -> _Hit | None:
+    if targets_in_conditions:
+        return None
+    return _Hit(
+        "no_target_match",
+        "No target pattern (migraine, back pain, fibromyalgia, headache) matched the registered conditions.",
+    )
+
+
+def _not_about_pain_rule(
+    *,
+    titles: str,
+    eligibility_criteria: str | None,
+    primary_outcome_text: str | None,
+    config: dict[str, Any],
+) -> _Hit | None:
+    """No pain word anywhere in titles + inclusion criteria + primary outcomes.
+
+    Skipped when the inclusion criteria or primary outcomes are empty.
+    """
+    inclusion = " ".join(extract_inclusion_blocks(eligibility_criteria)).strip()
+    outcomes = (primary_outcome_text or "").strip()
+    if not inclusion or not outcomes:
+        return None
+    scope = f"{titles} {inclusion} {outcomes}"
+    if _first_pattern_hit(scope, _compile(config["not_about_pain"]["pain_wording_patterns"])):
+        return None
+    return _Hit(
+        config["not_about_pain"]["rule"],
+        "No pain wording in the titles, inclusion criteria or primary outcomes.",
+    )
 
 
 def evaluate_condition_eligibility(
@@ -128,170 +249,56 @@ def evaluate_condition_eligibility(
     primary_outcome_text: str | None = None,
 ) -> ConditionEligibility:
     text_core = _study_text(
-        conditions=conditions,
-        keywords=keywords,
-        brief_title=brief_title,
-        official_title=official_title,
-    )
+        conditions=conditions, keywords=keywords, brief_title=brief_title, official_title=official_title
+    ).lower()
     text_full = _study_text(
         conditions=conditions,
         keywords=keywords,
         brief_title=brief_title,
         official_title=official_title,
         eligibility_criteria=eligibility_criteria,
+    ).lower()
+    targets = _detect_targets_in_conditions(conditions, config)
+    flags = _detect_feature_flags(text_full, config)
+    titles = " ".join(x for x in (_clean(brief_title), _clean(official_title)) if x)
+
+    # The first rule that fires decides. This list IS the rule order.
+    hit = (
+        _keyword_rule("cancer_oncology", text_core, config)
+        or _keyword_rule("pathology_other", text_core, config)
+        or _keyword_rule("pregnancy_related", text_core, config)
+        or _acute_pain_rule(
+            conditions=conditions,
+            brief_title=brief_title,
+            official_title=official_title,
+            brief_summary=brief_summary,
+            eligibility_criteria=eligibility_criteria,
+            config=config,
+        )
+        or _subacute_perioperative_rule(
+            feature_flags=flags, eligibility_criteria=eligibility_criteria, config=config
+        )
+        or _short_pain_window_rule(
+            conditions=conditions, eligibility_criteria=eligibility_criteria, config=config
+        )
+        or _no_target_rule(targets)
+        or _not_about_pain_rule(
+            titles=titles,
+            eligibility_criteria=eligibility_criteria,
+            primary_outcome_text=primary_outcome_text,
+            config=config,
+        )
     )
-    text_core_lower = text_core.lower()
-    text_full_lower = text_full.lower()
-
-    targets_in_conditions = _detect_targets_in_conditions(conditions, config)
-
-    feature_flags = _detect_feature_flags(text_full_lower, config)
-
-    acute_screen = screen_acute_population(
-        conditions=conditions,
-        brief_title=brief_title,
-        official_title=official_title,
-        brief_summary=brief_summary,
-        eligibility_criteria=eligibility_criteria,
-        config=config,
-    )
-
-    for rule_id, spec in config.get("exclusion_rules", {}).items():
-        if rule_id == "acute_pain":
-            if acute_screen.decision == "exclude":
-                return _attach_acute_fields(
-                    ConditionEligibility(
-                        targets_in_conditions=targets_in_conditions,
-                        eligibility="excluded",
-                        exclusion_rule=acute_screen.rule or "acute_pain",
-                        condition_feature_flags=feature_flags,
-                    ),
-                    acute_screen,
-                )
-            continue
-        rule_text = text_core_lower if rule_id in {"cancer_oncology", "pathology_other", "pregnancy_related"} else text_full_lower
-        hit = _first_pattern_hit(rule_text, _compile(spec.get("patterns", [])))
-        if hit:
-            return _attach_acute_fields(
-                ConditionEligibility(
-                    targets_in_conditions=targets_in_conditions,
-                    eligibility="excluded",
-                    exclusion_rule=rule_id,
-                    exclusion_detail=(
-                        f"Matched '{hit}' in registered conditions, keywords or titles."
-                    ),
-                    condition_feature_flags=feature_flags,
-                ),
-                acute_screen,
-            )
-
-    flag_spec = config.get("flag_exclusion", {})
-    excluding_flags = [f for f in flag_spec.get("flags", []) if f in feature_flags]
-    acute_override_note = ""
-    keep_spec = flag_spec.get("keep_when_chronic_in_inclusion", {})
-    overridable = [f for f in excluding_flags if f in keep_spec.get("flags", [])]
-    if overridable:
-        chronic_cue = find_chronic_inclusion_cue(
-            eligibility_criteria,
-            word_patterns=keep_spec.get("word_patterns", []),
-            duration_patterns=keep_spec.get("duration_patterns", []),
+    if hit is None:
+        return ConditionEligibility(
+            targets_in_conditions=targets, eligibility="eligible", condition_feature_flags=flags
         )
-        inclusion_text = " ".join(extract_inclusion_blocks(eligibility_criteria))
-        acute_wording = _first_pattern_hit(
-            inclusion_text, _compile(keep_spec.get("unless_inclusion_mentions", []))
-        )
-        if chronic_cue and not acute_wording:
-            excluding_flags = [f for f in excluding_flags if f not in overridable]
-        elif chronic_cue and acute_wording:
-            acute_override_note = (
-                f" Chronic cue ignored: the inclusion criteria also say '{acute_wording}'."
-            )
-    if excluding_flags:
-        return _attach_acute_fields(
-            ConditionEligibility(
-                targets_in_conditions=targets_in_conditions,
-                eligibility="excluded",
-                exclusion_rule=flag_spec.get("rule", "subacute_perioperative"),
-                exclusion_detail=(
-                    "Subacute or peri/pre/post-operative population "
-                    f"(condition_feature_flags: {', '.join(excluding_flags)}); "
-                    "chronification prevention is out of scope." + acute_override_note
-                ),
-                condition_feature_flags=feature_flags,
-            ),
-            acute_screen,
-        )
-
-    window_spec = config.get("short_pain_window", {})
-    if window_spec:
-        sentence = find_short_pain_window(
-            eligibility_criteria,
-            max_weeks=window_spec["max_weeks"],
-            pain_pattern=window_spec["pain_pattern"],
-            skip_patterns=window_spec.get("skip_patterns", []),
-            rating_pattern=window_spec["rating_pattern"],
-            lookback_before=window_spec["lookback_before"],
-            lookback_after=window_spec["lookback_after"],
-        )
-        all_chronic = window_spec.get("keep_if_all_conditions_match")
-        lines = [c for c in (conditions or []) if c and str(c).strip()]
-        if sentence and all_chronic and lines and all(
-            re.search(all_chronic, line, re.IGNORECASE) for line in lines
-        ):
-            sentence = ""
-        if sentence:
-            result = _attach_acute_fields(
-                ConditionEligibility(
-                    targets_in_conditions=targets_in_conditions,
-                    eligibility="excluded",
-                    exclusion_rule=window_spec.get("rule", "short_pain_window"),
-                    condition_feature_flags=feature_flags,
-                ),
-                acute_screen,
-            )
-            result.acute_population_source = "inclusion criteria"
-            result.acute_population_snippet = sentence[:300]
-            return result
-
-    if not targets_in_conditions:
-        return _attach_acute_fields(
-            ConditionEligibility(
-                targets_in_conditions=[],
-                eligibility="excluded",
-                exclusion_rule="no_target_match",
-                exclusion_detail=(
-                    "No target pattern (migraine, back pain, fibromyalgia, headache) "
-                    "matched the registered conditions."
-                ),
-                condition_feature_flags=feature_flags,
-            ),
-            acute_screen,
-        )
-
-    non_patient = screen_non_patient_sample(
-        eligibility_criteria=eligibility_criteria,
-        titles=" ".join(x for x in (_clean(brief_title), _clean(official_title)) if x),
-        primary_outcome_text=primary_outcome_text,
-        config=config,
-    )
-    if non_patient:
-        rule, detail = non_patient
-        return _attach_acute_fields(
-            ConditionEligibility(
-                targets_in_conditions=targets_in_conditions,
-                eligibility="excluded",
-                exclusion_rule=rule,
-                exclusion_detail=detail,
-                condition_feature_flags=feature_flags,
-            ),
-            acute_screen,
-        )
-
-    return _attach_acute_fields(
-        ConditionEligibility(
-            targets_in_conditions=targets_in_conditions,
-            eligibility="eligible",
-            condition_feature_flags=feature_flags,
-        ),
-        acute_screen,
+    return ConditionEligibility(
+        targets_in_conditions=targets,
+        eligibility="excluded",
+        exclusion_rule=hit.rule,
+        exclusion_detail=hit.detail,
+        condition_feature_flags=flags,
+        exclusion_source=hit.source,
+        exclusion_snippet=hit.snippet,
     )

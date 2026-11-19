@@ -202,38 +202,26 @@ def _week_value(token: str) -> float:
     return float(_NUMBER_WORDS[lowered]) if lowered in _NUMBER_WORDS else float(lowered)
 
 
-def find_short_pain_window(
-    eligibility_criteria: str | None,
-    *,
-    max_weeks: float,
-    pain_pattern: str,
-    skip_patterns: list[str],
-    rating_pattern: str,
-    lookback_before: str,
-    lookback_after: str,
-) -> str:
-    """First inclusion sentence stating a pain/symptom window of <= `max_weeks` weeks, or "".
+def find_short_pain_window(eligibility_criteria: str | None, spec: dict) -> str:
+    """First inclusion sentence stating a pain/symptom window of <= `spec["max_weeks"]` weeks, or "".
 
     The sentence must mention pain/symptoms and a number of weeks (ranges use every bound).
     Sentences about medication stability, surgery, injections etc. are skipped, and so are
-    rating look-backs ("pain score >= 4 over the past 2 weeks").
+    rating look-backs ("pain score >= 4 over the past 2 weeks"). Patterns come from the YAML.
     """
-    pain = re.compile(pain_pattern, re.IGNORECASE)
-    skip = [re.compile(p, re.IGNORECASE) for p in skip_patterns]
-    rating = re.compile(rating_pattern, re.IGNORECASE)
-    before = re.compile(lookback_before, re.IGNORECASE)
-    after = re.compile(lookback_after, re.IGNORECASE)
+    skip = [re.compile(p, re.IGNORECASE) for p in spec["skip_patterns"]]
     for block in extract_inclusion_blocks(eligibility_criteria):
         for chunk in _candidate_chunks(block):
-            if not pain.search(chunk) or any(p.search(chunk) for p in skip):
+            if not re.search(spec["pain_pattern"], chunk, re.IGNORECASE) or any(p.search(chunk) for p in skip):
                 continue
+            is_rating = re.search(spec["rating_pattern"], chunk, re.IGNORECASE)
             for match in _WEEK_PHRASE.finditer(chunk):
-                if rating.search(chunk) and (
-                    before.search(chunk[max(0, match.start() - 12) : match.start()])
-                    or after.match(chunk[match.end() :])
-                ):
+                look_back = re.search(
+                    spec["lookback_before"], chunk[max(0, match.start() - 12) : match.start()], re.IGNORECASE
+                ) or re.match(spec["lookback_after"], chunk[match.end() :], re.IGNORECASE)
+                if is_rating and look_back:
                     continue
-                if any(_week_value(g) <= max_weeks for g in match.groups() if g):
+                if any(_week_value(g) <= spec["max_weeks"] for g in match.groups() if g):
                     return chunk
     return ""
 
