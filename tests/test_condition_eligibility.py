@@ -178,6 +178,17 @@ class ConditionEligibilityTests(unittest.TestCase):
         self.assertIn("subacute", result.exclusion_detail)
         self.assertNotIn("surgical_postoperative", result.exclusion_detail)
 
+    def test_flags_are_searched_in_inclusion_not_exclusion_criteria(self) -> None:
+        excluded_only = self._eval(
+            eligibility_criteria="Inclusion Criteria:\n* Low back pain\nExclusion Criteria:\n* Spinal fusion or postoperative pain"
+        )
+        self.assertEqual(excluded_only.eligibility, "eligible")
+        self.assertNotIn("surgical_postoperative", excluded_only.condition_feature_flags)
+        in_inclusion = self._eval(
+            eligibility_criteria="Inclusion Criteria:\n* Scheduled to undergo lumbar spine surgery\nExclusion Criteria:\n* None"
+        )
+        self.assertEqual(in_inclusion.exclusion_rule, "subacute_perioperative")
+
     def test_other_feature_flags_do_not_exclude(self) -> None:
         result = evaluate_condition_eligibility(
             conditions=["Post-concussive headache"],

@@ -38,15 +38,15 @@ Two principles run through everything:
 | Step | Trials |
 |---|---:|
 | Pulled from the registry (unique NCT ids) | 936 |
-| Excluded by the rules below | 124 |
-| **Included in the cohort** | **812** |
+| Excluded by the rules below | 112 |
+| **Included in the cohort** | **824** |
 | Registered primary outcomes of included trials | ~2,000 |
 
 Exclusions by rule (the first rule that fires is the one recorded):
 
 | Rule key | Reason group | Trials |
 |---|---|---:|
-| `subacute_perioperative` | condition | 38 |
+| `subacute_perioperative` | condition | 26 |
 | `acute_pain` | acute | 21 |
 | `short_pain_window` | acute | 17 |
 | `pregnancy_related` | condition | 16 |
@@ -115,7 +115,7 @@ Each pulled trial is checked against the rules **in this order**. The first rule
 | 2 | `pathology_other` | condition | a non-pain primary disease appears (e.g. intracranial hypertension, pseudotumor, meningitis, multiple sclerosis) | same as above |
 | 3 | `pregnancy_related` | condition | pregnancy, postpartum, childbirth, menstrual/dysmenorrhea or pelvic girdle pain wording appears | same as above |
 | 4 | `acute_pain` | acute | the enrolled population is described with the word **acute** (details in section 4) | eligibility inclusion criteria, conditions, titles, brief summary |
-| 5 | `subacute_perioperative` | condition | the trial carries any of the feature flags `subacute`, `perioperative` or `surgical_postoperative` (subacute pain, or pre/peri/post-operative populations). Prevention of chronic-pain development is conceptually distinct from primary outcomes in established chronic pain, so these trials are set aside. **Exception:** a trial whose only excluding flag is `surgical_postoperative` is kept when its *inclusion* criteria show established chronic pain: the word “chronic”, or a stated duration of `>=` / `>` / “more than” / “at least” 3 or 6 months, 1 year or 12 weeks (also “3+ months”; other words may sit in between, e.g. “at least 3 consecutive months”). The duration must be in a sentence that mentions pain/symptoms. `subacute` and `perioperative` flags are never overridden. **Hard override:** if the *inclusion* criteria also contain the word “acute”, “subacute” or “sub-acute”, the chronic cue is ignored and the trial is excluded | `condition_feature_flags`; inclusion criteria for the exception (registered conditions, keywords, titles, eligibility criteria) |
+| 5 | `subacute_perioperative` | condition | the trial carries any of the feature flags `subacute`, `perioperative` or `surgical_postoperative` (subacute pain, or pre/peri/post-operative populations). Prevention of chronic-pain development is conceptually distinct from primary outcomes in established chronic pain, so these trials are set aside. **Exception:** a trial whose only excluding flag is `surgical_postoperative` is kept when its *inclusion* criteria show established chronic pain: the word “chronic”, or a stated duration of `>=` / `>` / “more than” / “at least” 3 or 6 months, 1 year or 12 weeks (also “3+ months”; other words may sit in between, e.g. “at least 3 consecutive months”). The duration must be in a sentence that mentions pain/symptoms. `subacute` and `perioperative` flags are never overridden. **Hard override:** if the *inclusion* criteria also contain the word “acute”, “subacute” or “sub-acute”, the chronic cue is ignored and the trial is excluded | registered conditions, keywords, brief + official title and the **inclusion** criteria (exclusion criteria are not searched) |
 | 6 | `short_pain_window` | acute | an *inclusion* sentence that mentions **pain** or **symptoms** states a number of weeks **≤ 11** (under 12 weeks; ranges use every bound, so “6 to 12 weeks” counts) → acute/subacute population. Skipped sentences: medication/dose/stable/regimen/surgery/injection/physio wording, negations (“no/not/without”), and pain-rating look-backs (“score ≥ 4 over the past/preceding 2 weeks”). **The exclusion is hard:** a chronic cue in the inclusion criteria or “chronic” in the title does not rescue the trial. **Only exception:** *every* registered condition line contains “chronic” (e.g. only `Chronic Low-back Pain`), the same exception the acute-population screen uses | inclusion criteria; registered conditions for the exception |
 | 7 | `no_target_match` | condition | none of the four target conditions matches the registered conditions | registered conditions |
 | 8 | `not_about_pain` | condition | **no pain word at all** (pain, ache, headache, migraine, fibromyalgia, LBP, sciatica, analges-, discomfort, FM/FMS) in the titles, the inclusion criteria *and* the primary outcomes. Typical hits: concussion/TBI samples, tinnitus, visual snow, somatic-symptom disorders, healthy adults. Not evaluated when inclusion criteria or primary outcomes are empty. **Why we drop them:** the primary outcomes of these trials would not be pain recovery or pain interference related, so keeping them would pollute the outcomes this study focuses on | brief + official title, inclusion criteria, primary outcome measure + description |
@@ -152,7 +152,7 @@ A trial that lists a target plus many other conditions (mood, other pain conditi
 
 | Column | What it shows |
 |---|---|
-| `condition_feature_flags` | Tags found in the trial text. Includes `post_traumatic`, `tbi_concussion`, `subacute`, `perioperative`, `surgical_postoperative`, `medication_overuse_headache`, `secondary_pain`, `visual_snow`, `vestibular_schwannoma`. Only `subacute`, `perioperative` and `surgical_postoperative` exclude a trial (rule `subacute_perioperative`, with the chronic-inclusion exception for `surgical_postoperative` described in the rule table); the rest are descriptive. Excluded trials keep their flags, so the exclusion can be audited. |
+| `condition_feature_flags` | Tags found in the registered conditions, keywords, titles and inclusion criteria (never the exclusion criteria). Includes `post_traumatic`, `tbi_concussion`, `subacute`, `perioperative`, `surgical_postoperative`, `medication_overuse_headache`, `secondary_pain`, `visual_snow`, `vestibular_schwannoma`. Only `subacute`, `perioperative` and `surgical_postoperative` exclude a trial (rule `subacute_perioperative`, with the chronic-inclusion exception for `surgical_postoperative` described in the rule table); the rest are descriptive. Excluded trials keep their flags, so the exclusion can be audited. |
 | `review_flags` | Currently `provider_or_system_level`: the title mentions clinicians, guidelines, implementation, decision support, referral, a care model or a health system. Meant to help check whether a trial targets clinicians or care systems rather than patients. Some hits are ordinary patient trials delivered in such a setting. |
 | `pain_duration_inclusion` | Verbatim sentence(s) from the **inclusion** criteria that state how long the pain/condition lasts (e.g. for NCT01761617: `Current non-specific low back pain persisting >12 weeks.`). Empty when no such sentence is found. Heuristic; never used to include or exclude. |
 

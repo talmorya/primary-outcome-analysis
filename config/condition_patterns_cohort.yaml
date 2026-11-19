@@ -155,7 +155,7 @@ condition_features:
       - "\\bpre[- ]?operative(?!ly)\\b"
       - "before (?:spine |spinal |lumbar )?surgery"
       - "undergoing (?:spine |spinal |lumbar )?surgery"
-      - "scheduled for .{0,40}surgery"
+      - "scheduled (?:for|to undergo) .{0,40}surgery"
 
   surgical_postoperative:
     patterns:

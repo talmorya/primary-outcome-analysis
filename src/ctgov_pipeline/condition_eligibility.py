@@ -251,15 +251,17 @@ def evaluate_condition_eligibility(
     text_core = _study_text(
         conditions=conditions, keywords=keywords, brief_title=brief_title, official_title=official_title
     ).lower()
-    text_full = _study_text(
+    # Feature flags (subacute / perioperative / ...) are searched in conditions, keywords, titles
+    # and the INCLUSION criteria only: exclusion criteria describe who is kept out, not who is enrolled.
+    text_flags = _study_text(
         conditions=conditions,
         keywords=keywords,
         brief_title=brief_title,
         official_title=official_title,
-        eligibility_criteria=eligibility_criteria,
+        eligibility_criteria=" ".join(extract_inclusion_blocks(eligibility_criteria)),
     ).lower()
     targets = _detect_targets_in_conditions(conditions, config)
-    flags = _detect_feature_flags(text_full, config)
+    flags = _detect_feature_flags(text_flags, config)
     titles = " ".join(x for x in (_clean(brief_title), _clean(official_title)) if x)
 
     # The first rule that fires decides. This list IS the rule order.
