@@ -50,6 +50,12 @@ _FIRST_PASS_RULES: list[tuple[str, str, str, list[str]]] = [
             r"\baccrual\b",
             r"screening rate",
             r"eligibility rate",
+            r"\bscreened\b",
+            r"\benrolled\b",
+            r"\benrollees\b",
+            r"\brefus",
+            r"interested participants",
+            r"eligibility criteria",
         ],
     ),
     (
@@ -62,6 +68,12 @@ _FIRST_PASS_RULES: list[tuple[str, str, str, list[str]]] = [
             r"\busability\b",
             r"user experience",
             r"participant experience",
+            r"ease of use",
+            r"^(?:participant[- ]rated )?enjoyment",
+            r"\bfeedback\b",
+            r"exit interview",
+            r"treatment evaluation",
+            r"agreed to",
         ],
     ),
     (
@@ -75,13 +87,26 @@ _FIRST_PASS_RULES: list[tuple[str, str, str, list[str]]] = [
             r"protocol adherence",
             r"therapist adherence",
             r"treatment integrity",
+            r"\b(?:were|was) delivered",
+            r"duration of (?:use|virtual reality sessions)",
+            r"(?:days|minutes).{0,40}(?:spent|used|performed)",
+            r"sessions? (?:completed|attended)",
         ],
     ),
     (
         "feasibility_acceptability",
         "other_feasibility",
         "CAT_FEAS_OTHER",
-        [r"retention rate", r"drop[- ]?out rate", r"completion rate"],
+        [
+            r"retention rate",
+            r"drop[- ]?out rate",
+            r"completion rate",
+            r"completeness",
+            r"(?:assessments?|questionnaires?|diar(?:y|ies)) completed",
+            r"\bdiary completion",
+            r"complet(?:e|ed|ion of) .{0,15}the intervention",
+            r"definitive (?:rct|trial)",
+        ],
     ),
     (
         "mood",
@@ -419,8 +444,12 @@ def classify_outcome_category(
             rule="CAT_MECHANISTIC",
         )
 
+    # Feasibility/acceptability rules read the measure NAME only: descriptions and time frames
+    # of clinical outcomes mention "enrollment", "feasibility" or "adverse" without being one.
+    measure_text = (measure or "").lower()
     for category, subcategory, rule_id, patterns in _FIRST_PASS_RULES:
-        if any(re.search(pattern, text) for pattern in patterns):
+        searched = measure_text if category == "feasibility_acceptability" else text
+        if any(re.search(pattern, searched) for pattern in patterns):
             return OutcomeCategory(
                 outcome_category=category,
                 outcome_subcategory=subcategory,
@@ -430,7 +459,6 @@ def classify_outcome_category(
     # Second pass: only outcomes that matched nothing above reach it, so it can never move an
     # outcome out of the categories above. It reads the measure NAME only (descriptions carry
     # boilerplate such as "eligible participants" that causes false hits).
-    measure_text = (measure or "").lower()
     for category, subcategory, rule_id, patterns in _SECOND_PASS_RULES:
         if any(re.search(pattern, measure_text) for pattern in patterns):
             return OutcomeCategory(
