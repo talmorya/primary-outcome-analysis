@@ -5,8 +5,6 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from .outcome_mechanism import is_mechanistic_outcome
-
 
 @dataclass
 class OutcomeCategory:
@@ -20,19 +18,61 @@ def _text(measure: str | None, description: str | None, time_frame: str | None) 
     return " ".join(part for part in [measure or "", description or "", time_frame or ""] if part).lower()
 
 
-def _mechanistic_subcategory(text: str) -> str:
-    if re.search(r"\bfmri\b|\beeg\b|neuroimaging|connectivity|brain activity|neural", text):
-        return "neuroimaging_neural"
-    if re.search(r"qst|quantitative sensory|pain threshold|hyperalgesia|pressure pain", text):
-        return "sensory_qst"
-    if re.search(r"biomarker|cytokine|cortisol|gene expression|neurotransmitter|inflammation", text):
-        return "biomarker_inflammatory"
-    if re.search(r"\bhrv\b|heart rate variability|psychophysiol|electrophysiol", text):
-        return "psychophysiological"
-    return "other_mechanistic"
-
+_MEASURE_ONLY_CATEGORIES = frozenset({"feasibility_acceptability", "mechanistic"})
 
 _FIRST_PASS_RULES: list[tuple[str, str, str, list[str]]] = [
+    # Mechanistic outcomes (experimental / biological measures). Like the feasibility rules they
+    # read the measure NAME only. `biological_structural` is in the second pass.
+    (
+        "mechanistic",
+        "neuroimaging_neural",
+        "CAT_MECH_NEURO",
+        [
+            r"\bfmri\b", r"\beeg\b", r"\bmri\b", r"connectivity", r"neuroimaging", r"brain (?:activity|imaging|function)",
+            r"\bneural\b", r"cerebral blood flow", r"arterial spin", r"\basl\b", r"magnetic resonance", r"\bmrs\b",
+            r"resting[- ]state", r"late positive potential", r"error related negativity", r"evoked potential", r"\bvep\b",
+            r"theta power", r"contingent negative variation", r"white matter", r"fronto-striatal",
+            r"cortical (?:excitab|map)", r"motor cortical", r"transcranial magnetic", r"\br?tms\b", r"transverse relaxation", r"\bivim\b",
+        ],
+    ),
+    (
+        "mechanistic",
+        "sensory_qst",
+        "CAT_MECH_QST",
+        [
+            r"\bqst\b", r"quantitative sensory", r"pain threshold", r"pain tolerance", r"pain summation", r"temporal summation",
+            r"pressure pain", r"conditioned pain modulation", r"\bcpm\b", r"hyperalgesia", r"detection threshold",
+            r"sensory limen", r"thermal stimul", r"sensory stimul", r"psychophysical", r"pain sensitivity",
+            r"(?:ischemic|evoked|heat|cold|thermal) pain", r"cold pressor", r"experimental pain", r"ratings of painful sensory",
+            r"pain modulation", r"painful (?:heat|pressure)", r"pressure stimul", r"kg/cm",
+        ],
+    ),
+    (
+        "mechanistic",
+        "biomarker_inflammatory",
+        "CAT_MECH_BIOMARKER",
+        [
+            r"\bbiomarker", r"inflammat", r"cytokine", r"\bcortisol\b", r"gene expression", r"neuroimmune",
+            r"tumou?r necrosis", r"\btnf\b", r"interleukin", r"\bil-\d", r"\bcrp\b", r"c-reactive", r"\bbdnf\b",
+            r"myo-inositol", r"n-acetylaspartate", r"\bcholine\b", r"\blactate\b", r"\bcreatine\b",
+        ],
+    ),
+    (
+        "mechanistic",
+        "psychophysiological",
+        "CAT_MECH_PSYCHOPHYS",
+        [r"heart rate variability", r"^hrv\b", r"\(hrv\)", r"psychophysiol", r"electrophysiol", r"peripheral arousal"],
+    ),
+    (
+        "mechanistic",
+        "other_mechanistic",
+        "CAT_MECH_OTHER",
+        [
+            r"dopamine response", r"neurotransmitter", r"attentional bias", r"contingency awareness", r"pain expectancy",
+            r"selective learning", r"temporal binding", r"psychophysical adaptation", r"petco2", r"provocation",
+            r"inducible dizziness", r"point of subjective simultaneity", r"dataset of functional magnetic",
+        ],
+    ),
     (
         "feasibility_acceptability",
         "safety",
@@ -304,10 +344,9 @@ _SECOND_PASS_RULES: list[tuple[str, str, str, list[str]]] = [
         "CAT_MECH_BIOLOGICAL",
         [
             r"\bserum\b", r"\bplasma\b", r"blood (?:flow|extraction|oxygen)", r"\bbold\b", r"gr[ae]y matter",
-            r"\bbrain\b", r"microbio", r"hormone", r"\bcrp\b", r"c-reactive", r"interleukin", r"\bil-\d",
-            r"cortisol", r"voxel", r"cerebr", r"ampk", r"temperature", r"thickness", r"ultrasound", r"fascia",
+            r"\bbrain\b", r"microbio", r"hormone", r"voxel", r"cerebr", r"ampk", r"temperature", r"thickness", r"ultrasound", r"fascia",
             r"muscle tone", r"pulsatility", r"endocannabinoid", r"inflammat", r"heart rate", r"glucos", r"glyc",
-            r"hba1c", r"diabetes", r"noxious inhibitory", r"\bbdnf\b", r"\bblood\b",
+            r"hba1c", r"diabetes", r"noxious inhibitory", r"\bblood\b",
         ],
     ),
     (
@@ -436,19 +475,12 @@ def classify_outcome_category(
 ) -> OutcomeCategory:
     text = _text(measure, description, time_frame)
 
-    if is_mechanistic_outcome(measure, description, time_frame):
-        sub = _mechanistic_subcategory(text)
-        return OutcomeCategory(
-            outcome_category="mechanistic",
-            outcome_subcategory=sub,
-            rule="CAT_MECHANISTIC",
-        )
-
-    # Feasibility/acceptability rules read the measure NAME only: descriptions and time frames
-    # of clinical outcomes mention "enrollment", "feasibility" or "adverse" without being one.
+    # Feasibility and mechanistic rules read the measure NAME only: descriptions and time frames
+    # of clinical outcomes mention "enrollment", "feasibility", "adverse" or "pressure pain"
+    # without being one.
     measure_text = (measure or "").lower()
     for category, subcategory, rule_id, patterns in _FIRST_PASS_RULES:
-        searched = measure_text if category == "feasibility_acceptability" else text
+        searched = measure_text if category in _MEASURE_ONLY_CATEGORIES else text
         if any(re.search(pattern, searched) for pattern in patterns):
             return OutcomeCategory(
                 outcome_category=category,

@@ -9,11 +9,6 @@ from ctgov_pipeline.classify_intervention_categories import classify_interventio
 from ctgov_pipeline.config_loader import load_yaml
 from ctgov_pipeline.outcome_category import classify_outcome_category
 from ctgov_pipeline.condition_eligibility import evaluate_condition_eligibility
-from ctgov_pipeline.outcome_mechanism import (
-    assess_primary_outcome_mechanistic,
-    is_clinical_treatment_outcome,
-    is_mechanistic_outcome,
-)
 
 
 class RevisedCohortTests(unittest.TestCase):
@@ -64,14 +59,20 @@ class RevisedCohortTests(unittest.TestCase):
         )
         self.assertIn("experimental_research_paradigm", result.intervention_categories)
 
-    def test_muscle_function_primary_not_mechanistic(self) -> None:
-        self.assertTrue(is_clinical_treatment_outcome("Muscle function", None, None))
-        self.assertFalse(is_mechanistic_outcome("Muscle function", None, None))
-        self.assertFalse(
-            assess_primary_outcome_mechanistic(
-                [{"measure": "Muscle function", "description": None, "time_frame": None}]
-            )
+    def test_muscle_function_is_physical_performance_not_mechanistic(self) -> None:
+        cat = classify_outcome_category("Muscle function", None, None)
+        self.assertNotEqual(cat.outcome_category, "mechanistic")
+
+    def test_qst_measures_are_mechanistic_even_with_pain_in_description(self) -> None:
+        for measure in ["Pressure Pain Threshold (PPT)", "Pain Tolerance", "Conditioned pain modulation"]:
+            cat = classify_outcome_category(measure, "Pain rated on a 0-10 scale", "8 weeks")
+            self.assertEqual((cat.outcome_category, cat.outcome_subcategory), ("mechanistic", "sensory_qst"), measure)
+
+    def test_clinical_measure_with_mechanistic_words_in_description_stays_clinical(self) -> None:
+        cat = classify_outcome_category(
+            "Pain intensity (NRS)", "Compared with fMRI connectivity changes", "8 weeks"
         )
+        self.assertEqual(cat.outcome_category, "pain_recovery")
 
     def test_visual_snow_retained_with_feature(self) -> None:
         result = evaluate_condition_eligibility(

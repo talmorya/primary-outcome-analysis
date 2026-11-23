@@ -24,7 +24,6 @@ from .eligibility_text import extract_pain_duration_sentences
 from .extract_outcome_features import extract_outcome_features
 from .extraction_runs import latest_full_extraction_run_id
 from .outcome_category import classify_outcome_category
-from .outcome_mechanism import assess_primary_outcome_mechanistic, is_mechanistic_outcome
 from .parse import load_raw_studies
 
 COHORT_RULES_VERSION = "conditions_field_v3"
@@ -156,16 +155,6 @@ def _parse_record(
             "raw_phases": _join(design_mod.get("phases", [])),
             "raw_primary_purpose": design_mod.get("designInfo", {}).get("primaryPurpose"),
             "raw_has_results": record.get("hasResults"),
-            "primary_outcome_mechanistic": assess_primary_outcome_mechanistic(
-                [
-                    {
-                        "measure": o.get("measure"),
-                        "description": o.get("description"),
-                        "time_frame": o.get("timeFrame"),
-                    }
-                    for o in (outcomes_mod.get("primaryOutcomes", []) or [])
-                ]
-            ),
             "api_retrieval_queries": api_retrieval_queries,
             "extraction_run_id": extraction_run_id,
             "cohort_rules_version": COHORT_RULES_VERSION,
@@ -194,7 +183,6 @@ def _parse_record(
                 "outcome_subcategory": category.outcome_subcategory,
                 "outcome_category_rule": category.rule,
                 "outcome_category_review_flag": category.review_flag,
-                "outcome_is_mechanistic": is_mechanistic_outcome(measure, description, time_frame),
                 "instruments_detected": _join(features.instruments_detected),
                 "raw_study_first_post_date": study_row["raw_study_first_post_date"],
                 "extraction_run_id": extraction_run_id,

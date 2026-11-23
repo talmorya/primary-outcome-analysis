@@ -46,7 +46,6 @@ STUDY_TABLE_COLUMNS: list[str] = [
     "raw_phases",
     "raw_primary_purpose",
     "raw_has_results",
-    "primary_outcome_mechanistic",
     "api_retrieval_queries",
     "extraction_run_id",
     "cohort_rules_version",

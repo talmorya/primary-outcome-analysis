@@ -123,19 +123,6 @@ def write_final_cohort_report(
         lines.append(f"| `{cat}` → `{sub}` | {n} |")
     lines.append("")
 
-    mech_flag = included["primary_outcome_mechanistic"] == True
-    lines.extend(
-        [
-            "## Primary outcome mechanistic flag (study-level)",
-            "",
-            "| Flag | Studies |",
-            "|---|---:|",
-            f"| `primary_outcome_mechanistic = TRUE` | {int(mech_flag.sum())} |",
-            f"| `primary_outcome_mechanistic = FALSE` | {len(included) - int(mech_flag.sum())} |",
-            "",
-        ]
-    )
-
     lines.extend(["## Trial status and phase", "", "### `overall_status`", "", "| Status | Studies |", "|---|---:|"])
     for status, n in included["raw_overall_status"].fillna("").value_counts().items():
         lines.append(f"| {status or '(missing)'} | {n} |")

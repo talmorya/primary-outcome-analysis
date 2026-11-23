@@ -1,7 +1,7 @@
 # Analytic cohort statistics
 
 **Run ID:** `cohort_conditions_field_v3`
-**Generated:** 2026-11-23 13:48 UTC
+**Generated:** 2026-11-23 14:03 UTC
 
 Auto-generated from `data/processed/studies.csv` on each `finalize_cohort` run.
 Inclusion rules: `docs/COHORT_FILTERING_RULES.md`. Column definitions: `docs/DATA_COLUMNS.md`.
@@ -78,12 +78,12 @@ Pipe-joined; study counts may sum to > cohort size.
 
 | `outcome_category` | Outcome rows |
 |---|---:|
-| `pain_recovery` | 542 |
-| `pain_interference` | 515 |
+| `pain_interference` | 516 |
+| `pain_recovery` | 516 |
 | `feasibility_acceptability` | 298 |
-| `mechanistic` | 166 |
-| `mood` | 142 |
-| `physical_performance` | 142 |
+| `mechanistic` | 192 |
+| `physical_performance` | 143 |
+| `mood` | 140 |
 | `associated_symptoms` | 38 |
 | `other` | 34 |
 | `healthcare_use_cost` | 23 |
@@ -93,27 +93,20 @@ Pipe-joined; study counts may sum to > cohort size.
 | Category → subcategory | Outcome rows |
 |---|---:|
 | `pain_interference` → `disability` | 345 |
-| `pain_recovery` → `pain_intensity` | 288 |
-| `pain_recovery` → `general_pain` | 183 |
+| `pain_recovery` → `pain_intensity` | 269 |
+| `pain_recovery` → `general_pain` | 176 |
 | `feasibility_acceptability` → `feasibility_recruitment` | 98 |
+| `physical_performance` → `mobility_balance_gait` | 81 |
 | `feasibility_acceptability` → `acceptability_satisfaction` | 81 |
-| `physical_performance` → `mobility_balance_gait` | 80 |
 | `pain_interference` → `quality_of_life` | 67 |
+| `mechanistic` → `sensory_qst` | 64 |
 | `pain_recovery` → `pain_frequency` | 63 |
 | `feasibility_acceptability` → `adherence_fidelity` | 62 |
+| `pain_interference` → `coping_adaptation` | 53 |
 | `mechanistic` → `biological_structural` | 52 |
-| `pain_interference` → `coping_adaptation` | 52 |
-| `mood` → `anxiety` | 51 |
+| `mood` → `anxiety` | 50 |
 | `physical_performance` → `strength_endurance` | 50 |
 | `feasibility_acceptability` → `other_feasibility` | 41 |
-| `mood` → `distress_stress` | 38 |
-
-## Primary outcome mechanistic flag (study-level)
-
-| Flag | Studies |
-|---|---:|
-| `primary_outcome_mechanistic = TRUE` | 23 |
-| `primary_outcome_mechanistic = FALSE` | 801 |
 
 ## Trial status and phase
 
