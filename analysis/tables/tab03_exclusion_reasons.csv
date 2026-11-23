@@ -1,0 +1,9 @@
+exclusion_stratum,exclusion_rule,trials
+Condition eligibility,cancer_oncology,3
+Condition eligibility,no_target_match,8
+Condition eligibility,not_about_pain,15
+Condition eligibility,pathology_other,6
+Condition eligibility,pregnancy_related,16
+Condition eligibility,subacute_perioperative,26
+Pain-character eligibility,acute_pain,21
+Pain-character eligibility,short_pain_window,17

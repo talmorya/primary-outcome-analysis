@@ -55,7 +55,9 @@ Optional: `run_full` also writes legacy extraction CSVs under `data/processed/fu
 | Intervention categories | `classify_intervention_categories.py` | `intervention_categories.yaml` |
 | Outcome categories | `outcome_category.py` | patterns in code |
 | Build | `build_revised_cohort.py` | all of the above |
-| Freeze + stats | `finalize_cohort.py`, `cohort_report.py` | — |
+| Freeze + stats | `finalize_cohort.py`, `cohort_report.py` | `cohort_report.md` |
+| Category tables | `category_mapping_report.py` | `docs/category_mapping.md` |
+| Analysis notebook, figures, tables | `run_analysis.py`, `analysis_data.py`, `analysis_plots.py` | `analysis/outcome_analysis.ipynb`, `analysis/figures/`, `analysis/tables/` |
 
 ---
 

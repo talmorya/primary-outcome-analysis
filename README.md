@@ -17,6 +17,7 @@ Among behavioral interventions for chronic pain, what primary outcomes do resear
 | **Inclusion / exclusion rules** (all of them, including acute) | [`docs/COHORT_FILTERING_RULES.md`](docs/COHORT_FILTERING_RULES.md) |
 | **What every column means** | [`docs/DATA_COLUMNS.md`](docs/DATA_COLUMNS.md) |
 | **Outcome and intervention category patterns + distributions** (auto-generated) | [`docs/category_mapping.md`](docs/category_mapping.md) |
+| **Analysis notebook, figures and tables for the article** (auto-refreshed) | [`analysis/outcome_analysis.ipynb`](analysis/outcome_analysis.ipynb), figures in `analysis/figures/`, tables in `analysis/tables/` |
 | How to rebuild from raw data | [`docs/COHORT_REPRODUCTION_GUIDE.md`](docs/COHORT_REPRODUCTION_GUIDE.md) |
 | Cohort statistics (auto-generated) | [`data/processed/cohort_report.md`](data/processed/cohort_report.md) |
 | Index of docs | [`docs/README.md`](docs/README.md) |

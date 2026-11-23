@@ -45,6 +45,7 @@ def _write_manifest(
         "rules_document": "docs/COHORT_FILTERING_RULES.md",
         "column_dictionary": "docs/DATA_COLUMNS.md",
         "category_mapping": "docs/category_mapping.md",
+        "analysis_notebook": "analysis/outcome_analysis.ipynb",
         "reproduction_guide": "docs/COHORT_REPRODUCTION_GUIDE.md",
         "output_files": {
             "studies": STUDIES_CSV,
@@ -58,6 +59,7 @@ def _write_manifest(
 def finalize_cohort(
     *,
     extraction_run_id: str | None = None,
+    run_analysis: bool = True,
 ) -> Path:
     run_id = extraction_run_id or latest_full_extraction_run_id()
     if not run_id:
@@ -99,14 +101,28 @@ def finalize_cohort(
         extraction_run_id=run_id,
     )
 
+    if run_analysis:
+        _refresh_analysis_notebook()
+
     return out_dir
+
+
+def _refresh_analysis_notebook() -> None:
+    """Re-run analysis/outcome_analysis.ipynb so its figures and tables match the rebuilt cohort."""
+    try:
+        from .run_analysis import run_analysis_notebook
+
+        run_analysis_notebook()
+    except ModuleNotFoundError as error:  # plotting / notebook packages missing
+        print(f"WARNING: analysis notebook not refreshed ({error}). Run: pip install -r requirements.txt")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--extraction-run-id", default=None)
+    parser.add_argument("--skip-analysis", action="store_true", help="do not re-run analysis/outcome_analysis.ipynb")
     args = parser.parse_args()
-    out = finalize_cohort(extraction_run_id=args.extraction_run_id)
+    out = finalize_cohort(extraction_run_id=args.extraction_run_id, run_analysis=not args.skip_analysis)
     print(f"Final cohort written to {out}")
 
 

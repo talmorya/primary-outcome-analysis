@@ -48,6 +48,7 @@ Latest extraction run: `full_20261109_104453`. Rules version: `conditions_field_
 | `data/processed/primary_outcomes.csv` | Primary outcomes |
 | `docs/COHORT_FILTERING_RULES.md` | Inclusion / exclusion rules |
 | `docs/DATA_COLUMNS.md` | Column dictionary (CSV columns only) |
+| `analysis/outcome_analysis.ipynb` | Analysis notebook (stats, tables, figures for the article). **Auto-executed** by `finalize_cohort` (`--skip-analysis` to skip); figures → `analysis/figures/` (PNG+PDF), tables → `analysis/tables/` (CSV). Code in `src/ctgov_pipeline/analysis_data.py` / `analysis_plots.py`; edit those or the notebook, never the saved outputs |
 | `docs/category_mapping.md` | Outcome + intervention category tables (patterns, distribution). **Auto-generated** by `finalize_cohort`: after any change to categories, patterns or the cohort filters, rebuild and commit it with the change; never hand-edit |
 | `config/condition_patterns_cohort.yaml` | Target conditions, exclusion patterns, acute patterns |
 | `config/intervention_categories.yaml` | Intervention category taxonomy (active arms only) |
@@ -63,7 +64,7 @@ Latest extraction run: `full_20261109_104453`. Rules version: `conditions_field_
 source .venv/bin/activate
 pip install -r requirements.txt
 
-PYTHONPATH=src python -m ctgov_pipeline.finalize_cohort   # rebuild cohort from raw JSON (no network)
+PYTHONPATH=src python -m ctgov_pipeline.finalize_cohort   # rebuild cohort from raw JSON (no network); also refreshes docs/category_mapping.md + analysis/ notebook, figures, tables
 PYTHONPATH=src python -m unittest discover -s tests -v    # all tests
 PYTHONPATH=src python -m ctgov_pipeline.run_full          # NEW CT.gov pull (creates a new raw run; delete the old one)
 ```

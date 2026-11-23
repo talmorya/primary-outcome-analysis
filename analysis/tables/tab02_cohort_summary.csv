@@ -1,0 +1,9 @@
+Metric,Value,Note
+Master pool (before filtering),936,all trials retrieved from CT.gov
+Final analytic cohort,824,88.0% of the pool
+Excluded,112,12.0% of the pool
+Primary outcome rows (included trials),"1,900",one row per registered primary outcome
+Studies with more than one primary outcome,382,47.1% of the 811 included trials with a registered primary outcome
+Mean primary outcomes per study,2.34,over the 811 included trials with a registered primary outcome
+Multimodal intervention trials,101,12.3% of included (behavioral + an active non-behavioral arm)
+Included trials with no registered primary outcome,13,no row in primary_outcomes.csv
