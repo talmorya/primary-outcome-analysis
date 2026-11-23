@@ -1,7 +1,7 @@
 # Analytic cohort statistics
 
 **Run ID:** `cohort_conditions_field_v3`
-**Generated:** 2026-11-19 12:07 UTC
+**Generated:** 2026-11-23 11:28 UTC
 
 Auto-generated from `data/processed/studies.csv` on each `finalize_cohort` run.
 Inclusion rules: `docs/COHORT_FILTERING_RULES.md`. Column definitions: `docs/DATA_COLUMNS.md`.
@@ -78,32 +78,35 @@ Pipe-joined; study counts may sum to > cohort size.
 
 | `outcome_category` | Outcome rows |
 |---|---:|
-| `pain_recovery` | 513 |
-| `pain_interference` | 448 |
-| `other` | 410 |
-| `feasibility_acceptability` | 287 |
-| `mood` | 128 |
-| `mechanistic` | 114 |
+| `pain_recovery` | 523 |
+| `pain_interference` | 471 |
+| `feasibility_acceptability` | 356 |
+| `mechanistic` | 162 |
+| `mood` | 161 |
+| `physical_performance` | 140 |
+| `associated_symptoms` | 38 |
+| `other` | 26 |
+| `healthcare_use_cost` | 23 |
 
 ### Top outcome subcategories
 
 | Category → subcategory | Outcome rows |
 |---|---:|
-| `other` → `other` | 408 |
-| `pain_interference` → `disability` | 326 |
+| `pain_interference` → `disability` | 330 |
 | `pain_recovery` → `pain_intensity` | 279 |
-| `feasibility_acceptability` → `feasibility_recruitment` | 175 |
-| `pain_recovery` → `general_pain` | 172 |
-| `pain_interference` → `quality_of_life` | 63 |
-| `pain_recovery` → `pain_frequency` | 59 |
-| `feasibility_acceptability` → `acceptability_satisfaction` | 54 |
+| `feasibility_acceptability` → `feasibility_recruitment` | 182 |
+| `pain_recovery` → `general_pain` | 175 |
+| `physical_performance` → `mobility_balance_gait` | 79 |
+| `feasibility_acceptability` → `acceptability_satisfaction` | 70 |
+| `pain_interference` → `quality_of_life` | 66 |
+| `pain_recovery` → `pain_frequency` | 61 |
+| `feasibility_acceptability` → `adherence_fidelity` | 54 |
 | `mood` → `anxiety` | 49 |
+| `physical_performance` → `strength_endurance` | 49 |
+| `mechanistic` → `biological_structural` | 48 |
 | `mechanistic` → `sensory_qst` | 37 |
-| `mood` → `distress_stress` | 36 |
+| `mood` → `distress_stress` | 37 |
 | `pain_interference` → `interference` | 33 |
-| `mood` → `depression` | 31 |
-| `mechanistic` → `other_mechanistic` | 31 |
-| `feasibility_acceptability` → `adherence_fidelity` | 26 |
 
 ## Primary outcome mechanistic flag (study-level)
 
