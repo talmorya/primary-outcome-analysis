@@ -1,6 +1,6 @@
 {
   "run_id": "cohort_conditions_field_v3",
-  "frozen_at_utc": "2026-11-23T14:03:04.773440+00:00",
+  "frozen_at_utc": "2026-11-23T14:16:13.395348+00:00",
   "source_extraction_run_id": "full_20261109_104453",
   "cohort_rules_version": "conditions_field_v3",
   "master_pool_studies": 936,
@@ -8,6 +8,7 @@
   "primary_outcome_rows_included": 1900,
   "rules_document": "docs/COHORT_FILTERING_RULES.md",
   "column_dictionary": "docs/DATA_COLUMNS.md",
+  "category_mapping": "docs/category_mapping.md",
   "reproduction_guide": "docs/COHORT_REPRODUCTION_GUIDE.md",
   "output_files": {
     "studies": "studies.csv",

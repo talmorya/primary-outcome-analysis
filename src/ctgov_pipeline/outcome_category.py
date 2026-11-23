@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
+from typing import NamedTuple
 
 
 @dataclass
@@ -20,7 +21,7 @@ def _text(measure: str | None, description: str | None, time_frame: str | None) 
 
 _MEASURE_ONLY_CATEGORIES = frozenset({"feasibility_acceptability", "mechanistic"})
 
-_FIRST_PASS_RULES: list[tuple[str, str, str, list[str]]] = [
+_FULL_TEXT_RULES: list[tuple[str, str, str, list[str]]] = [
     # Mechanistic outcomes (experimental / biological measures). Like the feasibility rules they
     # read the measure NAME only. `biological_structural` is in the second pass.
     (
@@ -278,7 +279,7 @@ _FIRST_PASS_RULES: list[tuple[str, str, str, list[str]]] = [
 ]
 
 
-_SECOND_PASS_RULES: list[tuple[str, str, str, list[str]]] = [
+_MEASURE_NAME_RULES: list[tuple[str, str, str, list[str]]] = [
     # Feasibility: retention / completion of assessments first (before recruitment funnel steps).
     (
         "feasibility_acceptability",
@@ -467,36 +468,37 @@ _SECOND_PASS_RULES: list[tuple[str, str, str, list[str]]] = [
 ]
 
 
+class Rule(NamedTuple):
+    category: str
+    subcategory: str
+    rule_id: str
+    patterns: list[str]
+    measure_only: bool  # True: search the measure name only; False: measure + description + time frame
+
+
+# One ordered list; the first rule that matches wins. The measure-name-only rules come last: their
+# patterns are generic ("walk", "balance", "attend", "consent"), so they would hit boilerplate in
+# descriptions and must never override a more specific full-text rule.
+RULES: list[Rule] = [
+    Rule(c, s, r, p, c in _MEASURE_ONLY_CATEGORIES) for c, s, r, p in _FULL_TEXT_RULES
+] + [Rule(c, s, r, p, True) for c, s, r, p in _MEASURE_NAME_RULES]
+
 
 def classify_outcome_category(
     measure: str | None,
     description: str | None,
     time_frame: str | None,
 ) -> OutcomeCategory:
-    text = _text(measure, description, time_frame)
-
-    # Feasibility and mechanistic rules read the measure NAME only: descriptions and time frames
-    # of clinical outcomes mention "enrollment", "feasibility", "adverse" or "pressure pain"
-    # without being one.
     measure_text = (measure or "").lower()
-    for category, subcategory, rule_id, patterns in _FIRST_PASS_RULES:
-        searched = measure_text if category in _MEASURE_ONLY_CATEGORIES else text
-        if any(re.search(pattern, searched) for pattern in patterns):
-            return OutcomeCategory(
-                outcome_category=category,
-                outcome_subcategory=subcategory,
-                rule=rule_id,
-            )
+    full_text = _text(measure, description, time_frame)
 
-    # Second pass: only outcomes that matched nothing above reach it, so it can never move an
-    # outcome out of the categories above. It reads the measure NAME only (descriptions carry
-    # boilerplate such as "eligible participants" that causes false hits).
-    for category, subcategory, rule_id, patterns in _SECOND_PASS_RULES:
-        if any(re.search(pattern, measure_text) for pattern in patterns):
+    for rule in RULES:
+        searched = measure_text if rule.measure_only else full_text
+        if any(re.search(pattern, searched) for pattern in rule.patterns):
             return OutcomeCategory(
-                outcome_category=category,
-                outcome_subcategory=subcategory,
-                rule=rule_id,
+                outcome_category=rule.category,
+                outcome_subcategory=rule.subcategory,
+                rule=rule.rule_id,
             )
 
     return OutcomeCategory(

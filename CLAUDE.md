@@ -47,7 +47,8 @@ Latest extraction run: `full_20261109_104453`. Rules version: `conditions_field_
 | `data/processed/studies.csv` | Master pool + inclusion columns |
 | `data/processed/primary_outcomes.csv` | Primary outcomes |
 | `docs/COHORT_FILTERING_RULES.md` | Inclusion / exclusion rules |
-| `docs/DATA_COLUMNS.md` | Column dictionary |
+| `docs/DATA_COLUMNS.md` | Column dictionary (CSV columns only) |
+| `docs/category_mapping.md` | Outcome + intervention category tables (patterns, distribution). **Auto-generated** by `finalize_cohort`: after any change to categories, patterns or the cohort filters, rebuild and commit it with the change; never hand-edit |
 | `config/condition_patterns_cohort.yaml` | Target conditions, exclusion patterns, acute patterns |
 | `config/intervention_categories.yaml` | Intervention category taxonomy (active arms only) |
 | `config/outcome_lexicon.yaml` | Instrument/keyword extraction (not categories) |

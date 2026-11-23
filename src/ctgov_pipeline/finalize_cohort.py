@@ -17,6 +17,7 @@ from .cohort_export import (
     PRIMARY_OUTCOMES_CSV,
     STUDIES_CSV,
 )
+from .category_mapping_report import write_category_mapping
 from .cohort_report import write_final_cohort_report
 from .config_loader import PROJECT_ROOT
 from .extraction_runs import latest_full_extraction_run_id
@@ -43,6 +44,7 @@ def _write_manifest(
         "primary_outcome_rows_included": outcomes,
         "rules_document": "docs/COHORT_FILTERING_RULES.md",
         "column_dictionary": "docs/DATA_COLUMNS.md",
+        "category_mapping": "docs/category_mapping.md",
         "reproduction_guide": "docs/COHORT_REPRODUCTION_GUIDE.md",
         "output_files": {
             "studies": STUDIES_CSV,
@@ -82,6 +84,12 @@ def finalize_cohort(
         inc_outcomes,
         out_dir / COHORT_REPORT_MD,
         run_id=FINAL_RUN_ID,
+    )
+    write_category_mapping(
+        studies_df,
+        outcomes_df,
+        extraction_run_id=run_id,
+        rules_version=COHORT_RULES_VERSION,
     )
     _write_manifest(
         out_dir / MANIFEST_JSON,
