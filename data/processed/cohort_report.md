@@ -1,7 +1,7 @@
 # Analytic cohort statistics
 
 **Run ID:** `cohort_conditions_field_v3`
-**Generated:** 2026-11-23 11:28 UTC
+**Generated:** 2026-11-23 13:04 UTC
 
 Auto-generated from `data/processed/studies.csv` on each `finalize_cohort` run.
 Inclusion rules: `docs/COHORT_FILTERING_RULES.md`. Column definitions: `docs/DATA_COLUMNS.md`.
@@ -79,11 +79,11 @@ Pipe-joined; study counts may sum to > cohort size.
 | `outcome_category` | Outcome rows |
 |---|---:|
 | `pain_recovery` | 523 |
-| `pain_interference` | 471 |
+| `pain_interference` | 493 |
 | `feasibility_acceptability` | 356 |
 | `mechanistic` | 162 |
-| `mood` | 161 |
 | `physical_performance` | 140 |
+| `mood` | 139 |
 | `associated_symptoms` | 38 |
 | `other` | 26 |
 | `healthcare_use_cost` | 23 |
@@ -101,12 +101,12 @@ Pipe-joined; study counts may sum to > cohort size.
 | `pain_interference` → `quality_of_life` | 66 |
 | `pain_recovery` → `pain_frequency` | 61 |
 | `feasibility_acceptability` → `adherence_fidelity` | 54 |
+| `pain_interference` → `coping_adaptation` | 51 |
 | `mood` → `anxiety` | 49 |
 | `physical_performance` → `strength_endurance` | 49 |
 | `mechanistic` → `biological_structural` | 48 |
 | `mechanistic` → `sensory_qst` | 37 |
 | `mood` → `distress_stress` | 37 |
-| `pain_interference` → `interference` | 33 |
 
 ## Primary outcome mechanistic flag (study-level)
 

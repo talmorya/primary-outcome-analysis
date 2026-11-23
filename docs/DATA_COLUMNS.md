@@ -101,39 +101,64 @@ Not exported (redundant): `intervention_category_labels`, `intervention_classifi
 
 ### Outcome category mapping (`src/ctgov_pipeline/outcome_category.py`)
 
-Descriptive only (never used to include or exclude). Rules run top to bottom on the lower-cased text, and the first match wins. **Pass 1** reads measure + description + time frame; **Pass 2** reads the **measure name only** and is reached only by outcomes that matched nothing in Pass 1, so it cannot move an outcome out of a Pass-1 category. Counts are for the 1,900 primary-outcome rows of included trials.
+Descriptive only: never used to include or exclude, and never overwrites the raw outcome text. Counts are the 1,900 primary-outcome rows of the 811 included trials that have outcomes. Patterns are regex fragments with `\b` and escapes removed; `?` = optional.
 
-| Category / subcategory (n) | Text patterns (abridged) |
-|---|---|
-| **mechanistic** (162): `neuroimaging_neural` 25, `sensory_qst` 37, `biomarker_inflammatory` 15, `psychophysiological` 6, `other_mechanistic` 31 | Checked first (`MECHANISTIC_PATTERNS`): fMRI, EEG, MRI, connectivity, brain activity, HRV, cortisol, cytokine/biomarker, QST, pain threshold/tolerance, pressure pain, CPM, hyperalgesia, experimental pain, psychophysical … |
-| mechanistic / `biological_structural` (48) *(Pass 2)* | serum, plasma, blood, hormone, CRP, interleukin, BDNF, microbiome, cortisol, gray matter, brain, cerebral, BOLD, heart rate, glucose/HbA1c/diabetes, temperature, muscle tone, tissue thickness/ultrasound/fascia, noxious inhibitory control |
-| **feasibility_acceptability** (356): `safety` 23 | adverse, safety, side effect, tolerability |
-| `feasibility_recruitment` (182) | feasibility, recruitment, enrollment, accrual, screening/eligibility rate; *Pass 2:* eligible, consent, proportion randomized, program initiation, intervention commencement |
-| `acceptability_satisfaction` (70) | acceptability, satisfaction, usability, user/participant experience; *Pass 2:* credibility, expectancy, perceptions of intervention, trust score, appropriateness, continued interest, willingness to pay, adoption, barriers and facilitators |
-| `adherence_fidelity` (54) | adherence, compliance, fidelity, treatment integrity; *Pass 2:* attend-, usage, engagement, participation rate, at-home practice, intervention/treatment completion, uptake, homework, contamination |
-| `other_feasibility` (27) | retention/completion/drop-out rate; *Pass 2:* retention, drop-out, withdrawal, attrition, assessment/questionnaire completion |
-| **mood** (161): `anxiety` 49 | anxiety, panic, STAI, BAI, GSI |
-| `depression` 31 · `catastrophizing` 12 · `distress_stress` 37 | depress-, PHQ, Beck, CES-D, HAM-D · catastroph-, PCS · distress, stress, mood; *Pass 2:* BSI / Brief Symptom Inventory |
-| `fear_avoidance` 10 *(Pass 2)* | kinesiophobia, Tampa, fear-avoidance, FABQ, fear of movement/pain, TSK |
-| `wellbeing_positive_psychology` 22 *(Pass 2)* | positive/negative affect, optimism, well-being, self-compassion, MAAS, FFMQ, mindfulness, emotion regulation, life satisfaction, burnout, body awareness/appreciation/embodiment |
-| **pain_interference** (471): `disability` 330 | disability, functional/functioning, ADL, FIQ, ODI, PDI, Roland-Morris, RMDQ; *Pass 2:* activity limitation, back-related function, Quebec |
-| `work_participation` 13 | return to work, work ability/productivity, sick leave, presenteeism; *Pass 2:* employment, work status, sickness absence/listing |
-| `coping_adaptation` 29 | coping, self-efficacy, acceptance, adaptation, resilience; *Pass 2:* locus of control, illness perception, ability to cope, empowerment, problem solving, psychological flexibility, valued living |
-| `quality_of_life` 66 | quality of life, QoL, SF-36, PROMIS; *Pass 2:* SF-12, EQ-5D/EuroQol, GHQ |
-| `interference` 33 | interference, impact on, life impact |
-| **pain_recovery** (523): `pain_intensity` 279 | pain intensity/severity/score/level, average/worst/current pain, VAS, NRS, numeric rating, visual analog |
-| `pain_frequency` 61 | headache/migraine frequency or days, attack frequency, episodes per; *Pass 2:* frequency of headaches |
-| `global_impression` 8 | global impression, CGI-S, PGIC, patient/clinician global, overall improvement, pain relief/reduction; *Pass 2:* clinical global, global perceived effect, proportion of responders |
-| `general_pain` 175 | pain, headache, migraine, symptom-, photophobia; *Pass 2:* headaches, discomfort |
-| **physical_performance** (140) *(new, Pass 2)*: `strength_endurance` 49 | strength, muscle capacity/function/endurance, dynamometry, grip, endurance, fitness, Biering-Sørensen, EMG, trunk muscle, balance tests, deadlift, repetitions |
-| `mobility_balance_gait` 79 | walk tests, gait, Timed Up and Go, chair stand, stairs, sit-to-stand, posturography, posture, proprioception, flexibility, range of motion, Schober, straight leg raise, motor control tests, stability, alignment |
-| `physical_activity_behavior` 12 | steps, accelerometer, sedentary/sitting, physical activity, activity level, cycling |
-| **associated_symptoms** (38) *(new, Pass 2)*: `sleep` 28 | sleep, insomnia, PSQI, wake time, naps, circadian, light exposure, bedtime |
-| `fatigue` 3 · `dizziness_vestibular` 4 · `cognition` 3 | fatigue, MFI · dizziness, vertigo · cognitive, neuropsychological, memory, executive function |
-| **healthcare_use_cost** (23) *(new, Pass 2)*: `cost_economic` 8 | cost(s), economic, budget impact, QALY, cost-effectiveness/utility |
-| `service_use` 9 · `medication_use` 6 | utilization, physician/doctor visits, consultations, referral, specialist care, imaging orders/requests, diagnostic error, hospital, emergency · medication, opioid, analgesic use, prescri- |
-| **other** (26, 1.4%): `not_an_outcome_measure` 7 | trauma history, KSADS/diagnosis, effect sizes, sample size, "characterize" (baseline description, not an outcome) |
-| `other` 19 | nothing matched (flagged `outcome_category_review_flag`) |
+**How a row is classified (first match wins)**
+
+1. **Mechanistic check.** `mechanistic` if any mechanistic pattern matches *and* no clinical-treatment pattern matches (clinical patterns, in `outcome_mechanism.py`: pain intensity, VAS/NRS, headache days, disability, ODI, FIQ, RMDQ, QoL, SF-36, PROMIS, catastrophizing, anxiety, depression, sleep, coping, global impression, pain relief, gait/balance/strength tests, …). Mechanistic patterns: fmri, eeg, mri, functional connectivity, effective connectivity, neuroimaging, brain activity, brain imaging, neural activity, neural response, cerebral blood flow, arterial spin labeling, asl, magnetic resonance spectroscopy, mrs, resting-state, late positive potential, error related negativity, electrophysiol, cortical map, motor cortical, transcranial magnetic stimulation, tms, rtms, dopamine response, neurotransmitter, biomarker, inflammation, cytokine, cortisol, gene expression, neuroimmune, heart rate variability, hrv, quantitative sensory, qst, pain threshold, pain tolerance, pain summation, psychophysical, conditioned pain modulation, cpm, pressure pain, thermal stimul, sensory stimul, hyperalgesia, attentional bias, contingency awareness, pain expectancy, selective learning, temporal binding, psychophysical adaptation, petco2, provocation, experimental pain, ratings of painful sensory, inducible dizziness, point of subjective simultaneity, psychophysiological, dataset of functional magnetic.
+2. **Pass 1 rules**, on measure + description + time frame. Rule order: safety, feasibility, acceptability, adherence, other feasibility, anxiety, depression, catastrophizing, distress, disability, work, coping, quality of life, interference, pain intensity, pain frequency, global impression, general pain.
+3. **Pass 2 rules**, on the **measure name only**, reached only by rows that matched nothing before, so they cannot move a row out of a Pass-1 category.
+4. Otherwise `other / other` with `outcome_category_review_flag = True`.
+
+| Category | Subcategory | Rows (% of 1900) | Trials | Pass-1 text patterns (measure + description + time frame) | Pass-2 text patterns (measure name only) | Most frequent detected instruments |
+|---|---|---:|---:|---|---|---|
+| **pain_recovery** | | **523 (27.5%)** | **381** | | | |
+| | pain_intensity | 279 (14.7%) | 229 | pain intensity, pain severity, pain score, pain level, average pain, worst pain, current pain, vas, nrs, numeric rating, visual analog | — | Visual Analog Scale (128), Numeric Rating Scale (84), Brief Pain Inventory (21), PEG-3 (2) |
+| | general_pain | 175 (9.2%) | 139 | pain, headache, migraine, symptom, photophobia, headache disability | headaches, discomfort | Brief Pain Inventory (5), Widespread Pain Index (5), Numeric Rating Scale (5), McGill Pain Questionnaire (3) |
+| | pain_frequency | 61 (3.2%) | 52 | headache frequency, migraine frequency, headache days, migraine days, number of headache, attack frequency, episodes per | headaches? frequency, frequency of headaches?, reduction of headaches? | — |
+| | global_impression | 8 (0.4%) | 8 | global impression, cgis, pgic, patient global, clinician global, overall improvement, pain relief, pain reduction | clinical global, cgi, global perceived, proportion of responders, therapeutic changes | Patient Global Impression of Change (3) |
+| **pain_interference** | | **493 (25.9%)** | **356** | | | |
+| | disability | 330 (17.4%) | 279 | disability, functional, functioning, activities of daily living, adl, fiq, fibromyalgia impact, pdih, pdii, odi, roland-morris, rmdq | activit(y\|ies) limitation, back-related function, quebec | Oswestry Disability Index (87), Fibromyalgia Impact Questionnaire (60), Roland-Morris Disability Questionnaire (53), Numeric Rating Scale (13) |
+| | quality_of_life | 66 (3.5%) | 50 | quality of life, qol, sf-36, sf36, promis, health-related quality | sf-?12, eq-?5d, euroqol, general health questionnaire, ghq | PROMIS (23), SF-36 (10), Visual Analog Scale (6), EQ-5D (6) |
+| | coping_adaptation | 51 (2.7%) | 39 | catastroph, pcs, coping, self-efficacy, pain acceptance, adaptation, resilience | kinesiophobi, tampa, fear-avoidance, fabq, fear of (movement\|pain\|re-?injury), pain-related fear, tsk, locus of control, illness perception, ability to cope, empower, problem-solving, patient-specific goal, psychological flexibility, valued | Pain Catastrophizing Scale (10), Tampa Scale of Kinesiophobia (10), SF-12 (2), Visual Analog Scale (1) |
+| | interference | 33 (1.7%) | 29 | interference, interfering, impact on, life impact | — | Brief Pain Inventory (13), Numeric Rating Scale (3), PEG-3 (2), Migraine-Specific Quality of Life Questionnaire (1) |
+| | work_participation | 13 (0.7%) | 13 | return to work, work ability, work productivity, sick leave, presenteeism | employment, work status, sickness, sick-list, absence | Numeric Rating Scale (1) |
+| **feasibility_acceptability** | | **356 (18.7%)** | **129** | | | |
+| | feasibility_recruitment | 182 (9.6%) | 91 | feasibility, recruitment, enrollment, accrual, screening rate, eligibility rate | eligib, consent, proportion of .{0,30}randomi[sz]ed, reach), program initiation, intervention commencement | Numeric Rating Scale (9), Visual Analog Scale (8), Fibromyalgia Impact Questionnaire (5), Oswestry Disability Index (4) |
+| | acceptability_satisfaction | 70 (3.7%) | 47 | acceptability, satisfaction, usability, user experience, participant experience | credibility, expectancy, perceptions? of (the )?intervention, exercise perceptions, experience with the intervention, trust score, semi-structured interview, appropriateness, continued interest, willingness to pay, adoption, confidence in carrying out, benefits and barriers, barriers and facilitators | Numeric Rating Scale (2), Patient Global Impression of Change (1), Tampa Scale of Kinesiophobia (1), Pain Self-Efficacy Questionnaire (1) |
+| | adherence_fidelity | 54 (2.8%) | 42 | adherence, compliance, fidelity, protocol adherence, therapist adherence, treatment integrity | attend, usage, engagement, participation rate, treatment participation, program participation, at-home practice, (intervention\|treatment\|program) completion, completing the, utili[sz]e the, uptake, made an appointment, initiating, number of sessions, homework, successful completion, frequency of using, (days\|minutes).{0,30}practice, contamination | — |
+| | other_feasibility | 27 (1.4%) | 18 | retention rate, drop-out rate, completion rate | drop-outs?, withdraw, retention, retain, (assessment\|questionnaires?\|outcome measures?\|tests?).{0,30}(complet\|fulfilled\|returned), complet.{0,30}(assessment\|questionnaires?\|outcome measures?\|screening), ^follow-up$, attrition | — |
+| | safety | 23 (1.2%) | 14 | adverse, safety, side effect, tolerability, serious adverse | — | PROMIS (3), Patient Global Impression of Change (1) |
+| **mechanistic** | | **162 (8.5%)** | **70** | | | |
+| | biological_structural | 48 (2.5%) | 24 | — | serum, plasma, blood (flow\|extraction\|oxygen), bold, gr[ae]y matter, brain, microbio, hormone, crp, c-reactive, interleukin, il-d, cortisol, voxel, cerebr, ampk, temperature, thickness, ultrasound, fascia, muscle tone, pulsatility, endocannabinoid, inflammat, heart rate, glucos, glyc, hba1c, diabetes, noxious inhibitory, bdnf, blood | — |
+| | sensory_qst | 37 (1.9%) | 15 | (see mechanistic rule below) | — | Numeric Rating Scale (2) |
+| | other_mechanistic | 31 (1.6%) | 19 | (see mechanistic rule below) | — | — |
+| | neuroimaging_neural | 25 (1.3%) | 21 | (see mechanistic rule below) | — | — |
+| | biomarker_inflammatory | 15 (0.8%) | 5 | (see mechanistic rule below) | — | — |
+| | psychophysiological | 6 (0.3%) | 5 | (see mechanistic rule below) | — | — |
+| **mood** | | **139 (7.3%)** | **85** | | | |
+| | anxiety | 49 (2.6%) | 39 | anxiety, panic, state-trait anxiety, gsi, bai | — | Fibromyalgia Impact Questionnaire (21), Hospital Anxiety and Depression Scale (10), PROMIS (3), EQ-5D (2) |
+| | distress_stress | 37 (1.9%) | 30 | distress, stress, mood, emotional distress, psychological stress | bsi, brief symptom inventory | Brief Pain Inventory (4), Visual Analog Scale (2), PROMIS (1) |
+| | depression | 31 (1.6%) | 21 | depress, phq, beck depression, ces-d, ham-d | — | PHQ-9 (11), Beck Depression Inventory (6), PROMIS (3) |
+| | wellbeing_positive_psychology | 22 (1.2%) | 7 | — | positive affect, negative affect, optimis, well-?being, self-compassion, maas, ffmq, mindfulness, emotion regulation, life satisfaction, burnout, emotional exhaustion, personal accomplishment, body (awareness\|appreciation\|trusting\|functionality), embodiment, body connection, own body | — |
+| **physical_performance** | | **140 (7.4%)** | **67** | | | |
+| | mobility_balance_gait | 79 (4.2%) | 41 | — | walk, gait, timed up, get-up, chair, stair, sit to stand, posturograph, postur, proprioception, flexib, range of motion, rom, schober, sit and reach, straight leg, lumbar (spine\|flexion), segmental movement, stiffness, joint position, craniovertebral, tragus, pelvic tilt, movement control, motor control, luomajoki, ergospirometry, physical function, flexion rotation, pressure biofeedback, muscle, mobility, time up and go, 5rsts, range of movement, craniocervical flexion, limits of stability, instability, alignment | — |
+| | strength_endurance | 49 (2.6%) | 30 | — | strength, muscle (capacity\|function\|endurance\|activation), muscular, grip, endurance, fitness, muscle power, biering, deadlift, repetitions, d[iy]namometry, cybex, flexor to extensor, multifidus, abdominal dynamic, emg, electromyograph, trunk muscle, conditioning, balance | — |
+| | physical_activity_behavior | 12 (0.6%) | 10 | — | steps?, step counts?, accelerometer, sedentary, sitting, physical activity, activity level, cycling | — |
+| **associated_symptoms** | | **38 (2.0%)** | **25** | | | |
+| | sleep | 28 (1.5%) | 16 | — | sleep, insomnia, psqi, total wake time, naps?, circadian, light exposure, bedtime, awake during the night | Insomnia Severity Index (2) |
+| | dizziness_vestibular | 4 (0.2%) | 3 | — | dizz, vertigo | — |
+| | cognition | 3 (0.2%) | 3 | — | cogniti, neuropsycholog, memory, executive function | — |
+| | fatigue | 3 (0.2%) | 3 | — | fatigue, mfi | — |
+| **healthcare_use_cost** | | **23 (1.2%)** | **17** | | | |
+| | service_use | 9 (0.5%) | 7 | — | utili[sz]ation, (number of\|physicians?\|doctors?\|gp) visits?, visits? (of\|to) (physicians?\|doctors?\|gps?), consultations?, referral, specialist care, imaging (orders\|requests), diagnostic error, safe diagnosis, hospital, emergency | — |
+| | cost_economic | 8 (0.4%) | 5 | — | costs?, economic, budget impact, qaly, cost-effective, cost-utility | EQ-5D (1) |
+| | medication_use | 6 (0.3%) | 6 | — | medication, opioid, analgesic (use\|consumption), dependence on medicine, prescri | — |
+| **other** | | **26 (1.4%)** | **23** | | | |
+| | other | 19 (1.0%) | 17 | — | — | Insomnia Severity Index (1) |
+| | not_an_outcome_measure | 7 (0.4%) | 6 | — | trauma, ksads, diagnosis using, effect sizes?, sample size, characteri[sz]e | — |
+
+Notes: `mechanistic` subcategories other than `biological_structural` come from the mechanistic check (`neuroimaging_neural`: fMRI/EEG/connectivity/brain activity; `sensory_qst`: QST/pain threshold/hyperalgesia/pressure pain; `biomarker_inflammatory`: biomarker/cytokine/cortisol/inflammation; `psychophysiological`: HRV/electrophysiology; `other_mechanistic`: the rest). Fear-avoidance (TSK/FABQ) and catastrophizing (PCS) sit under `pain_interference / coping_adaptation`. `not_an_outcome_measure` (under `other`) holds baseline-description items: trauma history, KSADS/diagnosis, effect sizes, sample size, "characterize". "Most frequent detected instruments" comes from the separate `instruments_detected` lexicon column, not from the category rules.
 
 Raw outcome text must not be altered for analysis; use annotation templates separately for conceptual coding.
 
