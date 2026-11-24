@@ -6,3 +6,4 @@ seaborn>=0.13
 nbformat>=5.9
 nbclient>=0.8
 ipykernel>=6.0
+jinja2>=3.1
