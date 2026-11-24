@@ -176,7 +176,7 @@ def plot_interventions(studies: pd.DataFrame, labels: dict[str, str], *, top_com
     ax1.set_xlim(0, xmax * 1.2)
     ax1.set_title("Trials per intervention category\n(a trial can carry several categories)")
     ax1.set_xlabel(f"Trials (of {len(inc)} included)")
-    ax1.legend(frameon=False, loc="center right", fontsize=9)
+    ax1.legend(frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.12), ncol=2, fontsize=9)  # below the axes: never covers a bar
     ax2.barh(combos.index, combos.values, color="#6b8fb5")
     _bar_labels(ax2, combos.values, len(inc))
     ax2.set_title(f"Most common exact combinations (top {top_combinations}; each trial counted once)")
