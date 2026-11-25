@@ -1,4 +1,5 @@
-"""Execute analysis/outcome_analysis.ipynb in place (figures, tables and cell outputs are refreshed).
+"""Execute analysis/outcome_analysis.ipynb in place (figures, tables and cell outputs are refreshed),
+then rewrite analysis/results_summary.md.
 
 Called by `finalize_cohort` on every rebuild; can also be run alone:
     PYTHONPATH=src python -m ctgov_pipeline.run_analysis
@@ -13,6 +14,7 @@ import tempfile
 from pathlib import Path
 
 from .analysis_data import ANALYSIS_DIR
+from .analysis_report import write_results_summary
 
 NOTEBOOK = ANALYSIS_DIR / "outcome_analysis.ipynb"
 
@@ -42,6 +44,7 @@ def run_analysis_notebook(path: Path = NOTEBOOK, *, timeout: int = 900) -> Path:
         client.execute()
     notebook.metadata["kernelspec"] = {"display_name": "Python 3", "language": "python", "name": "python3"}
     nbformat.write(notebook, path)
+    write_results_summary()  # prose summary of the freshly written figures and tables
     return path
 
 

@@ -12,7 +12,9 @@ from ctgov_pipeline.analysis_data import (
     companion_outcome_table,
     companions,
     cooccurrence,
+    fisher_exact_two_sided,
     outcome_by_group,
+    wilson_interval,
 )
 
 
@@ -97,6 +99,12 @@ class AnalysisDataTests(unittest.TestCase):
         self.assertEqual(table.loc["with_any_other_category", "n"], 1)
         self.assertEqual(table.loc["with_any_other_category", "pain_interference"], 1)
         self.assertEqual(table.loc["physical_rehabilitation", "pain_recovery"], 1)
+
+    def test_fisher_and_wilson(self) -> None:
+        self.assertAlmostEqual(fisher_exact_two_sided(3, 10, 7, 10), 0.1789, places=3)
+        self.assertAlmostEqual(fisher_exact_two_sided(5, 10, 5, 10), 1.0)
+        lo, hi = wilson_interval(23, 39)
+        self.assertTrue(43 < lo < 44 and 72 < hi < 74)
 
 
 if __name__ == "__main__":

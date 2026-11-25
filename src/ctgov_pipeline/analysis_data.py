@@ -7,6 +7,7 @@ outcome cross-tabs. Nothing here changes the analytic tables.
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 
 import pandas as pd
@@ -239,3 +240,25 @@ def companion_outcome_table(
     groups += [(key, inc[f"has_{key}"]) for key in intervention_keys_by_size(studies) if key != category and inc[f"has_{key}"].sum() >= min_n]
     rows = [{"group": name, "n": int(mask.sum()), **{oc: int(inc.loc[mask, oc].sum()) for oc in outcome_categories}} for name, mask in groups if mask.sum() > 0]
     return pd.DataFrame(rows)
+
+
+def wilson_interval(k: int, n: int, z: float = 1.96) -> tuple[float, float]:
+    """95% Wilson confidence interval (in %) for k successes out of n."""
+    p = k / n
+    denom = 1 + z * z / n
+    centre = (p + z * z / (2 * n)) / denom
+    half = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / denom
+    return 100 * (centre - half), 100 * (centre + half)
+
+
+def fisher_exact_two_sided(k1: int, n1: int, k2: int, n2: int) -> float:
+    """Two-sided Fisher exact p-value for k1/n1 versus k2/n2 (no scipy needed)."""
+    total, successes = n1 + n2, k1 + k2
+    denom = math.comb(total, n1)
+
+    def prob(x: int) -> float:
+        return math.comb(successes, x) * math.comb(total - successes, n1 - x) / denom
+
+    observed = prob(k1)
+    low, high = max(0, n1 - (total - successes)), min(n1, successes)
+    return min(1.0, sum(p for x in range(low, high + 1) if (p := prob(x)) <= observed * (1 + 1e-9)))

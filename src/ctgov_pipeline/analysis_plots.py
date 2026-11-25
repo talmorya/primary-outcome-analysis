@@ -4,8 +4,6 @@ from __future__ import annotations
 
 from collections import Counter
 
-import math
-
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -25,6 +23,7 @@ from .analysis_data import (
     cooccurrence,
     included,
     intervention_keys_by_size,
+    wilson_interval,
 )
 from .category_mapping_report import OUTCOME_ORDER
 
@@ -394,14 +393,6 @@ def plot_upset(studies: pd.DataFrame, *, top: int = 16) -> plt.Figure:
     return fig
 
 
-def _wilson(k: int, n: int, z: float = 1.96) -> tuple[float, float]:
-    p = k / n
-    denom = 1 + z * z / n
-    centre = (p + z * z / (2 * n)) / denom
-    half = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / denom
-    return 100 * (centre - half), 100 * (centre + half)
-
-
 def plot_companions(
     studies: pd.DataFrame,
     outcomes: pd.DataFrame,
@@ -438,7 +429,7 @@ def plot_companions(
     height = 0.8 / len(outcome_categories)
     for i, oc in enumerate(outcome_categories):
         pct = 100 * rows[oc] / rows["n"]
-        ci = np.array([_wilson(k, n) for k, n in zip(rows[oc], rows["n"])])
+        ci = np.array([wilson_interval(k, n) for k, n in zip(rows[oc], rows["n"])])
         pos = y + (i - (len(outcome_categories) - 1) / 2) * height
         ax2.barh(pos, pct, height=height * 0.92, color=OUTCOME_COLORS[oc], label=f"at least one {oc.replace('_', ' ')} outcome")
         ax2.errorbar(pct, pos, xerr=[pct - ci[:, 0], ci[:, 1] - pct], fmt="none", ecolor="#333333", elinewidth=1, capsize=2)

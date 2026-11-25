@@ -49,6 +49,7 @@ Latest extraction run: `full_20261109_104453`. Rules version: `conditions_field_
 | `docs/COHORT_FILTERING_RULES.md` | Inclusion / exclusion rules |
 | `docs/DATA_COLUMNS.md` | Column dictionary (CSV columns only) |
 | `analysis/outcome_analysis.ipynb` | Analysis notebook (stats, tables, figures for the article). **Auto-executed** by `finalize_cohort` (`--skip-analysis` to skip); figures → `analysis/figures/` (PNG+PDF), tables → `analysis/tables/` (CSV). Code in `src/ctgov_pipeline/analysis_data.py` / `analysis_plots.py`; edit those or the notebook, never the saved outputs |
+| `analysis/results_summary.md` | **Auto-generated** prose summary of the notebook results (headline finding + overview, figure links), rewritten after each notebook run by `analysis_report.py`; never hand-edit, change the generator |
 | `docs/category_mapping.md` | Outcome + intervention category tables (patterns, distribution). **Auto-generated** by `finalize_cohort`: after any change to categories, patterns or the cohort filters, rebuild and commit it with the change; never hand-edit |
 | `config/condition_patterns_cohort.yaml` | Target conditions, exclusion patterns, acute patterns |
 | `config/intervention_categories.yaml` | Intervention category taxonomy (active arms only) |
