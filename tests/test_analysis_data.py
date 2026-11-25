@@ -6,7 +6,14 @@ import unittest
 
 import pandas as pd
 
-from ctgov_pipeline.analysis_data import add_derived_columns, cohort_summary_table, outcome_by_group
+from ctgov_pipeline.analysis_data import (
+    add_derived_columns,
+    cohort_summary_table,
+    companion_outcome_table,
+    companions,
+    cooccurrence,
+    outcome_by_group,
+)
 
 
 def _tables() -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -71,6 +78,25 @@ class AnalysisDataTests(unittest.TestCase):
         studies, outcomes = _tables()
         ct = outcome_by_group(studies, outcomes, group="condition_list")
         self.assertEqual(set(ct.rows.index), {"Back pain", "Migraine"})
+
+    def test_cooccurrence_and_companions(self) -> None:
+        studies, outcomes = _tables()
+        counts = cooccurrence(studies)
+        self.assertEqual(counts.loc["physical_rehabilitation", "physical_rehabilitation"], 2)  # excluded N4 not counted
+        self.assertEqual(counts.loc["physical_rehabilitation", "psychological_cognitive"], 1)
+        self.assertEqual(counts.loc["psychological_cognitive", "physical_rehabilitation"], 1)
+        n_total, comp = companions(studies, "physical_rehabilitation")
+        self.assertEqual(n_total, 2)
+        self.assertEqual(comp["(none: only this category)"], 1)  # N2 alone
+        self.assertEqual(comp["psychological_cognitive"], 1)
+
+    def test_companion_outcome_table(self) -> None:
+        studies, outcomes = _tables()
+        table = companion_outcome_table(studies, outcomes, "psychological_cognitive", min_n=1).set_index("group")
+        self.assertNotIn("only_this_category", table.index)  # the only psychological trial also has physical rehab
+        self.assertEqual(table.loc["with_any_other_category", "n"], 1)
+        self.assertEqual(table.loc["with_any_other_category", "pain_interference"], 1)
+        self.assertEqual(table.loc["physical_rehabilitation", "pain_recovery"], 1)
 
 
 if __name__ == "__main__":

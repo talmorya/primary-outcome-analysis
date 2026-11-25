@@ -4,7 +4,10 @@ from __future__ import annotations
 
 from collections import Counter
 
+import math
+
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import seaborn as sns
 from matplotlib.patches import Patch
@@ -14,9 +17,14 @@ from .analysis_data import (
     CROSSTAB_DROP_SUBCATEGORIES,
     FIGURES_DIR,
     PERIOD_LABELS,
+    SHORT_LABELS,
     TABLES_DIR,
     CrossTab,
+    companion_outcome_table,
+    companions,
+    cooccurrence,
     included,
+    intervention_keys_by_size,
 )
 from .category_mapping_report import OUTCOME_ORDER
 
@@ -315,5 +323,131 @@ def plot_outcomes_per_trial(studies: pd.DataFrame, *, cap: int = 8) -> plt.Figur
     ax.set_ylabel("Trials")
     ax.set_title("How many primary outcomes do trials register?")
     ax.grid(axis="x", visible=False)
+    fig.tight_layout()
+    return fig
+
+
+# Which intervention categories appear together ------------------------------------------------
+def plot_cooccurrence(studies: pd.DataFrame) -> plt.Figure:
+    """Heatmap: of the trials with the ROW category, the % that also carry the COLUMN category (n in brackets)."""
+    counts = cooccurrence(studies)
+    sizes = pd.Series(np.diag(counts.values), index=counts.index)
+    pct = counts.div(sizes, axis=0) * 100
+    annot = pct.round(0).astype(int).astype(str) + "%\n(" + counts.astype(str) + ")"
+    mask = np.eye(len(counts), dtype=bool)
+    names = [SHORT_LABELS.get(k, k) for k in counts.index]
+    fig, ax = plt.subplots(figsize=(10.5, 7.2))
+    sns.heatmap(pct, mask=mask, annot=annot, fmt="", cmap="Purples", vmin=0, vmax=60, cbar=False,
+                linewidths=0.5, linecolor="white", ax=ax, annot_kws={"fontsize": 8.5})
+    ax.grid(False)
+    ax.set_xticklabels(names, rotation=40, ha="right")
+    ax.set_yticklabels([f"{name}  (n={sizes[k]})" for name, k in zip(names, counts.index)], rotation=0)
+    ax.set_xlabel("... also carry this category")
+    ax.set_ylabel("Of the trials with this category ...")
+    ax.set_title("How intervention categories co-occur\n(% of the row category's trials that also carry the column category; read along rows)")
+    fig.tight_layout()
+    return fig
+
+
+def plot_upset(studies: pd.DataFrame, *, top: int = 16) -> plt.Figure:
+    """UpSet-style plot: bars = trials with exactly that combination; dots = the categories in it."""
+    inc = included(studies)
+    keys = intervention_keys_by_size(studies)
+    combos = pd.Series(
+        [tuple(k for k in keys if row[f"has_{k}"]) for _, row in inc.iterrows()]
+    ).value_counts()
+    combos = combos[[len(c) > 0 for c in combos.index]].head(top)
+    n_sets, n_combos = len(keys), len(combos)
+
+    fig = plt.figure(figsize=(0.6 * n_combos + 3.2, 7.4))
+    gs = fig.add_gridspec(2, 1, height_ratios=[2.3, 1.5], hspace=0.03)
+    ax_bar = fig.add_subplot(gs[0])
+    ax_mat = fig.add_subplot(gs[1], sharex=ax_bar)
+
+    x = np.arange(n_combos)
+    ax_bar.bar(x, combos.values, color=INCLUDED_COLOR, width=0.62)
+    for xi, value in zip(x, combos.values):
+        ax_bar.text(xi, value + combos.max() * 0.01, int(value), ha="center", fontsize=9)
+    ax_bar.set_ylabel("Trials with exactly\nthis combination")
+    ax_bar.tick_params(axis="x", bottom=False, labelbottom=False)
+    ax_bar.grid(axis="x", visible=False)
+    ax_bar.set_title(f"Most common combinations of intervention categories (top {n_combos} of {inc['intervention_list'].apply(tuple).nunique()}; each trial counted once)")
+
+    for y in range(n_sets):
+        if y % 2 == 0:
+            ax_mat.axhspan(y - 0.5, y + 0.5, color="#f1f3f5", zorder=0)
+    for xi, combo in zip(x, combos.index):
+        members = [keys.index(k) for k in combo]
+        ax_mat.scatter([xi] * n_sets, range(n_sets), s=55, color="#d0d4d9", zorder=1)
+        ax_mat.scatter([xi] * len(members), members, s=75, color=INCLUDED_COLOR, zorder=3)
+        if len(members) > 1:
+            ax_mat.plot([xi, xi], [min(members), max(members)], color=INCLUDED_COLOR, linewidth=2.2, zorder=2)
+    sizes = [int(inc[f"has_{k}"].sum()) for k in keys]
+    ax_mat.set_yticks(range(n_sets))
+    ax_mat.set_yticklabels([f"{SHORT_LABELS.get(k, k)}  (n={n})" for k, n in zip(keys, sizes)])
+    ax_mat.set_ylim(n_sets - 0.5, -0.5)
+    ax_mat.set_xlim(-0.6, n_combos - 0.4)
+    ax_mat.tick_params(axis="x", bottom=False, labelbottom=False)
+    ax_mat.grid(False)
+    for side in ("left", "bottom"):
+        ax_mat.spines[side].set_visible(False)
+    return fig
+
+
+def _wilson(k: int, n: int, z: float = 1.96) -> tuple[float, float]:
+    p = k / n
+    denom = 1 + z * z / n
+    centre = (p + z * z / (2 * n)) / denom
+    half = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / denom
+    return 100 * (centre - half), 100 * (centre + half)
+
+
+def plot_companions(
+    studies: pd.DataFrame,
+    outcomes: pd.DataFrame,
+    category: str,
+    labels: dict[str, str],
+    *,
+    outcome_categories: tuple[str, ...] = ("pain_interference", "pain_recovery"),
+    min_n: int = 10,
+) -> plt.Figure:
+    """Left: which other categories accompany `category`. Right: do the outcomes it registers depend on the companion?"""
+    n_total, comp = companions(studies, category)
+    table = companion_outcome_table(studies, outcomes, category, outcome_categories, min_n=min_n)
+    name = labels.get(category, category)
+
+    def pretty_group(group: str) -> str:
+        if group == "only_this_category":
+            return "Only this category"
+        if group == "with_any_other_category":
+            return "With any other category"
+        return "With " + SHORT_LABELS.get(group, group)
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5.4), gridspec_kw={"width_ratios": [1, 1.25]})
+    ordered = comp.iloc[::-1]
+    names = ["None (only this category)" if k.startswith("(none") else SHORT_LABELS.get(k, k) for k in ordered.index]
+    colors = ["#e0a458" if k.startswith("(none") else INCLUDED_COLOR for k in ordered.index]
+    ax1.barh(names, ordered.values, color=colors)
+    _bar_labels(ax1, ordered.values, n_total)
+    ax1.set_title(f"What else do {name} trials carry? (n={n_total} trials)\n(a trial can carry several; orange = this category alone)")
+    ax1.set_xlabel("Trials")
+    ax1.grid(axis="y", visible=False)
+
+    rows = table.iloc[::-1].reset_index(drop=True)
+    y = np.arange(len(rows))
+    height = 0.8 / len(outcome_categories)
+    for i, oc in enumerate(outcome_categories):
+        pct = 100 * rows[oc] / rows["n"]
+        ci = np.array([_wilson(k, n) for k, n in zip(rows[oc], rows["n"])])
+        pos = y + (i - (len(outcome_categories) - 1) / 2) * height
+        ax2.barh(pos, pct, height=height * 0.92, color=OUTCOME_COLORS[oc], label=f"at least one {oc.replace('_', ' ')} outcome")
+        ax2.errorbar(pct, pos, xerr=[pct - ci[:, 0], ci[:, 1] - pct], fmt="none", ecolor="#333333", elinewidth=1, capsize=2)
+    ax2.set_yticks(y)
+    ax2.set_yticklabels([f"{pretty_group(g)}  (n={n})" for g, n in zip(rows["group"], rows["n"])])
+    ax2.set_xlim(0, 105)
+    ax2.set_xlabel("% of the group's trials (whiskers: 95% confidence interval)")
+    ax2.set_title("Outcomes registered, by what the trial is combined with\n(groups overlap; groups under %d trials not shown)" % min_n)
+    ax2.legend(frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.14), ncol=2, fontsize=9)
+    ax2.grid(axis="y", visible=False)
     fig.tight_layout()
     return fig

@@ -32,6 +32,18 @@ EXCLUSION_STRATUM = {
 PERIOD_BINS = [0, 2009, 2014, 2019, 3000]
 PERIOD_LABELS = ["up to 2009", "2010-2014", "2015-2019", "2020-2026"]
 CROSSTAB_DROP_SUBCATEGORIES = ("not_an_outcome_measure",)
+SHORT_LABELS = {
+    "psychological_cognitive": "Psychological & cognitive",
+    "neuroplastic_recovery_therapy": "Neuroplastic recovery",
+    "mind_body_integrative": "Mind-body & integrative",
+    "education_self_management": "Education & self-mgmt",
+    "physical_rehabilitation": "Physical rehabilitation",
+    "occupational_ergonomics_rtw": "Occupational / RTW",
+    "multidisciplinary_interdisciplinary": "Multidisciplinary",
+    "experimental_research_paradigm": "Experimental paradigm",
+    "digital_health_delivery": "Digital health",
+    "other_behavioral_treatment": "Other behavioral",
+}
 
 
 def _split(value: object) -> list[str]:
@@ -169,3 +181,61 @@ def outcome_by_group(
         rename = lambda idx: [labels.get(key, key) for key in idx]  # noqa: E731
         rows.index, trials.index, n_trials.index, n_rows.index = (rename(x.index) for x in (rows, trials, n_trials, n_rows))
     return CrossTab(rows, trials, n_trials, n_rows, int(merged["nct_id"].nunique()), len(sub))
+
+
+def intervention_keys_by_size(studies: pd.DataFrame) -> list[str]:
+    """Intervention category keys present among included trials, most frequent first."""
+    inc = included(studies)
+    sizes = {key: int(inc[f"has_{key}"].sum()) for key in intervention_labels()}
+    return [key for key, n in sorted(sizes.items(), key=lambda kv: -kv[1]) if n > 0]
+
+
+def cooccurrence(studies: pd.DataFrame) -> pd.DataFrame:
+    """Matrix [A, B] = number of included trials carrying both category A and category B (diagonal = trials with A)."""
+    inc = included(studies)
+    keys = intervention_keys_by_size(studies)
+    data = {b: {a: int((inc[f"has_{a}"] & inc[f"has_{b}"]).sum()) for a in keys} for b in keys}
+    return pd.DataFrame(data).loc[keys, keys]
+
+
+def companions(studies: pd.DataFrame, category: str) -> tuple[int, pd.Series]:
+    """Trials carrying `category`, and how many of them also carry each other category.
+
+    The first entry of the series, "(none: only this category)", counts trials with no other category.
+    """
+    inc = included(studies)
+    inc = inc[inc[f"has_{category}"]]
+    counts = {"(none: only this category)": int((inc["n_intervention_categories"] == 1).sum())}
+    for key in intervention_keys_by_size(studies):
+        if key != category:
+            counts[key] = int(inc[f"has_{key}"].sum())
+    series = pd.Series(counts)
+    return len(inc), pd.concat([series.iloc[:1], series.iloc[1:].sort_values(ascending=False)])
+
+
+def companion_outcome_table(
+    studies: pd.DataFrame,
+    outcomes: pd.DataFrame,
+    category: str,
+    outcome_categories: tuple[str, ...] = ("pain_interference", "pain_recovery"),
+    *,
+    min_n: int = 10,
+) -> pd.DataFrame:
+    """For trials carrying `category`: how many register at least one outcome of each given outcome category,
+    overall by companion group (only this category / with any other / with each other category; groups overlap).
+    Only trials with at least one primary outcome (excluding `not_an_outcome_measure`) are counted.
+    """
+    inc = included(studies)
+    inc = inc[inc[f"has_{category}"]]
+    sub = outcomes[(outcomes["cohort_inclusion_status"] == "included") & ~outcomes["outcome_subcategory"].isin(CROSSTAB_DROP_SUBCATEGORIES)]
+    registered = sub.groupby("nct_id")["outcome_category"].agg(set)
+    inc = inc[inc["nct_id"].isin(registered.index)].copy()
+    for oc in outcome_categories:
+        inc[oc] = inc["nct_id"].map(lambda nct, c=oc: c in registered[nct])
+    groups = [
+        ("only_this_category", inc["n_intervention_categories"] == 1),
+        ("with_any_other_category", inc["n_intervention_categories"] > 1),
+    ]
+    groups += [(key, inc[f"has_{key}"]) for key in intervention_keys_by_size(studies) if key != category and inc[f"has_{key}"].sum() >= min_n]
+    rows = [{"group": name, "n": int(mask.sum()), **{oc: int(inc.loc[mask, oc].sum()) for oc in outcome_categories}} for name, mask in groups if mask.sum() > 0]
+    return pd.DataFrame(rows)

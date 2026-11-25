@@ -1,0 +1,9 @@
+group,n,pain_interference,pain_recovery,pain_interference_pct,pain_recovery_pct
+only_this_category,39,19,23,49.0,59.0
+with_any_other_category,134,78,50,58.0,37.0
+physical_rehabilitation,64,37,23,58.0,36.0
+mind_body_integrative,60,31,22,52.0,37.0
+education_self_management,73,45,26,62.0,36.0
+other_behavioral_treatment,19,8,6,42.0,32.0
+digital_health_delivery,23,13,9,57.0,39.0
+neuroplastic_recovery_therapy,16,11,5,69.0,31.0
