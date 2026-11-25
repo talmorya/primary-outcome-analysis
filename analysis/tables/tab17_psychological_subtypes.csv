@@ -1,0 +1,5 @@
+subtype,trials,n,pain_interference,pain_recovery,pain_interference_pct,pain_recovery_pct
+CBT,112,110,67,48,61.0,44.0
+ACT,22,22,13,8,59.0,36.0
+MBSR,5,5,3,2,60.0,40.0
+None of the three,46,46,21,20,46.0,43.0

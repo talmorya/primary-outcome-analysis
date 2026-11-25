@@ -20,9 +20,12 @@ from .analysis_data import (
     CrossTab,
     companion_outcome_table,
     companions,
+    condition_outcome_table,
     cooccurrence,
     included,
     intervention_keys_by_size,
+    psychological_subtypes,
+    subtype_outcome_table,
     wilson_interval,
 )
 from .category_mapping_report import OUTCOME_ORDER
@@ -440,5 +443,91 @@ def plot_companions(
     ax2.set_title("Outcomes registered, by what the trial is combined with\n(groups overlap; groups under %d trials not shown)" % min_n)
     ax2.legend(frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.14), ncol=2, fontsize=9)
     ax2.grid(axis="y", visible=False)
+    fig.tight_layout()
+    return fig
+
+
+def _pct_with_ci(ax: plt.Axes, y, counts, totals, color: str, height: float, label: str | None = None) -> None:
+    """Horizontal bars of counts/totals (%) with Wilson 95% intervals; empty groups are skipped."""
+    pct = np.array([100 * k / n if n else 0 for k, n in zip(counts, totals)])
+    ci = np.array([wilson_interval(k, n) if n else (0, 0) for k, n in zip(counts, totals)])
+    ax.barh(y, pct, height=height * 0.92, color=color, label=label)
+    ax.errorbar(pct, y, xerr=[np.maximum(pct - ci[:, 0], 0), np.maximum(ci[:, 1] - pct, 0)], fmt="none", ecolor="#333333", elinewidth=1, capsize=2)
+
+
+def plot_condition_split(
+    studies: pd.DataFrame,
+    outcomes: pd.DataFrame,
+    category: str,
+    labels: dict[str, str],
+    *,
+    outcome_categories: tuple[str, ...] = ("pain_interference", "pain_recovery"),
+    min_n: int = 10,
+) -> plt.Figure:
+    """One panel per outcome type: by registered condition, the category's trials alone / combined, and all other trials."""
+    table = condition_outcome_table(studies, outcomes, category, outcome_categories)
+    name = labels.get(category, category)
+    conditions = list(dict.fromkeys(table["condition"]))
+    groups = [
+        ("only_this_category", f"{name}, alone", "#e0a458"),
+        ("with_any_other_category", f"{name}, combined", INCLUDED_COLOR),
+        ("other_trials", "All other behavioral trials", "#9aa5b1"),
+    ]
+    fig, axes = plt.subplots(1, len(outcome_categories), figsize=(7.5 * len(outcome_categories), 5.6), sharey=True)
+    height = 0.8 / len(groups)
+    y = np.arange(len(conditions))
+    for ax, oc in zip(np.atleast_1d(axes), outcome_categories):
+        for i, (group, label, color) in enumerate(groups):
+            rows = table[table["group"] == group].set_index("condition").reindex(conditions)
+            keep = rows["n"] >= min_n  # small groups are not drawn: their percentages mean nothing
+            pos = y + (i - (len(groups) - 1) / 2) * height
+            _pct_with_ci(ax, pos[keep.values], rows.loc[keep, oc].values, rows.loc[keep, "n"].values, color, height, label)
+            for p, n, k in zip(pos, rows["n"], rows[oc]):
+                ax.text(101, p, f"n={n}" if n >= min_n else f"n={n} (not drawn)", va="center", fontsize=7.5, color="#555555")
+        ax.set_yticks(y)
+        ax.set_yticklabels(conditions)
+        ax.set_xlim(0, 100)
+        ax.set_xlabel("% of trials (whiskers: 95% confidence interval)")
+        ax.set_title(f"At least one {oc.replace('_', ' ')} outcome")
+        ax.grid(axis="y", visible=False)
+    np.atleast_1d(axes)[0].invert_yaxis()  # axes share y: once, so the first condition is on top
+    handles, names = np.atleast_1d(axes)[0].get_legend_handles_labels()
+    fig.legend(handles, names, loc="lower center", ncol=len(groups), frameon=False, bbox_to_anchor=(0.5, -0.02))
+    fig.suptitle(f"{name}: outcomes by registered condition (groups under {min_n} trials are not drawn)", fontsize=12)
+    fig.tight_layout(rect=(0, 0.05, 0.97, 0.97))
+    return fig
+
+
+def plot_psych_subtypes(
+    studies: pd.DataFrame,
+    outcomes: pd.DataFrame,
+    *,
+    outcome_categories: tuple[str, ...] = ("pain_interference", "pain_recovery"),
+) -> plt.Figure:
+    """How many Psychological & cognitive trials are CBT / ACT / MBSR, and which outcomes each registers."""
+    sub = psychological_subtypes(studies)
+    table = subtype_outcome_table(studies, outcomes, outcome_categories).iloc[::-1].reset_index(drop=True)
+    other = sub.loc[sub["other_subtype"] != "", "other_subtype"].value_counts()
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 4.8), gridspec_kw={"width_ratios": [1, 1.2]})
+    ax1.barh(table["subtype"], table["trials"], color=[INCLUDED_COLOR if t != "None of the three" else "#9aa5b1" for t in table["subtype"]])
+    _bar_labels(ax1, table["trials"].values, len(sub))
+    ax1.set_title(f"Therapy named in the active arms ({len(sub)} Psychological & cognitive trials)\n(a trial can name several; MBSR is mostly filed under mind-body)")
+    ax1.set_xlabel("Trials")
+    if len(other):
+        ax1.text(0.99, 0.02, "None of the three, by what they name:\n" + "\n".join(f"{k.split(' (')[0]}: {v}" for k, v in other.items()),
+                 transform=ax1.transAxes, ha="right", va="bottom", fontsize=8, color="#444444")
+    y = np.arange(len(table))
+    height = 0.8 / len(outcome_categories)
+    for i, oc in enumerate(outcome_categories):
+        pos = y + (i - (len(outcome_categories) - 1) / 2) * height
+        _pct_with_ci(ax2, pos, table[oc].values, table["n"].values, OUTCOME_COLORS[oc], height, f"at least one {oc.replace('_', ' ')} outcome")
+    ax2.set_yticks(y)
+    ax2.set_yticklabels([f"{t}  (n={n}{', unstable' if n < 10 else ''})" for t, n in zip(table["subtype"], table["n"])])
+    ax2.set_xlim(0, 105)
+    ax2.set_xlabel("% of the subtype's trials (whiskers: 95% confidence interval)")
+    ax2.set_title("Outcomes registered by subtype\n(subtypes overlap)")
+    ax2.legend(frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.16), ncol=2, fontsize=9)
+    for ax in (ax1, ax2):
+        ax.grid(axis="y", visible=False)
     fig.tight_layout()
     return fig

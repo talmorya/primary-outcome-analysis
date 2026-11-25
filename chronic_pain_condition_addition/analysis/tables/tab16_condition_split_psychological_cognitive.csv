@@ -1,0 +1,21 @@
+condition,group,n,pain_interference,pain_recovery,mood,pain_interference_pct,pain_recovery_pct,mood_pct
+Back pain,all,80,52,37,10,65.0,46.0,12.0
+Back pain,only_this_category,16,8,12,3,50.0,75.0,19.0
+Back pain,with_any_other_category,64,44,25,7,69.0,39.0,11.0
+Back pain,other_trials,340,172,172,17,51.0,51.0,5.0
+Fibromyalgia,all,52,27,15,18,52.0,29.0,35.0
+Fibromyalgia,only_this_category,16,6,9,5,38.0,56.0,31.0
+Fibromyalgia,with_any_other_category,36,21,6,13,58.0,17.0,36.0
+Fibromyalgia,other_trials,154,68,53,29,44.0,34.0,19.0
+Migraine,all,27,12,16,5,44.0,59.0,19.0
+Migraine,only_this_category,5,3,2,1,60.0,40.0,20.0
+Migraine,with_any_other_category,22,9,14,4,41.0,64.0,18.0
+Migraine,other_trials,110,31,57,2,28.0,52.0,2.0
+Headache (other types),all,28,14,15,5,50.0,54.0,18.0
+Headache (other types),only_this_category,5,4,2,2,80.0,40.0,40.0
+Headache (other types),with_any_other_category,23,10,13,3,43.0,57.0,13.0
+Headache (other types),other_trials,72,15,52,4,21.0,72.0,6.0
+Chronic pain,all,170,84,60,50,49.0,35.0,29.0
+Chronic pain,only_this_category,28,18,9,4,64.0,32.0,14.0
+Chronic pain,with_any_other_category,142,66,51,46,46.0,36.0,32.0
+Chronic pain,other_trials,376,139,137,57,37.0,36.0,15.0

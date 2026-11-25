@@ -56,6 +56,64 @@ Percent of the group's trials (with a registered primary outcome) that have at l
 
 The opposite trends appear to stem from composition: most Psychological & cognitive therapy trials are combined with other approaches, and the outcomes registered by combined trials lean away from pain recovery. A possible reading, which these numbers only suggest, is that Psychological & cognitive therapy on its own is more often aimed at recovering the patient (pain intensity/severity), whereas inside a combined programme the outcomes follow the other components. Limits: the 'alone' group is small (n=39; its pain-recovery share has a 95% CI of 43-73%), the comparison is exploratory (no correction for multiple comparisons), trials are not randomised to being combined or alone, and outcome categories are descriptive rule-based aids, not the researcher's manual coding.
 
+
+### Psychological & cognitive therapy by registered condition
+
+Which conditions the category's trials belong to, and which outcomes they register in each (a trial with several conditions counts in each; trials with a registered primary outcome; the last group is the reference level of each condition):
+
+Trials: Back pain 80, Fibromyalgia 52, Migraine 27, Headache (other types) 28.
+
+| Condition | Group | Trials | Pain interference | Pain recovery | Mood |
+|---|---|---|---|---|---|
+| Back pain | Psychological & cognitive therapy, all | 80 | 65% (54-75%) | 46% (36-57%) | 12% |
+| Back pain | Psychological & cognitive therapy, alone | 16 | 50% (28-72%) | 75% (51-90%) | 19% |
+| Back pain | Psychological & cognitive therapy, combined | 64 | 69% (57-79%) | 39% (28-51%) | 11% |
+| Back pain | All other behavioral trials | 338 | 51% (46-56%) | 50% (45-56%) | 5% |
+| Fibromyalgia | Psychological & cognitive therapy, all | 52 | 52% (39-65%) | 29% (18-42%) | 35% |
+| Fibromyalgia | Psychological & cognitive therapy, alone | 16 | 38% (18-61%) | 56% (33-77%) | 31% |
+| Fibromyalgia | Psychological & cognitive therapy, combined | 36 | 58% (42-73%) | 17% (8-32%) | 36% |
+| Fibromyalgia | All other behavioral trials | 154 | 44% (37-52%) | 34% (27-42%) | 19% |
+| Migraine | Psychological & cognitive therapy, all | 27 | 44% (28-63%) | 59% (41-75%) | 19% |
+| Migraine | Psychological & cognitive therapy, alone | 5 | 60% (23-88%) | 40% (12-77%) | 20% |
+| Migraine | Psychological & cognitive therapy, combined | 22 | 41% (23-61%) | 64% (43-80%) | 18% |
+| Migraine | All other behavioral trials | 110 | 28% (21-37%) | 52% (43-61%) | 2% |
+| Headache (other types) | Psychological & cognitive therapy, all | 28 | 50% (33-67%) | 54% (36-70%) | 18% |
+| Headache (other types) | Psychological & cognitive therapy, alone | 5 | 80% (38-96%) | 40% (12-77%) | 40% |
+| Headache (other types) | Psychological & cognitive therapy, combined | 23 | 43% (26-63%) | 57% (37-74%) | 13% |
+| Headache (other types) | All other behavioral trials | 72 | 21% (13-32%) | 72% (61-81%) | 6% |
+
+Alone versus combined within a condition (conditions where both groups have at least 10 trials):
+
+- **Back pain**: pain recovery 75% alone vs 39% combined (+36 points, Fisher exact p = 0.012); pain interference 50% vs 69%.
+- **Fibromyalgia**: pain recovery 56% alone vs 17% combined (+40 points, Fisher exact p = 0.007); pain interference 38% vs 58%.
+
+Too few trials in the alone or combined group to compare: Migraine, Headache (other types).
+
+Compared with all other behavioral trials of the same condition, Psychological & cognitive therapy trials register pain interference more often in 4 of 4 conditions (Back pain 65% vs 51%; Fibromyalgia 52% vs 44%; Migraine 44% vs 28%; Headache (other types) 50% vs 21%); pain recovery: Back pain 46% vs 50%; Fibromyalgia 29% vs 34%; Migraine 59% vs 52%; Headache (other types) 54% vs 72%.
+
+These are descriptive, exploratory comparisons (uncorrected p-values; small groups). Groups under 10 trials are not drawn in the figure.
+
+![Psychological & cognitive therapy: outcomes by registered condition, alone vs combined vs all other trials](figures/fig16_condition_split_psychological_cognitive.png)
+
+*Psychological & cognitive therapy: outcomes by registered condition, alone vs combined vs all other trials* (PDF: `figures/fig16_condition_split_psychological_cognitive.pdf`)
+
+### CBT, ACT and MBSR within Psychological & cognitive therapy
+
+Of the 175 included Psychological & cognitive therapy trials, 112 name CBT, 22 name ACT, 5 name MBSR in an active arm (9 name more than one); 46 name none of the three: psychotherapy 14, behavioral activation / behavioral therapy 12, motivational interviewing 11, cognitive functional therapy 9. MBSR belongs to the mind-body category in the taxonomy (316 mind-body trials in the cohort), so only the trials that also carry the psychological category are counted here. Matching is on the name and description of the active arms (patterns: `analysis_data.PSYCH_NAMED_SUBTYPES`); descriptive only.
+
+| Subtype | Trials | % of Psychological & cognitive therapy | With registered outcome | Pain interference | Pain recovery |
+|---|---|---|---|---|---|
+| CBT | 112 | 64% | 110 | 61% (52-70%) | 44% (35-53%) |
+| ACT | 22 | 13% | 22 | 59% (39-77%) | 36% (20-57%) |
+| MBSR | 5 | 3% | 5 | 60% (23-88%) | 40% (12-77%) |
+| None of the three | 46 | 26% | 46 | 46% (32-60%) | 43% (30-58%) |
+
+Subtypes overlap; percentages are of the subtype's trials with a registered outcome (95% Wilson interval). Subtypes under 10 trials are unstable.
+
+![Psychological & cognitive therapy: CBT / ACT / MBSR counts and the outcomes each registers](figures/fig17_psychological_subtypes.png)
+
+*Psychological & cognitive therapy: CBT / ACT / MBSR counts and the outcomes each registers* (PDF: `figures/fig17_psychological_subtypes.pdf`)
+
 ![How intervention categories co-occur (row category: % of its trials that also carry the column category)](figures/fig13_cooccurrence_heatmap.png)
 
 *How intervention categories co-occur (row category: % of its trials that also carry the column category)* (PDF: `figures/fig13_cooccurrence_heatmap.pdf`)

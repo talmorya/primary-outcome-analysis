@@ -1,7 +1,7 @@
 # Analytic cohort statistics
 
 **Run ID:** `cohort_conditions_field_v3`
-**Generated:** 2026-11-25 10:49 UTC
+**Generated:** 2026-11-25 13:41 UTC
 
 Auto-generated from `data/processed/studies.csv` on each `finalize_cohort` run.
 Inclusion rules: `docs/COHORT_FILTERING_RULES.md`. Column definitions: `docs/DATA_COLUMNS.md`.

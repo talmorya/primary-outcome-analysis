@@ -8,6 +8,7 @@ outcome cross-tabs. Nothing here changes the analytic tables.
 from __future__ import annotations
 
 import math
+import re
 from dataclasses import dataclass
 
 import pandas as pd
@@ -273,3 +274,104 @@ def fisher_exact_two_sided(k1: int, n1: int, k2: int, n2: int) -> float:
     observed = prob(k1)
     low, high = max(0, n1 - (total - successes)), min(n1, successes)
     return min(1.0, sum(p for x in range(low, high + 1) if (p := prob(x)) <= observed * (1 + 1e-9)))
+
+
+def condition_outcome_table(
+    studies: pd.DataFrame,
+    outcomes: pd.DataFrame,
+    category: str,
+    outcome_categories: tuple[str, ...] = ("pain_interference", "pain_recovery", "mood"),
+) -> pd.DataFrame:
+    """Per registered condition: trials of `category` (all / alone / combined) and all other trials, with the number
+    that register at least one outcome of each given type. A trial with several conditions counts in each.
+    Only trials with at least one primary outcome (excluding `not_an_outcome_measure`) are counted.
+    """
+    inc = included(studies)
+    sub = outcomes[(outcomes["cohort_inclusion_status"] == "included") & ~outcomes["outcome_subcategory"].isin(CROSSTAB_DROP_SUBCATEGORIES)]
+    registered = sub.groupby("nct_id")["outcome_category"].agg(set)
+    inc = inc[inc["nct_id"].isin(registered.index)].copy()
+    for oc in outcome_categories:
+        inc[oc] = inc["nct_id"].map(lambda nct, c=oc: c in registered[nct])
+    has = inc[f"has_{category}"]
+    groups = [
+        ("all", has),
+        ("only_this_category", has & (inc["n_intervention_categories"] == 1)),
+        ("with_any_other_category", has & (inc["n_intervention_categories"] > 1)),
+        ("other_trials", ~has),
+    ]
+    rows = []
+    for key, label in condition_labels(inc.columns).items():
+        in_condition = inc[f"eligible_{key}"].astype(bool)
+        for group, mask in groups:
+            part = inc[in_condition & mask]
+            rows.append({"condition": label, "group": group, "n": len(part), **{oc: int(part[oc].sum()) for oc in outcome_categories}})
+    return pd.DataFrame(rows)
+
+
+# Therapy subtypes inside the Psychological & cognitive category. Descriptive only (never used to include or exclude);
+# matched on the name + description of the ACTIVE arms of a trial (comparator arms are skipped, like the classifier).
+# The first three are the named therapies; the rest split the trials that carry none of them.
+PSYCH_NAMED_SUBTYPES = {
+    "CBT": r"(?i:cognitive[- ]+behavio|\bcbt\b|\bcbgt\b)",
+    "ACT": r"(?i:acceptance\s*(?:and|&)\s*commitment)|\bACT\b",  # the abbreviation is case-sensitive: not the word "act"
+    "MBSR": r"(?i:\bmbsr\b|mindfulness[- ]based\s+stress\s+reduction)",
+}
+PSYCH_OTHER_SUBTYPES = {
+    "Cognitive functional therapy": r"cognitive\s+functional|\bcft\b",
+    "Psychotherapy (psychodynamic, interpersonal, EMDR, problem-solving, DBT)": r"psychotherap|psychodynamic|interpersonal\s+therapy|emdr|eye[- ]movement|problem[- ]solving\s+therapy|\bpst\b|dialectical|\bdbt\b",
+    "Motivational interviewing": r"motivational\s+interview",
+    "Behavioral activation / behavioral therapy": r"behavio(?:u)?ral\s+(?:activation|therapy)|operant|emotional\s+regulation|\bpbre\b",
+}
+
+
+def _active_arm_texts(details: object) -> str:
+    """name + description of the non-comparator arms in `raw_intervention_details` ('name [TYPE]: description || ...')."""
+    from .classify_intervention_categories import is_comparator_arm
+
+    control = load_yaml("intervention_categories.yaml").get("control_arm", {})
+    texts = []
+    for part in ("" if pd.isna(details) else str(details)).split(" || "):
+        name = part.split(" [")[0] if " [" in part else part.split(": ")[0]
+        if not is_comparator_arm(name.strip(), control.get("patterns", []), control.get("exclude_patterns", [])):
+            texts.append(part)
+    return " ".join(texts)
+
+
+def psychological_subtypes(studies: pd.DataFrame, category: str = "psychological_cognitive") -> pd.DataFrame:
+    """One row per included trial of `category`: flags for CBT / ACT / MBSR, a mutually exclusive `other_subtype`
+    for trials with none of the three, and `n_intervention_categories`."""
+    inc = included(studies)
+    inc = inc[inc[f"has_{category}"]]
+    named = {k: re.compile(v) for k, v in PSYCH_NAMED_SUBTYPES.items()}
+    other = {k: re.compile(v, re.IGNORECASE) for k, v in PSYCH_OTHER_SUBTYPES.items()}
+    rows = []
+    for row in inc.itertuples():
+        text = _active_arm_texts(row.raw_intervention_details)
+        flags = {k: bool(p.search(text)) for k, p in named.items()}
+        other_subtype = ""
+        if not any(flags.values()):
+            other_subtype = next((k for k, p in other.items() if p.search(text)), "Other / not named")
+        rows.append({"nct_id": row.nct_id, **flags, "other_subtype": other_subtype, "n_intervention_categories": row.n_intervention_categories})
+    return pd.DataFrame(rows)
+
+
+def subtype_outcome_table(
+    studies: pd.DataFrame,
+    outcomes: pd.DataFrame,
+    outcome_categories: tuple[str, ...] = ("pain_interference", "pain_recovery"),
+) -> pd.DataFrame:
+    """Per subtype (CBT, ACT, MBSR, none of the three): trials, trials with a registered outcome, and how many register
+    at least one outcome of each type. Subtypes overlap (a trial can be CBT and ACT)."""
+    sub = psychological_subtypes(studies)
+    kept = outcomes[(outcomes["cohort_inclusion_status"] == "included") & ~outcomes["outcome_subcategory"].isin(CROSSTAB_DROP_SUBCATEGORIES)]
+    registered = kept.groupby("nct_id")["outcome_category"].agg(set)
+    with_outcomes = sub[sub["nct_id"].isin(registered.index)].copy()
+    for oc in outcome_categories:
+        with_outcomes[oc] = with_outcomes["nct_id"].map(lambda nct, c=oc: c in registered[nct])
+    groups = [(name, sub[name]) for name in PSYCH_NAMED_SUBTYPES] + [("None of the three", sub["other_subtype"] != "")]
+    rows = []
+    for name, mask in groups:
+        ids = set(sub.loc[mask, "nct_id"])
+        part = with_outcomes[with_outcomes["nct_id"].isin(ids)]
+        rows.append({"subtype": name, "trials": int(mask.sum()), "n": len(part), **{oc: int(part[oc].sum()) for oc in outcome_categories}})
+    return pd.DataFrame(rows)

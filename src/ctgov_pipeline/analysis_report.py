@@ -189,7 +189,116 @@ def _focus_section(studies: pd.DataFrame, outcomes: pd.DataFrame, labels: dict[s
             "rule-based aids, not the researcher's manual coding.",
             "",
         ]
-        out += [_fig("fig13_cooccurrence_heatmap", "How intervention categories co-occur (row category: % of its trials that also carry the column category)")]
+    out += ["", _condition_part(studies, outcomes, labels), "", _subtype_part(studies, outcomes, labels), ""]
+    out += [_fig("fig13_cooccurrence_heatmap", "How intervention categories co-occur (row category: % of its trials that also carry the column category)")]
+    return "\n".join(out)
+
+
+def _ci_cell(k: int, n: int) -> str:
+    if not n:
+        return "-"
+    lo, hi = ad.wilson_interval(k, n)
+    return f"{100 * k / n:.0f}% ({lo:.0f}-{hi:.0f}%)"
+
+
+def _condition_part(studies: pd.DataFrame, outcomes: pd.DataFrame, labels: dict[str, str]) -> str:
+    name = labels.get(FOCUS_CATEGORY, FOCUS_CATEGORY)
+    interf, recov = FOCUS_OUTCOMES
+    table = ad.condition_outcome_table(studies, outcomes, FOCUS_CATEGORY, (interf, recov, "mood"))
+    group_names = {
+        "all": f"{name}, all",
+        "only_this_category": f"{name}, alone",
+        "with_any_other_category": f"{name}, combined",
+        "other_trials": "All other behavioral trials",
+    }
+    rows = [
+        [r.condition, group_names[r.group], r.n, _ci_cell(getattr(r, interf), r.n), _ci_cell(getattr(r, recov), r.n), _pct(r.mood, r.n)]
+        for r in table.itertuples()
+    ]
+    by = table.set_index(["condition", "group"])
+    conditions = list(dict.fromkeys(table["condition"]))
+    n_all = {c: int(by.loc[(c, "all"), "n"]) for c in conditions}
+    out = [
+        f"### {name} by registered condition",
+        "",
+        "Which conditions the category's trials belong to, and which outcomes they register in each (a trial with several conditions counts in each; "
+        "trials with a registered primary outcome; the last group is the reference level of each condition):",
+        "",
+        "Trials: " + ", ".join(f"{c} {n}" for c, n in n_all.items()) + ".",
+        "",
+        _table(["Condition", "Group", "Trials", "Pain interference", "Pain recovery", "Mood"], rows),
+        "",
+    ]
+    bullets = []
+    for c in conditions:
+        a, k = by.loc[(c, "only_this_category")], by.loc[(c, "with_any_other_category")]
+        if a["n"] >= MIN_GROUP and k["n"] >= MIN_GROUP:
+            p = ad.fisher_exact_two_sided(int(a[recov]), int(a["n"]), int(k[recov]), int(k["n"]))
+            bullets.append(
+                f"- **{c}**: pain recovery {_pct(a[recov], a['n'])} alone vs {_pct(k[recov], k['n'])} combined "
+                f"({100 * (a[recov] / a['n'] - k[recov] / k['n']):+.0f} points, Fisher exact {_p_value(p)}); "
+                f"pain interference {_pct(a[interf], a['n'])} vs {_pct(k[interf], k['n'])}."
+            )
+    small = [c for c in conditions if min(by.loc[(c, "only_this_category"), "n"], by.loc[(c, "with_any_other_category"), "n"]) < MIN_GROUP]
+    if bullets:
+        out += ["Alone versus combined within a condition (conditions where both groups have at least " + str(MIN_GROUP) + " trials):", ""] + bullets
+    if small:
+        out += ["", "Too few trials in the alone or combined group to compare: " + ", ".join(small) + "."]
+    higher = []
+    for c in conditions:
+        a, ref = by.loc[(c, "all")], by.loc[(c, "other_trials")]
+        if a["n"] >= MIN_GROUP and ref["n"] >= MIN_GROUP:
+            higher.append((c, 100 * a[interf] / a["n"], 100 * ref[interf] / ref["n"], 100 * a[recov] / a["n"], 100 * ref[recov] / ref["n"]))
+    if higher:
+        n_up = sum(1 for _, i, ri, _, _ in higher if i > ri)
+        out += [
+            "",
+            f"Compared with all other behavioral trials of the same condition, {name} trials register pain interference more often in {n_up} of {len(higher)} conditions ("
+            + "; ".join(f"{c} {i:.0f}% vs {ri:.0f}%" for c, i, ri, _, _ in higher)
+            + "); pain recovery: "
+            + "; ".join(f"{c} {r:.0f}% vs {rr:.0f}%" for c, _, _, r, rr in higher)
+            + ".",
+        ]
+    out += [
+        "",
+        "These are descriptive, exploratory comparisons (uncorrected p-values; small groups). Groups under "
+        f"{MIN_GROUP} trials are not drawn in the figure.",
+        "",
+        _fig(f"fig16_condition_split_{FOCUS_CATEGORY}", f"{name}: outcomes by registered condition, alone vs combined vs all other trials"),
+    ]
+    return "\n".join(out)
+
+
+def _subtype_part(studies: pd.DataFrame, outcomes: pd.DataFrame, labels: dict[str, str]) -> str:
+    name = labels.get(FOCUS_CATEGORY, FOCUS_CATEGORY)
+    interf, recov = FOCUS_OUTCOMES
+    sub = ad.psychological_subtypes(studies, FOCUS_CATEGORY)
+    n = len(sub)
+    table = ad.subtype_outcome_table(studies, outcomes, FOCUS_OUTCOMES)
+    rows = [
+        [r.subtype, r.trials, _pct(r.trials, n), r.n, _ci_cell(getattr(r, interf), r.n), _ci_cell(getattr(r, recov), r.n)]
+        for r in table.itertuples()
+    ]
+    other = sub.loc[sub["other_subtype"] != "", "other_subtype"].value_counts()
+    named = list(ad.PSYCH_NAMED_SUBTYPES)
+    overlap = int((sub[named].sum(axis=1) > 1).sum())
+    n_mbsr_total = int(ad.included(studies)["has_mind_body_integrative"].sum())
+    out = [
+        f"### CBT, ACT and MBSR within {name}",
+        "",
+        f"Of the {n} included {name} trials, " + ", ".join(f"{int(sub[k].sum())} name {k}" for k in named)
+        + f" in an active arm ({overlap} name more than one); {int((sub['other_subtype'] != '').sum())} name none of the three"
+        + (": " + ", ".join(f"{k.split(' (')[0].lower()} {v}" for k, v in other.items()) if len(other) else "")
+        + f". MBSR belongs to the mind-body category in the taxonomy ({n_mbsr_total} mind-body trials in the cohort), so only the trials that also carry the "
+        "psychological category are counted here. Matching is on the name and description of the active arms (patterns: `analysis_data.PSYCH_NAMED_SUBTYPES`); descriptive only.",
+        "",
+        _table(["Subtype", "Trials", f"% of {name}", "With registered outcome", "Pain interference", "Pain recovery"], rows),
+        "",
+        "Subtypes overlap; percentages are of the subtype's trials with a registered outcome (95% Wilson interval). Subtypes under "
+        f"{MIN_GROUP} trials are unstable.",
+        "",
+        _fig("fig17_psychological_subtypes", f"{name}: CBT / ACT / MBSR counts and the outcomes each registers"),
+    ]
     return "\n".join(out)
 
 

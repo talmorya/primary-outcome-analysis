@@ -11,9 +11,11 @@ from ctgov_pipeline.analysis_data import (
     cohort_summary_table,
     companion_outcome_table,
     companions,
+    condition_outcome_table,
     cooccurrence,
     fisher_exact_two_sided,
     outcome_by_group,
+    psychological_subtypes,
     wilson_interval,
 )
 
@@ -105,6 +107,38 @@ class AnalysisDataTests(unittest.TestCase):
         self.assertAlmostEqual(fisher_exact_two_sided(5, 10, 5, 10), 1.0)
         lo, hi = wilson_interval(23, 39)
         self.assertTrue(43 < lo < 44 and 72 < hi < 74)
+
+    def test_condition_outcome_table(self) -> None:
+        studies, outcomes = _tables()
+        table = condition_outcome_table(studies, outcomes, "psychological_cognitive").set_index(["condition", "group"])
+        self.assertEqual(table.loc[("Back pain", "with_any_other_category"), "n"], 1)  # N1: psychological + physical rehab
+        self.assertEqual(table.loc[("Back pain", "with_any_other_category"), "pain_interference"], 1)
+        self.assertEqual(table.loc[("Back pain", "only_this_category"), "n"], 0)
+        self.assertEqual(table.loc[("Migraine", "other_trials"), "n"], 1)  # N2
+        self.assertEqual(table.loc[("Migraine", "other_trials"), "pain_recovery"], 1)
+
+    def test_psychological_subtypes(self) -> None:
+        details = {
+            "A": "Cognitive-behavioral therapy [BEHAVIORAL]: weekly sessions",
+            "B": "ACT group [BEHAVIORAL]: acceptance work || Waitlist control [OTHER]: CBT after the study",  # CBT only in a control arm
+            "C": "Mindfulness-Based Stress Reduction [BEHAVIORAL]: 8 weeks",
+            "D": "Pain education [BEHAVIORAL]: we act on beliefs; psychotherapy sessions",  # the word "act" is not ACT
+        }
+        studies = pd.DataFrame(
+            {
+                "nct_id": list(details),
+                "cohort_inclusion_status": "included",
+                "has_psychological_cognitive": True,
+                "n_intervention_categories": [1, 2, 2, 1],
+                "raw_intervention_details": list(details.values()),
+            }
+        ).set_index("nct_id", drop=False)
+        result = psychological_subtypes(studies).set_index("nct_id")
+        self.assertEqual(result.loc["A", ["CBT", "ACT", "MBSR"]].tolist(), [True, False, False])
+        self.assertEqual(result.loc["B", ["CBT", "ACT", "MBSR"]].tolist(), [False, True, False])
+        self.assertEqual(result.loc["C", ["CBT", "ACT", "MBSR"]].tolist(), [False, False, True])
+        self.assertEqual(result.loc["D", ["CBT", "ACT", "MBSR"]].tolist(), [False, False, False])
+        self.assertTrue(result.loc["D", "other_subtype"].startswith("Psychotherapy"))
 
 
 if __name__ == "__main__":
