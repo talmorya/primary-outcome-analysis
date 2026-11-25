@@ -262,7 +262,7 @@ def _condition_part(studies: pd.DataFrame, outcomes: pd.DataFrame, labels: dict[
     out += [
         "",
         "These are descriptive, exploratory comparisons (uncorrected p-values; small groups). Groups under "
-        f"{MIN_GROUP} trials are not drawn in the figure.",
+        f"{MIN_GROUP} trials are drawn faded and hatched in the figure (unstable percentages, wide intervals).",
         "",
         _fig(f"fig16_condition_split_{FOCUS_CATEGORY}", f"{name}: outcomes by registered condition, alone vs combined vs all other trials"),
     ]
@@ -275,10 +275,17 @@ def _subtype_part(studies: pd.DataFrame, outcomes: pd.DataFrame, labels: dict[st
     sub = ad.psychological_subtypes(studies, FOCUS_CATEGORY)
     n = len(sub)
     table = ad.subtype_outcome_table(studies, outcomes, FOCUS_OUTCOMES)
-    rows = [
-        [r.subtype, r.trials, _pct(r.trials, n), r.n, _ci_cell(getattr(r, interf), r.n), _ci_cell(getattr(r, recov), r.n)]
-        for r in table.itertuples()
-    ]
+    pure_table = ad.subtype_outcome_table(studies, outcomes, FOCUS_OUTCOMES, pure_only=True)
+    n_pure = int((sub["n_intervention_categories"] == 1).sum())
+
+    def subtype_rows(frame: pd.DataFrame, total: int) -> list[list[object]]:
+        return [
+            [r.subtype, r.trials, _pct(r.trials, total), r.n, _ci_cell(getattr(r, interf), r.n), _ci_cell(getattr(r, recov), r.n)]
+            for r in frame.itertuples()
+        ]
+
+    rows = subtype_rows(table, n)
+    pure_rows = subtype_rows(pure_table, n_pure)
     other = sub.loc[sub["other_subtype"] != "", "other_subtype"].value_counts()
     named = list(ad.PSYCH_NAMED_SUBTYPES)
     overlap = int((sub[named].sum(axis=1) > 1).sum())
@@ -297,7 +304,16 @@ def _subtype_part(studies: pd.DataFrame, outcomes: pd.DataFrame, labels: dict[st
         "Subtypes overlap; percentages are of the subtype's trials with a registered outcome (95% Wilson interval). Subtypes under "
         f"{MIN_GROUP} trials are unstable.",
         "",
-        _fig("fig17_psychological_subtypes", f"{name}: CBT / ACT / MBSR counts and the outcomes each registers"),
+        _fig("fig17_psychological_subtypes", f"{name}: CBT / ACT / MBSR counts and the outcomes each registers (alone or combined)"),
+        "",
+        f"**Pure trials only.** The table above counts any {name} trial that names the therapy, including those combined with other intervention "
+        f"categories ({n - n_pure} of the {n} trials). Restricting to the {n_pure} trials whose only category is {name}:",
+        "",
+        _table(["Subtype", "Trials", f"% of pure {name}", "With registered outcome", "Pain interference", "Pain recovery"], pure_rows),
+        "",
+        "Under 10 trials the percentages are unstable (faded, hatched bars in the figure); a subtype with no pure trial has no bar.",
+        "",
+        _fig("fig18_psychological_subtypes_pure", f"{name}: CBT / ACT / MBSR counts and outcomes, pure trials only"),
     ]
     return "\n".join(out)
 

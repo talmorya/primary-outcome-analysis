@@ -447,11 +447,11 @@ def plot_companions(
     return fig
 
 
-def _pct_with_ci(ax: plt.Axes, y, counts, totals, color: str, height: float, label: str | None = None) -> None:
+def _pct_with_ci(ax: plt.Axes, y, counts, totals, color: str, height: float, label: str | None = None, *, faded: bool = False) -> None:
     """Horizontal bars of counts/totals (%) with Wilson 95% intervals; empty groups are skipped."""
     pct = np.array([100 * k / n if n else 0 for k, n in zip(counts, totals)])
     ci = np.array([wilson_interval(k, n) if n else (0, 0) for k, n in zip(counts, totals)])
-    ax.barh(y, pct, height=height * 0.92, color=color, label=label)
+    ax.barh(y, pct, height=height * 0.92, color=color, label=label, alpha=0.45 if faded else 1.0, hatch="//" if faded else None, edgecolor="white" if faded else None)
     ax.errorbar(pct, y, xerr=[np.maximum(pct - ci[:, 0], 0), np.maximum(ci[:, 1] - pct, 0)], fmt="none", ecolor="#333333", elinewidth=1, capsize=2)
 
 
@@ -479,11 +479,18 @@ def plot_condition_split(
     for ax, oc in zip(np.atleast_1d(axes), outcome_categories):
         for i, (group, label, color) in enumerate(groups):
             rows = table[table["group"] == group].set_index("condition").reindex(conditions)
-            keep = rows["n"] >= min_n  # small groups are not drawn: their percentages mean nothing
             pos = y + (i - (len(groups) - 1) / 2) * height
-            _pct_with_ci(ax, pos[keep.values], rows.loc[keep, oc].values, rows.loc[keep, "n"].values, color, height, label)
-            for p, n, k in zip(pos, rows["n"], rows[oc]):
-                ax.text(101, p, f"n={n}" if n >= min_n else f"n={n} (not drawn)", va="center", fontsize=7.5, color="#555555")
+            drawn = (rows["n"] > 0).values
+            small = (rows["n"] < min_n).values  # drawn faded and hatched: the percentages are unstable
+            labelled = False
+            for faded in (False, True):
+                mask = drawn & (small == faded)
+                if mask.any():
+                    _pct_with_ci(ax, pos[mask], rows.loc[mask, oc].values, rows.loc[mask, "n"].values, color, height,
+                                 None if labelled else label, faded=faded)
+                    labelled = True
+            for p, n in zip(pos, rows["n"]):
+                ax.text(101, p, f"n={n}" if n >= min_n else f"n={n} (unstable)", va="center", fontsize=7.5, color="#555555")
         ax.set_yticks(y)
         ax.set_yticklabels(conditions)
         ax.set_xlim(0, 100)
@@ -493,7 +500,7 @@ def plot_condition_split(
     np.atleast_1d(axes)[0].invert_yaxis()  # axes share y: once, so the first condition is on top
     handles, names = np.atleast_1d(axes)[0].get_legend_handles_labels()
     fig.legend(handles, names, loc="lower center", ncol=len(groups), frameon=False, bbox_to_anchor=(0.5, -0.02))
-    fig.suptitle(f"{name}: outcomes by registered condition (groups under {min_n} trials are not drawn)", fontsize=12)
+    fig.suptitle(f"{name}: outcomes by registered condition (faded, hatched bars: fewer than {min_n} trials, unstable)", fontsize=12)
     fig.tight_layout(rect=(0, 0.05, 0.97, 0.97))
     return fig
 
@@ -503,15 +510,20 @@ def plot_psych_subtypes(
     outcomes: pd.DataFrame,
     *,
     outcome_categories: tuple[str, ...] = ("pain_interference", "pain_recovery"),
+    pure_only: bool = False,
 ) -> plt.Figure:
-    """How many Psychological & cognitive trials are CBT / ACT / MBSR, and which outcomes each registers."""
+    """How many Psychological & cognitive trials are CBT / ACT / MBSR, and which outcomes each registers.
+    `pure_only`: only trials with no other intervention category."""
     sub = psychological_subtypes(studies)
-    table = subtype_outcome_table(studies, outcomes, outcome_categories).iloc[::-1].reset_index(drop=True)
+    if pure_only:
+        sub = sub[sub["n_intervention_categories"] == 1]
+    scope = "pure (no other intervention category)" if pure_only else "alone or combined"
+    table = subtype_outcome_table(studies, outcomes, outcome_categories, pure_only=pure_only).iloc[::-1].reset_index(drop=True)
     other = sub.loc[sub["other_subtype"] != "", "other_subtype"].value_counts()
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 4.8), gridspec_kw={"width_ratios": [1, 1.2]})
     ax1.barh(table["subtype"], table["trials"], color=[INCLUDED_COLOR if t != "None of the three" else "#9aa5b1" for t in table["subtype"]])
     _bar_labels(ax1, table["trials"].values, len(sub))
-    ax1.set_title(f"Therapy named in the active arms ({len(sub)} Psychological & cognitive trials)\n(a trial can name several; MBSR is mostly filed under mind-body)")
+    ax1.set_title(f"Therapy named in the active arms ({len(sub)} Psychological & cognitive trials, {scope})\n(a trial can name several; MBSR is mostly filed under mind-body)", fontsize=10)
     ax1.set_xlabel("Trials")
     if len(other):
         ax1.text(0.99, 0.02, "None of the three, by what they name:\n" + "\n".join(f"{k.split(' (')[0]}: {v}" for k, v in other.items()),
@@ -520,12 +532,18 @@ def plot_psych_subtypes(
     height = 0.8 / len(outcome_categories)
     for i, oc in enumerate(outcome_categories):
         pos = y + (i - (len(outcome_categories) - 1) / 2) * height
-        _pct_with_ci(ax2, pos, table[oc].values, table["n"].values, OUTCOME_COLORS[oc], height, f"at least one {oc.replace('_', ' ')} outcome")
+        labelled = False
+        for faded in (False, True):  # subtypes under 10 trials: faded and hatched; empty ones: no bar
+            mask = ((table["n"] > 0) & ((table["n"] < 10) == faded)).values
+            if mask.any():
+                _pct_with_ci(ax2, pos[mask], table.loc[mask, oc].values, table.loc[mask, "n"].values, OUTCOME_COLORS[oc], height,
+                             None if labelled else f"at least one {oc.replace('_', ' ')} outcome", faded=faded)
+                labelled = True
     ax2.set_yticks(y)
-    ax2.set_yticklabels([f"{t}  (n={n}{', unstable' if n < 10 else ''})" for t, n in zip(table["subtype"], table["n"])])
+    ax2.set_yticklabels([f"{t}  (n={n}{', unstable' if 0 < n < 10 else ''})" for t, n in zip(table["subtype"], table["n"])])
     ax2.set_xlim(0, 105)
     ax2.set_xlabel("% of the subtype's trials (whiskers: 95% confidence interval)")
-    ax2.set_title("Outcomes registered by subtype\n(subtypes overlap)")
+    ax2.set_title(f"Outcomes registered by subtype, {scope}\n(subtypes overlap)", fontsize=10)
     ax2.legend(frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.16), ncol=2, fontsize=9)
     for ax in (ax1, ax2):
         ax.grid(axis="y", visible=False)

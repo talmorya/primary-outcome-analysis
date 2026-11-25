@@ -91,7 +91,7 @@ Too few trials in the alone or combined group to compare: Migraine, Headache (ot
 
 Compared with all other behavioral trials of the same condition, Psychological & cognitive therapy trials register pain interference more often in 4 of 4 conditions (Back pain 65% vs 51%; Fibromyalgia 52% vs 44%; Migraine 44% vs 28%; Headache (other types) 50% vs 21%); pain recovery: Back pain 46% vs 50%; Fibromyalgia 29% vs 34%; Migraine 59% vs 52%; Headache (other types) 54% vs 72%.
 
-These are descriptive, exploratory comparisons (uncorrected p-values; small groups). Groups under 10 trials are not drawn in the figure.
+These are descriptive, exploratory comparisons (uncorrected p-values; small groups). Groups under 10 trials are drawn faded and hatched in the figure (unstable percentages, wide intervals).
 
 ![Psychological & cognitive therapy: outcomes by registered condition, alone vs combined vs all other trials](figures/fig16_condition_split_psychological_cognitive.png)
 
@@ -110,9 +110,24 @@ Of the 175 included Psychological & cognitive therapy trials, 112 name CBT, 22 n
 
 Subtypes overlap; percentages are of the subtype's trials with a registered outcome (95% Wilson interval). Subtypes under 10 trials are unstable.
 
-![Psychological & cognitive therapy: CBT / ACT / MBSR counts and the outcomes each registers](figures/fig17_psychological_subtypes.png)
+![Psychological & cognitive therapy: CBT / ACT / MBSR counts and the outcomes each registers (alone or combined)](figures/fig17_psychological_subtypes.png)
 
-*Psychological & cognitive therapy: CBT / ACT / MBSR counts and the outcomes each registers* (PDF: `figures/fig17_psychological_subtypes.pdf`)
+*Psychological & cognitive therapy: CBT / ACT / MBSR counts and the outcomes each registers (alone or combined)* (PDF: `figures/fig17_psychological_subtypes.pdf`)
+
+**Pure trials only.** The table above counts any Psychological & cognitive therapy trial that names the therapy, including those combined with other intervention categories (136 of the 175 trials). Restricting to the 39 trials whose only category is Psychological & cognitive therapy:
+
+| Subtype | Trials | % of pure Psychological & cognitive therapy | With registered outcome | Pain interference | Pain recovery |
+|---|---|---|---|---|---|
+| CBT | 23 | 59% | 23 | 61% (41-78%) | 65% (45-81%) |
+| ACT | 2 | 5% | 2 | 100% (34-100%) | 0% (0-66%) |
+| MBSR | 0 | 0% | 0 | - | - |
+| None of the three | 14 | 36% | 14 | 21% (8-48%) | 57% (33-79%) |
+
+Under 10 trials the percentages are unstable (faded, hatched bars in the figure); a subtype with no pure trial has no bar.
+
+![Psychological & cognitive therapy: CBT / ACT / MBSR counts and outcomes, pure trials only](figures/fig18_psychological_subtypes_pure.png)
+
+*Psychological & cognitive therapy: CBT / ACT / MBSR counts and outcomes, pure trials only* (PDF: `figures/fig18_psychological_subtypes_pure.pdf`)
 
 ![How intervention categories co-occur (row category: % of its trials that also carry the column category)](figures/fig13_cooccurrence_heatmap.png)
 

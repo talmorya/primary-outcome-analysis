@@ -16,6 +16,7 @@ from ctgov_pipeline.analysis_data import (
     fisher_exact_two_sided,
     outcome_by_group,
     psychological_subtypes,
+    subtype_outcome_table,
     wilson_interval,
 )
 
@@ -139,6 +140,21 @@ class AnalysisDataTests(unittest.TestCase):
         self.assertEqual(result.loc["C", ["CBT", "ACT", "MBSR"]].tolist(), [False, False, True])
         self.assertEqual(result.loc["D", ["CBT", "ACT", "MBSR"]].tolist(), [False, False, False])
         self.assertTrue(result.loc["D", "other_subtype"].startswith("Psychotherapy"))
+
+        outcomes = pd.DataFrame(
+            {
+                "nct_id": ["A", "B", "C", "D"],
+                "cohort_inclusion_status": "included",
+                "outcome_category": ["pain_recovery", "pain_interference", "pain_interference", "pain_recovery"],
+                "outcome_subcategory": "x",
+            }
+        )
+        everything = subtype_outcome_table(studies, outcomes).set_index("subtype")
+        pure = subtype_outcome_table(studies, outcomes, pure_only=True).set_index("subtype")
+        self.assertEqual(everything.loc["CBT", "trials"], 1)
+        self.assertEqual(pure.loc["ACT", "trials"], 0)  # B also carries another category
+        self.assertEqual(pure.loc["None of the three", "trials"], 1)  # D
+        self.assertEqual(pure.loc["None of the three", "pain_recovery"], 1)
 
 
 if __name__ == "__main__":

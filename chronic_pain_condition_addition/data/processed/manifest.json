@@ -1,6 +1,6 @@
 {
   "run_id": "cohort_conditions_field_v3",
-  "frozen_at_utc": "2026-11-25T13:41:35.694554+00:00",
+  "frozen_at_utc": "2026-11-25T14:59:06.865571+00:00",
   "source_extraction_run_id": "chronic_pain_addition_20261125_104716",
   "cohort_rules_version": "conditions_field_v3",
   "master_pool_studies": 1470,
