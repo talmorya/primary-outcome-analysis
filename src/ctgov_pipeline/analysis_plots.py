@@ -11,7 +11,7 @@ import seaborn as sns
 from matplotlib.patches import Patch
 
 from .analysis_data import (
-    CONDITION_LABELS,
+    condition_labels,
     CROSSTAB_DROP_SUBCATEGORIES,
     FIGURES_DIR,
     PERIOD_LABELS,
@@ -140,7 +140,7 @@ def plot_exclusion_reasons(studies: pd.DataFrame) -> plt.Figure:
 def plot_conditions(studies: pd.DataFrame) -> plt.Figure:
     inc = included(studies)
     per_condition = Counter(label for labels in inc["condition_list"] for label in labels)
-    per_condition = pd.Series(per_condition).reindex(list(CONDITION_LABELS.values())).fillna(0).astype(int).sort_values()
+    per_condition = pd.Series(per_condition).reindex(list(condition_labels(studies.columns).values())).fillna(0).astype(int).sort_values()
     combos = inc["condition_list"].apply(lambda labels: " + ".join(labels) if labels else "None").value_counts().sort_values()
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 4.6), gridspec_kw={"width_ratios": [1, 1.25]})

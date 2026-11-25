@@ -20,6 +20,7 @@ env/
 
 # Data
 data/raw/
+chronic_pain_condition_addition/data/raw/
 data/processed/*
 !data/processed/studies.csv
 !data/processed/primary_outcomes.csv

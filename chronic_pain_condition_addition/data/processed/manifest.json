@@ -1,0 +1,20 @@
+{
+  "run_id": "cohort_conditions_field_v3",
+  "frozen_at_utc": "2026-11-25T10:49:00.407753+00:00",
+  "source_extraction_run_id": "chronic_pain_addition_20261125_104716",
+  "cohort_rules_version": "conditions_field_v3",
+  "master_pool_studies": 1470,
+  "eligible_studies": 1307,
+  "primary_outcome_rows_included": 3282,
+  "rules_document": "docs/COHORT_FILTERING_RULES.md",
+  "column_dictionary": "docs/DATA_COLUMNS.md",
+  "category_mapping": "docs/category_mapping.md",
+  "analysis_notebook": "analysis/outcome_analysis.ipynb",
+  "reproduction_guide": "docs/COHORT_REPRODUCTION_GUIDE.md",
+  "output_files": {
+    "studies": "studies.csv",
+    "primary_outcomes": "primary_outcomes.csv",
+    "report": "cohort_report.md"
+  },
+  "scenario": "chronic_pain_condition_addition: main cohort rules + 'chronic pain' as a fifth condition"
+}

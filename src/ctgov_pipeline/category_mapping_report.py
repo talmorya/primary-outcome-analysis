@@ -12,10 +12,11 @@ from pathlib import Path
 
 import pandas as pd
 
-from .config_loader import PROJECT_ROOT, load_yaml
+from .config_loader import IS_SIDE_WORKSPACE, PROJECT_ROOT, WORKSPACE_ROOT, load_yaml
 from .outcome_category import _MEASURE_ONLY_CATEGORIES, RULES
 
-CATEGORY_MAPPING_MD = PROJECT_ROOT / "docs" / "category_mapping.md"
+# A side workspace keeps its own copy next to its analysis outputs (never overwrites docs/category_mapping.md).
+CATEGORY_MAPPING_MD = WORKSPACE_ROOT / "analysis" / "category_mapping.md" if IS_SIDE_WORKSPACE else PROJECT_ROOT / "docs" / "category_mapping.md"
 INTERVENTION_CONFIG = PROJECT_ROOT / "config" / "intervention_categories.yaml"
 
 OUTCOME_ORDER = [

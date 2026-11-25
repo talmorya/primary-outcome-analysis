@@ -13,10 +13,10 @@ from dataclasses import dataclass
 import pandas as pd
 
 from .category_mapping_report import INTERVENTION_CONFIG, OUTCOME_ORDER
-from .config_loader import PROJECT_ROOT, load_yaml
+from .config_loader import WORKSPACE_ROOT, load_yaml
 
-PROCESSED_DIR = PROJECT_ROOT / "data" / "processed"
-ANALYSIS_DIR = PROJECT_ROOT / "analysis"
+PROCESSED_DIR = WORKSPACE_ROOT / "data" / "processed"
+ANALYSIS_DIR = WORKSPACE_ROOT / "analysis"
 FIGURES_DIR = ANALYSIS_DIR / "figures"
 TABLES_DIR = ANALYSIS_DIR / "tables"
 
@@ -45,6 +45,16 @@ SHORT_LABELS = {
     "digital_health_delivery": "Digital health",
     "other_behavioral_treatment": "Other behavioral",
 }
+
+
+def condition_labels(columns=None) -> dict[str, str]:
+    """Condition key -> label: the four main conditions plus any extra target of the active configuration."""
+    labels = dict(CONDITION_LABELS)
+    targets = load_yaml("condition_patterns_cohort.yaml").get("targets", {})
+    for key, spec in targets.items():
+        if key not in labels and (columns is None or f"eligible_{key}" in columns):
+            labels[key] = spec.get("label", key)
+    return labels
 
 
 def _split(value: object) -> list[str]:
@@ -77,8 +87,9 @@ def add_derived_columns(studies: pd.DataFrame, outcomes: pd.DataFrame) -> pd.Dat
     for cat in intervention_labels():
         studies[f"has_{cat}"] = studies["intervention_list"].apply(lambda cats, c=cat: c in cats)
 
+    cond_labels = condition_labels(studies.columns)
     studies["condition_list"] = studies.apply(
-        lambda row: [label for key, label in CONDITION_LABELS.items() if row[f"eligible_{key}"]], axis=1
+        lambda row: [label for key, label in cond_labels.items() if row[f"eligible_{key}"]], axis=1
     )
     studies["n_conditions"] = studies["condition_list"].str.len()
 

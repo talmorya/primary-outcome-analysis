@@ -19,7 +19,7 @@ from .cohort_export import (
     project_study_row,
 )
 from .condition_eligibility import detect_review_flags, evaluate_condition_eligibility
-from .config_loader import PROJECT_ROOT, load_yaml
+from .config_loader import WORKSPACE_ROOT, load_yaml
 from .eligibility_text import extract_pain_duration_sentences
 from .extract_outcome_features import extract_outcome_features
 from .extraction_runs import latest_full_extraction_run_id
@@ -28,7 +28,7 @@ from .parse import load_raw_studies
 
 COHORT_RULES_VERSION = "conditions_field_v3"
 
-PROCESSED_DIR = PROJECT_ROOT / "data" / "processed"
+PROCESSED_DIR = WORKSPACE_ROOT / "data" / "processed"
 
 QUERY_SOURCE = (
     "StudyType=INTERVENTIONAL AND InterventionType=BEHAVIORAL "
@@ -62,7 +62,7 @@ def dedupe_records_by_nct_id(records: list[dict[str, Any]]) -> tuple[list[dict[s
 
 
 def _load_records(run_id: str) -> list[dict[str, Any]]:
-    raw_dir = PROJECT_ROOT / "data" / "raw" / "full" / run_id / "studies"
+    raw_dir = WORKSPACE_ROOT / "data" / "raw" / "full" / run_id / "studies"
     records, n_duplicates = dedupe_records_by_nct_id(load_raw_studies(raw_dir))
     if n_duplicates:
         print(f"Removed {n_duplicates} duplicate NCT id record(s) before filtering.")
@@ -145,6 +145,12 @@ def _parse_record(
             "eligible_back_pain": "back_pain" in eligible_targets,
             "eligible_fibromyalgia": "fibromyalgia" in eligible_targets,
             "eligible_headache": "headache" in eligible_targets,
+            # Extra targets added to the config by a side workspace (none in the main configuration).
+            **{
+                f"eligible_{target}": target in eligible_targets
+                for target in condition_config.get("targets", {})
+                if target not in ("migraine", "back_pain", "fibromyalgia", "headache")
+            },
             "intervention_categories": _join(intervention_cls.intervention_categories),
             "is_multimodal": intervention_cls.is_multimodal,
             "control_arm_types": _join(intervention_cls.control_arm_types),

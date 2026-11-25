@@ -73,12 +73,19 @@ def write_final_cohort_report(
             "|---|---:|",
         ]
     )
-    for col, label in [
+    condition_columns = [
         ("eligible_back_pain", "Back pain"),
         ("eligible_fibromyalgia", "Fibromyalgia"),
         ("eligible_migraine", "Migraine"),
         ("eligible_headache", "Primary headache (non-migraine)"),
-    ]:
+    ]
+    known = {col for col, _ in condition_columns}
+    condition_columns += [  # extra targets of a side workspace's configuration
+        (col, col.removeprefix("eligible_").replace("_", " ").capitalize())
+        for col in included.columns
+        if col.startswith("eligible_") and col not in known
+    ]
+    for col, label in condition_columns:
         lines.append(f"| {label} | {int((included[col] == True).sum())} |")
     lines.append("")
 

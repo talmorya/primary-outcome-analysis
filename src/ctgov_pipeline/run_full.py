@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from .config_loader import PROJECT_ROOT, load_yaml
+from .config_loader import WORKSPACE_ROOT, load_yaml
 from .fetch import get_api_version, save_json, search_all_studies
 from .parse import build_tables
 
@@ -77,8 +77,8 @@ def run_full() -> Path:
     run_id = datetime.now(timezone.utc).strftime("full_%Y%m%d_%H%M%S")
     extraction_date = datetime.now(timezone.utc).isoformat()
 
-    raw_dir = PROJECT_ROOT / "data" / "raw" / "full" / run_id
-    processed_dir = PROJECT_ROOT / "data" / "processed" / "full" / run_id
+    raw_dir = WORKSPACE_ROOT / "data" / "raw" / "full" / run_id
+    processed_dir = WORKSPACE_ROOT / "data" / "processed" / "full" / run_id
     processed_dir.mkdir(parents=True, exist_ok=True)
 
     api_info = get_api_version()

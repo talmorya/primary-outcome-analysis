@@ -1,0 +1,8 @@
+# Side analysis: one extra target condition on top of config/condition_patterns_cohort.yaml
+# (merged over it by ctgov_pipeline.config_loader; every other rule is unchanged).
+targets:
+  chronic_pain:
+    label: "Chronic pain"
+    patterns:
+      - "\\bchronic\\s+pain\\b"
+      - "\\bpain\\s*,\\s*chronic\\b"

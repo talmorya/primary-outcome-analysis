@@ -19,10 +19,10 @@ from .cohort_export import (
 )
 from .category_mapping_report import write_category_mapping
 from .cohort_report import write_final_cohort_report
-from .config_loader import PROJECT_ROOT
+from .config_loader import WORKSPACE_ROOT
 from .extraction_runs import latest_full_extraction_run_id
 
-PROCESSED_DIR = PROJECT_ROOT / "data" / "processed"
+PROCESSED_DIR = WORKSPACE_ROOT / "data" / "processed"
 FINAL_RUN_ID = "cohort_conditions_field_v3"
 
 

@@ -91,5 +91,6 @@ def exclusion_rule_from_detail(detail: object) -> str:
 
 
 def project_study_row(row: dict[str, Any]) -> dict[str, Any]:
-    """Keep only the canonical study schema."""
-    return {key: row.get(key) for key in STUDY_TABLE_COLUMNS}
+    """Keep only the canonical study schema (plus `eligible_<target>` flags of extra targets in the config)."""
+    extra = [key for key in row if key.startswith("eligible_") and key not in STUDY_TABLE_COLUMNS]
+    return {key: row.get(key) for key in STUDY_TABLE_COLUMNS + extra}

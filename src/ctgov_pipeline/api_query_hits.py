@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from .config_loader import PROJECT_ROOT
+from .config_loader import WORKSPACE_ROOT
 
 # Older raw runs saved the back-pain search pages under this key.
 _SEARCH_KEY_ALIASES = {
@@ -15,7 +15,7 @@ _SEARCH_KEY_ALIASES = {
 
 def load_api_query_hits(extraction_run_id: str) -> dict[str, list[str]]:
     """For each NCT ID, sorted list of condition search keys (e.g. headache, migraine)."""
-    pages_dir = PROJECT_ROOT / "data" / "raw" / "full" / extraction_run_id / "search_pages"
+    pages_dir = WORKSPACE_ROOT / "data" / "raw" / "full" / extraction_run_id / "search_pages"
     if not pages_dir.is_dir():
         return {}
 

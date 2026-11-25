@@ -149,9 +149,9 @@ def load_interventions_from_row(row: dict[str, Any]) -> list[dict[str, Any]]:
     run_id = row.get("extraction_run_id")
     if not nct_id or not run_id:
         return []
-    from .config_loader import PROJECT_ROOT
+    from .config_loader import WORKSPACE_ROOT
 
-    path = PROJECT_ROOT / "data" / "raw" / "full" / str(run_id) / "studies" / f"{nct_id}.json"
+    path = WORKSPACE_ROOT / "data" / "raw" / "full" / str(run_id) / "studies" / f"{nct_id}.json"
     if not path.is_file():
         return []
     record = json.loads(path.read_text(encoding="utf-8"))
