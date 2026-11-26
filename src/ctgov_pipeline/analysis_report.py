@@ -222,7 +222,14 @@ def _condition_part(studies: pd.DataFrame, outcomes: pd.DataFrame, labels: dict[
         f"### {name} by registered condition",
         "",
         "Which conditions the category's trials belong to, and which outcomes they register in each (a trial with several conditions counts in each; "
-        "trials with a registered primary outcome; the last group is the reference level of each condition):",
+        "only trials with a registered primary outcome). The four groups of each condition:",
+        "",
+        f"- **{name}, all**: every trial of the category in that condition, whatever else it is combined with. It is the sum of the next two rows "
+        f"(e.g. {conditions[0]}: {n_all[conditions[0]]} = {int(by.loc[(conditions[0], 'only_this_category'), 'n'])} alone + "
+        f"{int(by.loc[(conditions[0], 'with_any_other_category'), 'n'])} combined), so it mostly looks like the combined row.",
+        f"- **{name}, alone**: the category is the trial's only intervention category (a pure trial).",
+        f"- **{name}, combined**: the category plus at least one other intervention category (education, physical rehabilitation, mind-body, ...).",
+        f"- **All other behavioral trials**: included trials of that condition that do not carry the category at all; the reference level of the condition.",
         "",
         "Trials: " + ", ".join(f"{c} {n}" for c, n in n_all.items()) + ".",
         "",
@@ -253,11 +260,25 @@ def _condition_part(studies: pd.DataFrame, outcomes: pd.DataFrame, labels: dict[
         n_up = sum(1 for _, i, ri, _, _ in higher if i > ri)
         out += [
             "",
-            f"Compared with all other behavioral trials of the same condition, {name} trials register pain interference more often in {n_up} of {len(higher)} conditions ("
+            f"Compared with all other behavioral trials of the same condition, the **'all'** group of {name} (alone + combined, mostly combined) registers pain interference more often in {n_up} of {len(higher)} conditions ("
             + "; ".join(f"{c} {i:.0f}% vs {ri:.0f}%" for c, i, ri, _, _ in higher)
             + "); pain recovery: "
             + "; ".join(f"{c} {r:.0f}% vs {rr:.0f}%" for c, _, _, r, rr in higher)
             + ".",
+        ]
+    inside = []
+    for c in conditions:
+        a, k = by.loc[(c, "only_this_category")], by.loc[(c, "with_any_other_category")]
+        for label, row in (("alone", a), ("combined", k)):
+            if row["n"] >= MIN_GROUP:
+                more = "recovery" if row[recov] > row[interf] else "interference"
+                inside.append(f"{c}, {label}: {more} higher ({_pct(row[interf], row['n'])} interference vs {_pct(row[recov], row['n'])} recovery)")
+    if inside:
+        out += [
+            "",
+            "Within the category itself (interference versus recovery in the same group): " + "; ".join(inside)
+            + ". So the order of interference and recovery depends on whether the trial is alone or combined, which the 'all' row hides; "
+            "groups under " + str(MIN_GROUP) + " trials are left out of this sentence.",
         ]
     out += [
         "",
@@ -266,6 +287,42 @@ def _condition_part(studies: pd.DataFrame, outcomes: pd.DataFrame, labels: dict[
         "",
         _fig(f"fig16_condition_split_{FOCUS_CATEGORY}", f"{name}: outcomes by registered condition, alone vs combined vs all other trials"),
     ]
+    return "\n".join(out)
+
+
+def _pure_vs_combined(studies: pd.DataFrame, outcomes: pd.DataFrame, name: str) -> str:
+    """Which subtype makes pure and combined trials differ (each subtype pure vs combined, and its contribution to the pure total)."""
+    interf, recov = FOCUS_OUTCOMES
+    pure = ad.subtype_outcome_table(studies, outcomes, FOCUS_OUTCOMES, pure_only=True).set_index("subtype")
+    comb = ad.subtype_outcome_table(studies, outcomes, FOCUS_OUTCOMES, combined_only=True).set_index("subtype")
+    rows = []
+    for subtype in pure.index:
+        p, c = pure.loc[subtype], comb.loc[subtype]
+        test = ["-", "-"]
+        if p["n"] and c["n"]:
+            test = [_p_value(ad.fisher_exact_two_sided(int(p[col]), int(p["n"]), int(c[col]), int(c["n"]))) for col in (interf, recov)]
+        rows.append([subtype, int(p["n"]), _ci_cell(int(p[interf]), int(p["n"])), _ci_cell(int(p[recov]), int(p["n"])),
+                     int(c["n"]), _ci_cell(int(c[interf]), int(c["n"])), _ci_cell(int(c[recov]), int(c["n"])), test[0], test[1]])
+    out = [
+        f"**Which subtype makes pure and combined {name} trials differ?** The same subtype, pure versus combined with other categories "
+        "(Fisher exact tests, exploratory and uncorrected; small groups):",
+        "",
+        _table(["Subtype", "Pure n", "Pure: interference", "Pure: recovery", "Combined n", "Combined: interference", "Combined: recovery", "p interference", "p recovery"], rows),
+        "",
+    ]
+    psychological = ad.psychological_subtypes(studies)
+    pure_ids = psychological[psychological["n_intervention_categories"] == 1]
+    named = list(ad.PSYCH_NAMED_SUBTYPES)
+    if int((pure_ids[named].sum(axis=1) > 1).sum()) == 0 and len(pure_ids):
+        total_i, total_r = int(pure[interf].sum()), int(pure[recov].sum())
+        parts = ", ".join(f"{k} {int(pure.loc[k, recov] - pure.loc[k, interf]):+d}" for k in pure.index)
+        out += [
+            f"Among the pure trials (subtypes do not overlap here), {total_r} register a pain-recovery outcome and {total_i} a pain-interference outcome, "
+            f"a net difference of {total_r - total_i:+d} trials in favour of recovery. Net contribution (recovery minus interference trials) by subtype: {parts}. "
+            "A subtype with a net contribution near zero does not drive the difference between interference and recovery; the share of "
+            "each outcome within a subtype, compared between pure and combined above, shows what changes when other interventions are added.",
+            "",
+        ]
     return "\n".join(out)
 
 
@@ -314,6 +371,8 @@ def _subtype_part(studies: pd.DataFrame, outcomes: pd.DataFrame, labels: dict[st
         "Under 10 trials the percentages are unstable (faded, hatched bars in the figure); a subtype with no pure trial has no bar.",
         "",
         _fig("fig18_psychological_subtypes_pure", f"{name}: CBT / ACT / MBSR counts and outcomes, pure trials only"),
+        "",
+        _pure_vs_combined(studies, outcomes, name),
     ]
     return "\n".join(out)
 

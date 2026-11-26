@@ -59,7 +59,12 @@ The opposite trends appear to stem from composition: most Psychological & cognit
 
 ### Psychological & cognitive therapy by registered condition
 
-Which conditions the category's trials belong to, and which outcomes they register in each (a trial with several conditions counts in each; trials with a registered primary outcome; the last group is the reference level of each condition):
+Which conditions the category's trials belong to, and which outcomes they register in each (a trial with several conditions counts in each; only trials with a registered primary outcome). The four groups of each condition:
+
+- **Psychological & cognitive therapy, all**: every trial of the category in that condition, whatever else it is combined with. It is the sum of the next two rows (e.g. Back pain: 80 = 16 alone + 64 combined), so it mostly looks like the combined row.
+- **Psychological & cognitive therapy, alone**: the category is the trial's only intervention category (a pure trial).
+- **Psychological & cognitive therapy, combined**: the category plus at least one other intervention category (education, physical rehabilitation, mind-body, ...).
+- **All other behavioral trials**: included trials of that condition that do not carry the category at all; the reference level of the condition.
 
 Trials: Back pain 80, Fibromyalgia 52, Migraine 27, Headache (other types) 28.
 
@@ -89,7 +94,9 @@ Alone versus combined within a condition (conditions where both groups have at l
 
 Too few trials in the alone or combined group to compare: Migraine, Headache (other types).
 
-Compared with all other behavioral trials of the same condition, Psychological & cognitive therapy trials register pain interference more often in 4 of 4 conditions (Back pain 65% vs 51%; Fibromyalgia 52% vs 44%; Migraine 44% vs 28%; Headache (other types) 50% vs 21%); pain recovery: Back pain 46% vs 50%; Fibromyalgia 29% vs 34%; Migraine 59% vs 52%; Headache (other types) 54% vs 72%.
+Compared with all other behavioral trials of the same condition, the **'all'** group of Psychological & cognitive therapy (alone + combined, mostly combined) registers pain interference more often in 4 of 4 conditions (Back pain 65% vs 51%; Fibromyalgia 52% vs 44%; Migraine 44% vs 28%; Headache (other types) 50% vs 21%); pain recovery: Back pain 46% vs 50%; Fibromyalgia 29% vs 34%; Migraine 59% vs 52%; Headache (other types) 54% vs 72%.
+
+Within the category itself (interference versus recovery in the same group): Back pain, alone: recovery higher (50% interference vs 75% recovery); Back pain, combined: interference higher (69% interference vs 39% recovery); Fibromyalgia, alone: recovery higher (38% interference vs 56% recovery); Fibromyalgia, combined: interference higher (58% interference vs 17% recovery); Migraine, combined: recovery higher (41% interference vs 64% recovery); Headache (other types), combined: recovery higher (43% interference vs 57% recovery). So the order of interference and recovery depends on whether the trial is alone or combined, which the 'all' row hides; groups under 10 trials are left out of this sentence.
 
 These are descriptive, exploratory comparisons (uncorrected p-values; small groups). Groups under 10 trials are drawn faded and hatched in the figure (unstable percentages, wide intervals).
 
@@ -128,6 +135,18 @@ Under 10 trials the percentages are unstable (faded, hatched bars in the figure)
 ![Psychological & cognitive therapy: CBT / ACT / MBSR counts and outcomes, pure trials only](figures/fig18_psychological_subtypes_pure.png)
 
 *Psychological & cognitive therapy: CBT / ACT / MBSR counts and outcomes, pure trials only* (PDF: `figures/fig18_psychological_subtypes_pure.pdf`)
+
+**Which subtype makes pure and combined Psychological & cognitive therapy trials differ?** The same subtype, pure versus combined with other categories (Fisher exact tests, exploratory and uncorrected; small groups):
+
+| Subtype | Pure n | Pure: interference | Pure: recovery | Combined n | Combined: interference | Combined: recovery | p interference | p recovery |
+|---|---|---|---|---|---|---|---|---|
+| CBT | 23 | 61% (41-78%) | 65% (45-81%) | 87 | 61% (50-71%) | 38% (28-48%) | p = 1.000 | p = 0.032 |
+| ACT | 2 | 100% (34-100%) | 0% (0-66%) | 20 | 55% (34-74%) | 40% (22-61%) | p = 0.494 | p = 0.515 |
+| MBSR | 0 | - | - | 5 | 60% (23-88%) | 40% (12-77%) | - | - |
+| None of the three | 14 | 21% (8-48%) | 57% (33-79%) | 32 | 56% (39-72%) | 38% (23-55%) | p = 0.052 | p = 0.333 |
+
+Among the pure trials (subtypes do not overlap here), 23 register a pain-recovery outcome and 19 a pain-interference outcome, a net difference of +4 trials in favour of recovery. Net contribution (recovery minus interference trials) by subtype: CBT +1, ACT -2, MBSR +0, None of the three +5. A subtype with a net contribution near zero does not drive the difference between interference and recovery; the share of each outcome within a subtype, compared between pure and combined above, shows what changes when other interventions are added.
+
 
 ![How intervention categories co-occur (row category: % of its trials that also carry the column category)](figures/fig13_cooccurrence_heatmap.png)
 

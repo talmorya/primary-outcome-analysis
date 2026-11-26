@@ -361,13 +361,17 @@ def subtype_outcome_table(
     outcome_categories: tuple[str, ...] = ("pain_interference", "pain_recovery"),
     *,
     pure_only: bool = False,
+    combined_only: bool = False,
 ) -> pd.DataFrame:
     """Per subtype (CBT, ACT, MBSR, none of the three): trials, trials with a registered outcome, and how many register
     at least one outcome of each type. Subtypes overlap (a trial can be CBT and ACT).
-    `pure_only` keeps only trials whose sole intervention category is the psychological one (no other category)."""
+    `pure_only` keeps only trials whose sole intervention category is the psychological one (no other category);
+    `combined_only` keeps only trials that also carry at least one other category."""
     sub = psychological_subtypes(studies)
     if pure_only:
         sub = sub[sub["n_intervention_categories"] == 1]
+    if combined_only:
+        sub = sub[sub["n_intervention_categories"] > 1]
     kept = outcomes[(outcomes["cohort_inclusion_status"] == "included") & ~outcomes["outcome_subcategory"].isin(CROSSTAB_DROP_SUBCATEGORIES)]
     registered = kept.groupby("nct_id")["outcome_category"].agg(set)
     with_outcomes = sub[sub["nct_id"].isin(registered.index)].copy()
