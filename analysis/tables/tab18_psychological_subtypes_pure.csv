@@ -2,4 +2,8 @@ subtype,trials,n,pain_interference,pain_recovery,pain_interference_pct,pain_reco
 CBT,23,23,14,15,61.0,65.0
 ACT,2,2,2,0,100.0,0.0
 MBSR,0,0,0,0,,
-None of the three,14,14,3,8,21.0,57.0
+Psychotherapy,13,13,5,7,38.0,54.0
+Cognitive functional therapy,0,0,0,0,,
+Motivational interviewing,4,4,2,3,50.0,75.0
+Behavioral activation / therapy,4,4,2,1,50.0,25.0
+No named subtype,0,0,0,0,,

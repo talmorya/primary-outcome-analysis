@@ -47,22 +47,26 @@ Alone vs combined within a condition (both groups at least 10 trials):
 
 Interference, all Psychological & cognitive therapy trials vs other behavioral trials: Back pain 65% vs 51%; Fibromyalgia 52% vs 44%; Migraine 44% vs 28%; Headache (other types) 50% vs 21% (higher in 4 of 4).
 
-### CBT, ACT and MBSR within Psychological & cognitive therapy
+### Therapy subtypes within Psychological & cognitive therapy
 
-Of 175 trials: 112 name CBT, 22 name ACT, 5 name MBSR, 46 none of the three (active-arm text; MBSR is filed under mind-body, so few appear here). 39 trials are pure (no other category).
+Of 175 trials (active-arm text; a trial can name several, 37 do; MBSR is filed under mind-body, so few appear here): 112 CBT, 22 ACT, 5 MBSR, 30 Psychotherapy, 10 Cognitive functional therapy, 12 Motivational interviewing, 24 Behavioral activation / therapy, 0 No named subtype. 39 trials are pure (no other category).
 
-![Psychological & cognitive therapy: CBT / ACT / MBSR, alone or combined](figures/fig17_psychological_subtypes.png)
+![Psychological & cognitive therapy: therapy subtypes, alone or combined](figures/fig17_psychological_subtypes.png)
 
-![Psychological & cognitive therapy: CBT / ACT / MBSR, pure trials only](figures/fig18_psychological_subtypes_pure.png)
+![Psychological & cognitive therapy: therapy subtypes, pure trials only](figures/fig18_psychological_subtypes_pure.png)
 
 | Subtype | Pure n | Pure: interf. / recov. | Combined n | Combined: interf. / recov. | Recovery, pure vs combined |
 |---|---|---|---|---|---|
 | CBT | 23 | 61% / 65% | 87 | 61% / 38% | p = 0.032 |
 | ACT | 2 | 100% / 0% | 20 | 55% / 40% | p = 0.515 |
 | MBSR | 0 | - / - | 5 | 60% / 40% | - |
-| None of the three | 14 | 21% / 57% | 32 | 56% / 38% | p = 0.333 |
+| Psychotherapy | 13 | 38% / 54% | 16 | 62% / 44% | p = 0.715 |
+| Cognitive functional therapy | 0 | - / - | 10 | 100% / 50% | - |
+| Motivational interviewing | 4 | 50% / 75% | 8 | 0% / 0% | p = 0.018 |
+| Behavioral activation / therapy | 4 | 50% / 25% | 20 | 55% / 35% | p = 1.000 |
+| No named subtype | 0 | - / - | 0 | - / - | - |
 
-Pure trials: 23 register recovery, 19 interference (net +4 for recovery); net by subtype (recovery minus interference): CBT +1, ACT -2, None of the three +5.
+Net by subtype among pure trials (trials with a recovery outcome minus trials with an interference outcome; subtypes overlap, so these do not add up): CBT +1, ACT -2, Psychotherapy +2, Motivational interviewing +1, Behavioral activation / therapy -1.
 
 ![Co-occurrence of intervention categories (row: % of its trials that also carry the column)](figures/fig13_cooccurrence_heatmap.png)
 

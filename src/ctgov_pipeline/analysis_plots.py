@@ -23,6 +23,7 @@ from .analysis_data import (
     condition_outcome_table,
     cooccurrence,
     included,
+    NO_SUBTYPE,
     intervention_keys_by_size,
     psychological_subtypes,
     subtype_outcome_table,
@@ -512,22 +513,18 @@ def plot_psych_subtypes(
     outcome_categories: tuple[str, ...] = ("pain_interference", "pain_recovery"),
     pure_only: bool = False,
 ) -> plt.Figure:
-    """How many Psychological & cognitive trials are CBT / ACT / MBSR, and which outcomes each registers.
+    """How many Psychological & cognitive trials name each therapy subtype, and which outcomes each registers.
     `pure_only`: only trials with no other intervention category."""
     sub = psychological_subtypes(studies)
     if pure_only:
         sub = sub[sub["n_intervention_categories"] == 1]
     scope = "pure (no other intervention category)" if pure_only else "alone or combined"
     table = subtype_outcome_table(studies, outcomes, outcome_categories, pure_only=pure_only).iloc[::-1].reset_index(drop=True)
-    other = sub.loc[sub["other_subtype"] != "", "other_subtype"].value_counts()
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 4.8), gridspec_kw={"width_ratios": [1, 1.2]})
-    ax1.barh(table["subtype"], table["trials"], color=[INCLUDED_COLOR if t != "None of the three" else "#9aa5b1" for t in table["subtype"]])
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 0.62 * len(table) + 2.4), gridspec_kw={"width_ratios": [1, 1.2]})
+    ax1.barh(table["subtype"], table["trials"], color=[INCLUDED_COLOR if t != NO_SUBTYPE else "#9aa5b1" for t in table["subtype"]])
     _bar_labels(ax1, table["trials"].values, len(sub))
     ax1.set_title(f"Therapy named in the active arms ({len(sub)} Psychological & cognitive trials, {scope})\n(a trial can name several; MBSR is mostly filed under mind-body)", fontsize=10)
     ax1.set_xlabel("Trials")
-    if len(other):
-        ax1.text(0.99, 0.02, "None of the three, by what they name:\n" + "\n".join(f"{k.split(' (')[0]}: {v}" for k, v in other.items()),
-                 transform=ax1.transAxes, ha="right", va="bottom", fontsize=8, color="#444444")
     y = np.arange(len(table))
     height = 0.8 / len(outcome_categories)
     for i, oc in enumerate(outcome_categories):
@@ -543,8 +540,8 @@ def plot_psych_subtypes(
     ax2.set_yticklabels([f"{t}  (n={n}{', unstable' if 0 < n < 10 else ''})" for t, n in zip(table["subtype"], table["n"])])
     ax2.set_xlim(0, 105)
     ax2.set_xlabel("% of the subtype's trials (whiskers: 95% confidence interval)")
-    ax2.set_title(f"Outcomes registered by subtype, {scope}\n(subtypes overlap)", fontsize=10)
-    ax2.legend(frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.16), ncol=2, fontsize=9)
+    ax2.set_title(f"Outcomes registered by subtype, {scope}\n(subtypes overlap; faded, hatched: fewer than 10 trials)", fontsize=10)
+    ax2.legend(frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.12), ncol=2, fontsize=9)
     for ax in (ax1, ax2):
         ax.grid(axis="y", visible=False)
     fig.tight_layout()

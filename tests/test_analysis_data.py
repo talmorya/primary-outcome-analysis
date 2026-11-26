@@ -136,10 +136,13 @@ class AnalysisDataTests(unittest.TestCase):
         ).set_index("nct_id", drop=False)
         result = psychological_subtypes(studies).set_index("nct_id")
         self.assertEqual(result.loc["A", ["CBT", "ACT", "MBSR"]].tolist(), [True, False, False])
+        self.assertTrue(result.loc["D", "Psychotherapy"])  # the word "act" is not ACT, but psychotherapy is named
+        self.assertFalse(result.loc["A", "Behavioral activation / therapy"])  # "cognitive-behavioral therapy" is CBT only
         self.assertEqual(result.loc["B", ["CBT", "ACT", "MBSR"]].tolist(), [False, True, False])
         self.assertEqual(result.loc["C", ["CBT", "ACT", "MBSR"]].tolist(), [False, False, True])
         self.assertEqual(result.loc["D", ["CBT", "ACT", "MBSR"]].tolist(), [False, False, False])
-        self.assertTrue(result.loc["D", "other_subtype"].startswith("Psychotherapy"))
+        self.assertTrue(result.loc["D", "Psychotherapy"])
+        self.assertFalse(result.loc["D", "No named subtype"])
 
         outcomes = pd.DataFrame(
             {
@@ -153,8 +156,8 @@ class AnalysisDataTests(unittest.TestCase):
         pure = subtype_outcome_table(studies, outcomes, pure_only=True).set_index("subtype")
         self.assertEqual(everything.loc["CBT", "trials"], 1)
         self.assertEqual(pure.loc["ACT", "trials"], 0)  # B also carries another category
-        self.assertEqual(pure.loc["None of the three", "trials"], 1)  # D
-        self.assertEqual(pure.loc["None of the three", "pain_recovery"], 1)
+        self.assertEqual(pure.loc["Psychotherapy", "trials"], 1)  # D
+        self.assertEqual(pure.loc["Psychotherapy", "pain_recovery"], 1)
 
 
 if __name__ == "__main__":

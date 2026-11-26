@@ -195,8 +195,6 @@ def _subtype_part(studies: pd.DataFrame, outcomes: pd.DataFrame, labels: dict[st
     interf, recov = FOCUS_OUTCOMES
     sub = ad.psychological_subtypes(studies, FOCUS_CATEGORY)
     n = len(sub)
-    named = list(ad.PSYCH_NAMED_SUBTYPES)
-    n_none = int((sub["other_subtype"] != "").sum())
     n_pure = int((sub["n_intervention_categories"] == 1).sum())
     pure = ad.subtype_outcome_table(studies, outcomes, FOCUS_OUTCOMES, pure_only=True).set_index("subtype")
     comb = ad.subtype_outcome_table(studies, outcomes, FOCUS_OUTCOMES, combined_only=True).set_index("subtype")
@@ -209,27 +207,27 @@ def _subtype_part(studies: pd.DataFrame, outcomes: pd.DataFrame, labels: dict[st
         rows.append(
             [subtype, int(p["n"]), f"{_pct(p[interf], p['n'])} / {_pct(p[recov], p['n'])}", int(c["n"]), f"{_pct(c[interf], c['n'])} / {_pct(c[recov], c['n'])}", test]
         )
+    n_multi = int((sub[list(ad.PSYCH_SUBTYPES)].sum(axis=1) > 1).sum())
     out = [
-        f"### CBT, ACT and MBSR within {name}",
+        f"### Therapy subtypes within {name}",
         "",
-        f"Of {n} trials: " + ", ".join(f"{int(sub[k].sum())} name {k}" for k in named)
-        + f", {n_none} none of the three (active-arm text; MBSR is filed under mind-body, so few appear here). {n_pure} trials are pure (no other category).",
+        f"Of {n} trials (active-arm text; a trial can name several, {n_multi} do; MBSR is filed under mind-body, so few appear here): "
+        + ", ".join(f"{int(sub[k].sum())} {k}" for k in [*ad.PSYCH_SUBTYPES, ad.NO_SUBTYPE])
+        + f". {n_pure} trials are pure (no other category).",
         "",
-        _fig("fig17_psychological_subtypes", f"{name}: CBT / ACT / MBSR, alone or combined"),
+        _fig("fig17_psychological_subtypes", f"{name}: therapy subtypes, alone or combined"),
         "",
-        _fig("fig18_psychological_subtypes_pure", f"{name}: CBT / ACT / MBSR, pure trials only"),
+        _fig("fig18_psychological_subtypes_pure", f"{name}: therapy subtypes, pure trials only"),
         "",
         _table(["Subtype", "Pure n", "Pure: interf. / recov.", "Combined n", "Combined: interf. / recov.", "Recovery, pure vs combined"], rows),
     ]
-    psych_pure = sub[sub["n_intervention_categories"] == 1]
-    if len(psych_pure) and int((psych_pure[named].sum(axis=1) > 1).sum()) == 0:
-        total_i, total_r = int(pure[interf].sum()), int(pure[recov].sum())
-        out += [
-            "",
-            f"Pure trials: {total_r} register recovery, {total_i} interference (net {total_r - total_i:+d} for recovery); net by subtype (recovery minus interference): "
-            + ", ".join(f"{k} {int(pure.loc[k, recov] - pure.loc[k, interf]):+d}" for k in pure.index if pure.loc[k, "n"])
-            + ".",
-        ]
+    net = ", ".join(
+        f"{k} {int(pure.loc[k, recov] - pure.loc[k, interf]):+d}" for k in pure.index if pure.loc[k, "n"]
+    )
+    out += [
+        "",
+        "Net by subtype among pure trials (trials with a recovery outcome minus trials with an interference outcome; subtypes overlap, so these do not add up): " + net + ".",
+    ]
     return "\n".join(out)
 
 

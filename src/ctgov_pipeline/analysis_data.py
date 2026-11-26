@@ -310,18 +310,18 @@ def condition_outcome_table(
 
 # Therapy subtypes inside the Psychological & cognitive category. Descriptive only (never used to include or exclude);
 # matched on the name + description of the ACTIVE arms of a trial (comparator arms are skipped, like the classifier).
-# The first three are the named therapies; the rest split the trials that carry none of them.
-PSYCH_NAMED_SUBTYPES = {
+# Subtypes overlap (a trial can be CBT and psychotherapy); trials matching none get "No named subtype".
+PSYCH_SUBTYPES = {
     "CBT": r"(?i:cognitive[- ]+behavio|\bcbt\b|\bcbgt\b)",
     "ACT": r"(?i:acceptance\s*(?:and|&)\s*commitment)|\bACT\b",  # the abbreviation is case-sensitive: not the word "act"
     "MBSR": r"(?i:\bmbsr\b|mindfulness[- ]based\s+stress\s+reduction)",
+    "Psychotherapy": r"(?i:psychotherap|psychodynamic|interpersonal\s+therapy|emdr|eye[- ]movement|problem[- ]solving\s+therapy|\bpst\b|dialectical|\bdbt\b)",
+    "Cognitive functional therapy": r"(?i:cognitive\s+functional|\bcft\b)",
+    "Motivational interviewing": r"(?i:motivational\s+interview)",
+    # "behavioral therapy" inside "cognitive behavioral therapy" is CBT, not this
+    "Behavioral activation / therapy": r"(?i:(?<!cognitive )(?<!cognitive-)(?<!cognitive-behavioral )behavio(?:u)?ral\s+(?:activation|therapy)|operant|emotional\s+regulation|\bpbre\b)",
 }
-PSYCH_OTHER_SUBTYPES = {
-    "Cognitive functional therapy": r"cognitive\s+functional|\bcft\b",
-    "Psychotherapy (psychodynamic, interpersonal, EMDR, problem-solving, DBT)": r"psychotherap|psychodynamic|interpersonal\s+therapy|emdr|eye[- ]movement|problem[- ]solving\s+therapy|\bpst\b|dialectical|\bdbt\b",
-    "Motivational interviewing": r"motivational\s+interview",
-    "Behavioral activation / behavioral therapy": r"behavio(?:u)?ral\s+(?:activation|therapy)|operant|emotional\s+regulation|\bpbre\b",
-}
+NO_SUBTYPE = "No named subtype"
 
 
 def _active_arm_texts(details: object) -> str:
@@ -338,20 +338,16 @@ def _active_arm_texts(details: object) -> str:
 
 
 def psychological_subtypes(studies: pd.DataFrame, category: str = "psychological_cognitive") -> pd.DataFrame:
-    """One row per included trial of `category`: flags for CBT / ACT / MBSR, a mutually exclusive `other_subtype`
-    for trials with none of the three, and `n_intervention_categories`."""
+    """One row per included trial of `category`: an overlapping True/False flag per subtype in PSYCH_SUBTYPES,
+    `No named subtype` for trials matching none, and `n_intervention_categories`."""
     inc = included(studies)
     inc = inc[inc[f"has_{category}"]]
-    named = {k: re.compile(v) for k, v in PSYCH_NAMED_SUBTYPES.items()}
-    other = {k: re.compile(v, re.IGNORECASE) for k, v in PSYCH_OTHER_SUBTYPES.items()}
+    patterns = {k: re.compile(v) for k, v in PSYCH_SUBTYPES.items()}
     rows = []
     for row in inc.itertuples():
         text = _active_arm_texts(row.raw_intervention_details)
-        flags = {k: bool(p.search(text)) for k, p in named.items()}
-        other_subtype = ""
-        if not any(flags.values()):
-            other_subtype = next((k for k, p in other.items() if p.search(text)), "Other / not named")
-        rows.append({"nct_id": row.nct_id, **flags, "other_subtype": other_subtype, "n_intervention_categories": row.n_intervention_categories})
+        flags = {k: bool(p.search(text)) for k, p in patterns.items()}
+        rows.append({"nct_id": row.nct_id, **flags, NO_SUBTYPE: not any(flags.values()), "n_intervention_categories": row.n_intervention_categories})
     return pd.DataFrame(rows)
 
 
@@ -363,8 +359,8 @@ def subtype_outcome_table(
     pure_only: bool = False,
     combined_only: bool = False,
 ) -> pd.DataFrame:
-    """Per subtype (CBT, ACT, MBSR, none of the three): trials, trials with a registered outcome, and how many register
-    at least one outcome of each type. Subtypes overlap (a trial can be CBT and ACT).
+    """Per subtype (PSYCH_SUBTYPES and "No named subtype"): trials, trials with a registered outcome, and how many register
+    at least one outcome of each type. Subtypes overlap (a trial can be CBT and psychotherapy).
     `pure_only` keeps only trials whose sole intervention category is the psychological one (no other category);
     `combined_only` keeps only trials that also carry at least one other category."""
     sub = psychological_subtypes(studies)
@@ -377,7 +373,7 @@ def subtype_outcome_table(
     with_outcomes = sub[sub["nct_id"].isin(registered.index)].copy()
     for oc in outcome_categories:
         with_outcomes[oc] = with_outcomes["nct_id"].map(lambda nct, c=oc: c in registered[nct])
-    groups = [(name, sub[name]) for name in PSYCH_NAMED_SUBTYPES] + [("None of the three", sub["other_subtype"] != "")]
+    groups = [(name, sub[name]) for name in [*PSYCH_SUBTYPES, NO_SUBTYPE]]
     rows = []
     for name, mask in groups:
         ids = set(sub.loc[mask, "nct_id"])
