@@ -4,6 +4,14 @@
 
 Run `chronic_pain_addition_20261125_104716`, rules `conditions_field_v3`: 1307 included trials, 3282 primary outcomes. Outcome categories are rule-based aids, not manual coding; a trial with several categories counts in each. Percentages are shares of trials with at least one outcome of the type.
 
+<!-- reproduction:start -->
+## Does the main-cohort pattern reproduce with 'chronic pain' added?
+
+The main-cohort pattern does not carry over to the trials added by the chronic-pain condition. In the main cohort, Psychological & cognitive trials used alone register recovery more often than interference (59% vs 49%, n=39) and recovery is clearly lower when they are combined (37%). Among the added trials, those used alone register interference more often than recovery (68% vs 32%, n=25) and combining makes little difference to recovery (32% alone vs 36% combined), so the alone-versus-combined recovery difference disappears (extended cohort: p = 0.09). The therapy mix also differs: psychotherapy-type trials, which drive the recovery tilt of the main cohort's pure trials, are rare among the added pure trials (4 vs 13), which are mostly CBT (13) and ACT (7), and ACT trials register interference far more than recovery. What does reproduce is the overall orientation: in both sets, combined with other intervention categories, the category registers interference at least as often as recovery (58% vs 37% in the main cohort, 44% vs 36% among the added trials), and in all five conditions it registers interference more often than other behavioral trials of the same condition. So the interference orientation of cognitive therapies holds with chronic pain included, whereas the tilt toward recovery when used alone is specific to the original four conditions (back pain and fibromyalgia, not the generic chronic-pain trials).
+
+Tables: `comparison_with_main.md`.
+<!-- reproduction:end -->
+
 ## 1. Psychological & cognitive therapy: interference or recovery?
 
 In the full cohort the category's trials register pain interference more often than pain recovery (52% vs 39% of trials), and the single-category check gives 56% vs 48% (n=64); the order does not reverse.

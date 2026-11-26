@@ -113,8 +113,9 @@ def prepare_notebook() -> None:
 
 
 def write_comparison() -> Path:
-    """analysis/comparison_with_main.md: the Psychological & cognitive alone-vs-combined pattern in the trials of the
-    main cohort versus the trials added by the chronic-pain condition (same code as results_summary.md)."""
+    """analysis/comparison_with_main.md: the Psychological & cognitive alone-vs-combined pattern and therapy subtypes in
+    the trials of the main cohort versus the trials added by the chronic-pain condition (same code as results_summary.md).
+    Also puts a short 'does it reproduce?' section at the top of analysis/results_summary.md."""
     import pandas as pd
 
     from ctgov_pipeline import analysis_data as ad
@@ -122,19 +123,27 @@ def write_comparison() -> Path:
     studies, outcomes = ad.load_tables()
     main_ids = set(pd.read_csv(PROJECT / "data" / "processed" / "studies.csv").query("cohort_inclusion_status == 'included'")["nct_id"])
     focus, interf, recov = "psychological_cognitive", "pain_interference", "pain_recovery"
-    parts = {
-        "Main cohort trials (the original four conditions)": studies[studies["nct_id"].isin(main_ids)],
-        "Trials added by the chronic-pain condition": studies[~studies["nct_id"].isin(main_ids)],
-        "Whole extended cohort": studies,
-    }
+    main_t, added_t, all_t = (
+        "Main cohort trials (the original four conditions)",
+        "Trials added by the chronic-pain condition",
+        "Whole extended cohort",
+    )
+    parts = {main_t: studies[studies["nct_id"].isin(main_ids)], added_t: studies[~studies["nct_id"].isin(main_ids)], all_t: studies}
+
+    def pct(k, n) -> float:
+        return 100 * k / n if n else float("nan")
 
     def cell(k: int, n: int) -> str:
         lo, hi = ad.wilson_interval(k, n)
-        return f"{100 * k / n:.0f}% ({lo:.0f}-{hi:.0f}%)"
+        return f"{pct(k, n):.0f}% ({lo:.0f}-{hi:.0f}%)"
 
-    rows, tests = [], {}
+    def short(k_i, k_r, n) -> str:
+        return f"{int(n)}: {pct(k_i, n):.0f}% / {pct(k_r, n):.0f}%" if n else "-"
+
+    rows, tests, groups = [], {}, {}
     for title, part in parts.items():
         table = ad.companion_outcome_table(part, outcomes, focus, (interf, recov), min_n=10).set_index("group")
+        groups[title] = table
         for group, label in (("only_this_category", "Alone"), ("with_any_other_category", "Combined")):
             r = table.loc[group]
             rows.append([title, label, int(r["n"]), cell(int(r[interf]), int(r["n"])), cell(int(r[recov]), int(r["n"]))])
@@ -142,10 +151,61 @@ def write_comparison() -> Path:
         tests[title] = tuple(
             ad.fisher_exact_two_sided(int(a[col]), int(a["n"]), int(c[col]), int(c["n"])) for col in (interf, recov)
         )
+
+    # therapy subtypes, pure and combined, main versus added trials
+    sub = {
+        (title, kind): ad.subtype_outcome_table(parts[title], outcomes, (interf, recov), **{kind: True}).set_index("subtype")
+        for title in (main_t, added_t)
+        for kind in ("pure_only", "combined_only")
+    }
+    sub_rows = []
+    for name in sub[(main_t, "pure_only")].index:
+        if name == ad.NO_SUBTYPE:
+            continue
+        sub_rows.append(
+            [name]
+            + [short(sub[k].loc[name, interf], sub[k].loc[name, recov], sub[k].loc[name, "n"]) for k in (
+                (main_t, "pure_only"), (added_t, "pure_only"), (main_t, "combined_only"), (added_t, "combined_only"))]
+        )
+
+    def row(title, group):
+        r = groups[title].loc[group]
+        return int(r["n"]), pct(r[interf], r["n"]), pct(r[recov], r["n"])
+
+    (nm, im, rm), (na, ia, ra) = row(main_t, "only_this_category"), row(added_t, "only_this_category")
+    (_, imc, rmc), (_, iac, rac) = row(main_t, "with_any_other_category"), row(added_t, "with_any_other_category")
+
+    def order(i, r) -> str:
+        return "more often than" if i > r + 2 else "less often than" if i < r - 2 else "about as often as"
+
+    def pure_trials(title, name):
+        return int(sub[(title, "pure_only")].loc[name, "n"])
+
+    summary = (
+        f"The main-cohort pattern does not carry over to the trials added by the chronic-pain condition. In the main cohort, "
+        f"Psychological & cognitive trials used alone register recovery {order(rm, im)} interference ({rm:.0f}% vs {im:.0f}%, n={nm}) "
+        f"and recovery is clearly lower when they are combined ({rmc:.0f}%). Among the added trials, those used alone register interference "
+        f"{order(ia, ra)} recovery ({ia:.0f}% vs {ra:.0f}%, n={na}) and combining makes little difference to recovery ({ra:.0f}% alone vs {rac:.0f}% combined), "
+        f"so the alone-versus-combined recovery difference disappears (extended cohort: p = {tests[all_t][1]:.2f}). "
+        f"The therapy mix also differs: psychotherapy-type trials, which drive the recovery tilt of the main cohort's pure trials, are rare among the added "
+        f"pure trials ({pure_trials(added_t, 'Psychotherapy')} vs {pure_trials(main_t, 'Psychotherapy')}), which are mostly CBT ({pure_trials(added_t, 'CBT')}) and ACT "
+        f"({pure_trials(added_t, 'ACT')}), and ACT trials register interference far more than recovery. What does reproduce is the overall orientation: "
+        f"in both sets, combined with other intervention categories, the category registers interference at least as often as recovery "
+        f"({imc:.0f}% vs {rmc:.0f}% in the main cohort, {iac:.0f}% vs {rac:.0f}% among the added trials), "
+        f"and in all five conditions it registers interference more often than other behavioral trials of the same condition. "
+        f"So the interference orientation of cognitive therapies holds with chronic pain included, whereas the tilt toward recovery when used alone is "
+        f"specific to the original four conditions (back pain and fibromyalgia, not the generic chronic-pain trials)."
+    )
     lines = [
         "# Psychological & cognitive therapy: main cohort versus the trials added by 'chronic pain'",
         "",
         "Auto-generated by `run_scenario.py`. Share of the group's trials (with a registered primary outcome) that have at least one outcome of the type; 95% Wilson interval in brackets.",
+        "",
+        "## Takeaway",
+        "",
+        summary,
+        "",
+        "## Alone versus combined",
         "",
         "| Trials | Psychological & cognitive trials | n | Pain interference | Pain recovery |",
         "|---|---|---|---|---|",
@@ -155,9 +215,31 @@ def write_comparison() -> Path:
         "",
         "| Trials | Pain interference | Pain recovery |",
         "|---|---|---|",
-    ] + [f"| {title} | p = {p_i:.3f} | p = {p_r:.3f} |" for title, (p_i, p_r) in tests.items()]
+    ] + [f"| {title} | p = {p_i:.3f} | p = {p_r:.3f} |" for title, (p_i, p_r) in tests.items()] + [
+        "",
+        "## Therapy subtypes",
+        "",
+        "Each cell: trials, then % with an interference outcome / % with a recovery outcome. Subtypes overlap; small groups (under 10) are unstable.",
+        "",
+        "| Subtype | Main, pure | Added, pure | Main, combined | Added, combined |",
+        "|---|---|---|---|---|",
+    ] + [f"| {' | '.join(r)} |" for r in sub_rows]
     path = HERE / "analysis" / "comparison_with_main.md"
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+    # same takeaway at the top of this scenario's results_summary.md (replaced on every run)
+    summary_path = HERE / "analysis" / "results_summary.md"
+    if summary_path.exists():
+        marker_start, marker_end = "<!-- reproduction:start -->", "<!-- reproduction:end -->"
+        text = summary_path.read_text(encoding="utf-8")
+        if marker_start in text:
+            text = text[: text.index(marker_start)] + text[text.index(marker_end) + len(marker_end) :].lstrip("\n")
+        block = (
+            f"{marker_start}\n## Does the main-cohort pattern reproduce with 'chronic pain' added?\n\n{summary}\n\n"
+            f"Tables: `comparison_with_main.md`.\n{marker_end}\n\n"
+        )
+        text = text.replace("## 1. ", block + "## 1. ", 1)
+        summary_path.write_text(text, encoding="utf-8")
     return path
 
 
